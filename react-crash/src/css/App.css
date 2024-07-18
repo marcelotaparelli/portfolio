@@ -217,6 +217,8 @@ section {
         flex-direction: column;
         width: min(100%, 470px);
         height: 446px;
+        max-width: 470px;
+        max-height: 446px;
         box-shadow: 0 0 100px #1b608884;
         transition: 0.5s;
         border-radius: 69% 27%;
@@ -226,6 +228,8 @@ section {
         & img {
           width: 400px;
           height: min(800px, 55vh);
+          max-width: 400px;
+          max-height: 485px;      
           object-fit: cover;
           object-position: top;
           border-radius: 0% 0% 18% 61%;
@@ -244,10 +248,12 @@ section {
     grid-template-columns: 2fr 1fr;
     margin: 0;
     height: 100dvh;
+    align-items: center;
     & .banner {
       animation: reg-fade-in 3s;
       width: 110%;
       height: 100%;
+      max-height: 557px;
       text-align: center;
       overflow: hidden;
       position: relative;
@@ -255,7 +261,7 @@ section {
         font-family: 'nome';
         font-size: 140px;
         position: relative;
-        top: 178px;
+        top: 22%;
         left: 5px;
         color: #cdcdcdaa;
         text-shadow: 0 0 9px #40b1f2aa;
@@ -298,6 +304,8 @@ section {
     & .text {
       margin-left: 180px;
       height: calc(100dvh - 183px);
+      max-height: 575px;
+      min-height: 700px;
       place-content: center;
       & h2 {
         font-size: 1.6em;
@@ -645,7 +653,7 @@ section {
   }
 }
 
-@media (max-width: 1200px) {
+@media (max-width: 1350px) {
   header {
     width: 100dvw;
     height: 10dvh;
