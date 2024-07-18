@@ -10,7 +10,7 @@ const NavBar = ({activeTab}) => {
     return (
     <header>
         <div className="logo" onClick={() => changeTab('Home')}>
-            <img src='../public/mt.png' alt='logo' />
+            <img src='/mt.png' alt='logo' />
         </div>
         <nav> 
             {
