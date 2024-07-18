@@ -110,6 +110,7 @@ section {
           -webkit-text-fill-color: transparent;
           -webkit-background-clip: text;
           background-clip: text;
+          min-height: 53.6px;
         }
       }
       & .des {

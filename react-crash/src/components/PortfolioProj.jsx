@@ -84,7 +84,7 @@ function PortfolioProj() {
 
 
 
-          <a href="https://github.com/marcelotaparelli/zullen-fullstack-project" target="_blank">
+          <a href="https://github.com/marcelotaparelli/portfolio" target="_blank">
             <div className="mais">
               <i className="devicon-github-original"></i>
               <p>Repositório</p>
