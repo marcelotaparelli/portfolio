@@ -191,6 +191,9 @@ section {
         min-height: 10px;
         display: flex;
         align-items: end;
+        &.mail {
+          display: none;
+      }
         & i {
           color: #c4c0c073;
           font-size: 26px;
@@ -688,6 +691,7 @@ section {
         width: 85dvw;
         & .name {
           font-size: 3em;
+          min-height: 135px;
         }
         & .cv {
           margin: auto;
@@ -708,6 +712,9 @@ section {
       & .hub {
         margin: 1.4rem auto;
         width: 128px;
+        & a.mail {
+          display: flex !important;
+      }
       }
     }
     &.stack {
@@ -745,11 +752,6 @@ section {
           margin: 15% 0 0 0 !important;
           height: unset !important;
         }
-        /*
-        display: flex;
-        height: unset;
-        font-size: 35px;
-        margin-top: 37dvh;*/
       }
       & .project {
         grid-template-columns: 1fr;
