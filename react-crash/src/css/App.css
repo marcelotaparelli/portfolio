@@ -691,7 +691,12 @@ section {
         width: 85dvw;
         & .name {
           font-size: 3em;
-          min-height: 135px;
+          line-height: 50px;
+          & span {
+            min-height: 55.6px;
+            display: flex;
+            align-items: center;
+          }
         }
         & .cv {
           margin: auto;
