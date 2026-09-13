@@ -1,22 +1,26 @@
 // Phase 1 content distribution CLI (DEV.to + LinkedIn).
-// Single manual execution: bun scripts/distribution/distribute.ts --slug <pt-slug> --ledger <path>
+// Single manual execution: bun scripts/distribution/distribute.ts --slug <slug> --ledger <path>
+// The slug identifies a PT-BR + EN article pair: DEV.to publishes
+// exclusively from EN (canonical /en/articles/…), LinkedIn posts
+// exclusively from PT-BR (canonical /artigos/…).
 // Secrets come only from the environment and are never printed.
 // Exit 0: every requested channel published or already-published.
 // Exit 1: any channel failed (including fail-closed validation).
 
-import { checkPublic, DistributionError, resolveArticle } from './article';
+import { checkPublic, DistributionError, resolveArticlePair } from './article';
 import { buildDevtoPayload, findByCanonical, publishDevto } from './devto';
 import { buildLinkedinPayload, publishLinkedin } from './linkedin';
 import type {
   ChannelResult,
   Ledger,
+  LedgerChannelState,
   LedgerEntry,
-  ResolvedArticle,
+  ResolvedPair,
 } from './types';
 
 function usage(): never {
   console.error(
-    'usage: bun scripts/distribution/distribute.ts --slug <pt-slug> --ledger <path>',
+    'usage: bun scripts/distribution/distribute.ts --slug <slug> --ledger <path>',
   );
   process.exit(2);
 }
@@ -40,6 +44,19 @@ export function readLedger(source: string): Ledger {
   if (typeof parsed !== 'object' || parsed === null || Array.isArray(parsed))
     throw new DistributionError('ledger must be a JSON object');
   return parsed as Ledger;
+}
+
+/**
+ * A channel counts as already published only when the ledger records the
+ * exact canonical URL expected now. Stale entries — missing canonicalUrl
+ * (written before the field existed) or a different one (e.g. the mistaken
+ * PT post on DEV.to) — never block a fresh publication.
+ */
+export function isPublishedFor(
+  state: LedgerChannelState | undefined,
+  canonicalUrl: string,
+): boolean {
+  return state !== undefined && state.canonicalUrl === canonicalUrl;
 }
 
 async function runChannel(
@@ -117,11 +134,12 @@ async function main(): Promise<void> {
   const entry: LedgerEntry = ledger[slug] ?? {};
   const results: ChannelResult[] = [];
   let websiteOk = false;
-  let article: ResolvedArticle | null = null;
+  let pair: ResolvedPair | null = null;
 
   try {
-    article = await resolveArticle(slug);
-    await checkPublic(article.canonicalUrl);
+    pair = await resolveArticlePair(slug);
+    await checkPublic(pair.pt.canonicalUrl);
+    await checkPublic(pair.en.canonicalUrl);
     websiteOk = true;
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
@@ -141,31 +159,41 @@ async function main(): Promise<void> {
     process.exit(1);
   }
 
-  const resolved = article as ResolvedArticle;
+  const resolved = pair as ResolvedPair;
   results.push(
     await runChannel(
       'devto',
       async () => {
-        const existing = await findByCanonical(devtoKey, resolved.canonicalUrl);
+        // Remote lookup by the EN canonical is authoritative: it catches a
+        // post that exists even when the ledger lacks (or contradicts) it,
+        // and it never matches the old mistaken PT post.
+        const existing = await findByCanonical(
+          devtoKey,
+          resolved.en.canonicalUrl,
+        );
         if (existing) {
-          entry.devto = existing;
+          entry.devto = { ...existing, canonicalUrl: resolved.en.canonicalUrl };
           return {
             url: existing.url,
             remoteId: existing.id,
             preexisting: true,
           };
         }
-        const done = await publishDevto(devtoKey, buildDevtoPayload(resolved));
-        entry.devto = done;
+        const done = await publishDevto(
+          devtoKey,
+          buildDevtoPayload(resolved.en),
+        );
+        entry.devto = { ...done, canonicalUrl: resolved.en.canonicalUrl };
         return { url: done.url, remoteId: done.id };
       },
-      entry.devto !== undefined,
+      isPublishedFor(entry.devto, resolved.en.canonicalUrl),
       secrets,
     ),
   );
-  // Skip means zero API calls: the ledger is the source of truth.
-  // The remote DEV.to lookup inside the publish path protects the case
-  // where the ledger lacks an entry but the post already exists.
+  // Skip means zero API calls: the ledger is the source of truth, but only
+  // when it records the canonical we expect now. The remote DEV.to lookup
+  // inside the publish path protects the case where the ledger lacks an
+  // entry but the post already exists.
 
   results.push(
     await runChannel(
@@ -173,12 +201,12 @@ async function main(): Promise<void> {
       async () => {
         const done = await publishLinkedin(
           linkedinToken,
-          buildLinkedinPayload(resolved, linkedinUrn),
+          buildLinkedinPayload(resolved.pt, linkedinUrn),
         );
-        entry.linkedin = done;
+        entry.linkedin = { ...done, canonicalUrl: resolved.pt.canonicalUrl };
         return { url: done.url, remoteId: done.id };
       },
-      entry.linkedin !== undefined,
+      isPublishedFor(entry.linkedin, resolved.pt.canonicalUrl),
       secrets,
     ),
   );

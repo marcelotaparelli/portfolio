@@ -110,6 +110,42 @@ These are content, not code. Do not invent them:
   payloads, no network, no publish) OK. No real publication, no deploy,
   production untouched.
 
+## Distribution — bilingual correction (DEV.to EN + LinkedIn PT, 2026-09-13)
+
+- Root cause of the bad first run: the pipeline resolved only the PT-BR
+  file, so DEV.to received the Portuguese version. Fixed model:
+  `resolveArticlePair(slug)` resolves the PT-BR + EN pair, fails closed
+  unless both are published, reviewed, dated, share `translationKey`
+  and carry the same slug; EN must provide `devto.tags`, PT must
+  provide the LinkedIn copy (each validated against its own canonical).
+- Channel split: DEV.to publishes exclusively from EN (`title`,
+  `description`, `markdown`, canonical
+  `https://marcelotaparelli.com.br/en/articles/<slug>/`); LinkedIn
+  posts exclusively from PT-BR (custom copy, canonical
+  `https://marcelotaparelli.com.br/artigos/<slug>/`). No runtime
+  translation; single human approval (`workflow_dispatch` + slug) kept.
+- Frontmatter: `devto.tags` moved PT → EN; PT keeps only
+  `linkedin.text`. `src/content.config.ts` schema unchanged (already
+  supports both blocks); only the convention comment was clarified.
+- LinkedIn `LinkedIn-Version` was already `202608` (kept, now covered
+  by a header test); `X-Restli-Protocol-Version: 2.0.0` unchanged.
+- Ledger: `LedgerChannelState` gained optional `canonicalUrl`. Skip
+  (`isPublishedFor`) requires the recorded canonical to equal the
+  expected one, so the stale PT `devto` entry (no canonical) cannot
+  block the EN publication. DEV.to remote lookup by EN `canonical_url`
+  is kept as authoritative fallback. Partial failure still persists
+  the successful channel; the next run skips it and retries the other.
+- Tests: `tests/unit/distribution.test.ts` rewritten around the pair
+  (33 distribution tests): pair resolution, EN→DEV.to content +
+  canonical, PT→LinkedIn copy + canonical, key mismatch, missing EN,
+  draft/unreviewed either side, missing tags/text, stale-PT lookup,
+  canonical-aware skip, partial-failure round-trip, header version,
+  secret redaction. Full suite 37 pass.
+- Gates re-verified: typecheck 0 errors, lint clean, format clean,
+  `bun test` 37 pass, `check-release` ready, production build 20 pages
+  - `check-artifacts.ts dist` clean. No real publish, no deploy, no
+    commit. The mistaken PT post on DEV.to must still be deleted manually.
+
 ## Environment notes
 
 - `git` binary is not installed in this container (a `.git` dir exists but

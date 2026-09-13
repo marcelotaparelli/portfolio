@@ -1,9 +1,15 @@
 // Article resolution and validation for distribution.
-// Reads the PT-BR source file directly (frontmatter + markdown), reusing
-// the YAML approach from scripts/check-release.ts. No new dependencies.
+// Reads the PT-BR + EN source files directly (frontmatter + markdown),
+// reusing the YAML approach from scripts/check-release.ts.
+// No new dependencies. No runtime translation.
 
 import { Glob, YAML } from 'bun';
-import { ORIGIN, type DistributionInput, type ResolvedArticle } from './types';
+import {
+  ORIGIN,
+  type DistributionInput,
+  type ResolvedArticle,
+  type ResolvedPair,
+} from './types';
 
 export class DistributionError extends Error {}
 
@@ -36,6 +42,10 @@ export function splitFrontmatter(source: string): {
 
 export function canonicalFor(slug: string): string {
   return `${ORIGIN}/artigos/${slug}/`;
+}
+
+export function canonicalForEn(slug: string): string {
+  return `${ORIGIN}/en/articles/${slug}/`;
 }
 
 /** Rewrite root-relative links/images to absolute URLs, outside code fences. */
@@ -78,63 +88,119 @@ export function validateDistributionInput(
 
 export interface ArticleReader {
   listPtFiles: () => Promise<string[]>;
+  listEnFiles: () => Promise<string[]>;
   readFile: (path: string) => Promise<string>;
 }
 
+async function listGlob(pattern: string): Promise<string[]> {
+  const paths: string[] = [];
+  for await (const path of new Glob(pattern).scan('.')) paths.push(path);
+  return paths.sort();
+}
+
 export const fsReader: ArticleReader = {
-  listPtFiles: async () => {
-    const paths: string[] = [];
-    for await (const path of new Glob('src/content/articles/pt-br/*.mdx').scan(
-      '.',
-    ))
-      paths.push(path);
-    return paths.sort();
-  },
+  listPtFiles: async () => await listGlob('src/content/articles/pt-br/*.mdx'),
+  listEnFiles: async () => await listGlob('src/content/articles/en/*.mdx'),
   readFile: async (path: string) => await Bun.file(path).text(),
 };
 
+interface ParsedFile {
+  path: string;
+  data: Frontmatter;
+  body: string;
+}
+
+async function findOne(
+  slug: string,
+  locale: 'pt-BR' | 'en',
+  paths: string[],
+  reader: ArticleReader,
+): Promise<ParsedFile | null> {
+  for (const path of paths) {
+    const { data, body } = splitFrontmatter(await reader.readFile(path));
+    if (data.locale !== locale || data.slug !== slug) continue;
+    return { path, data, body };
+  }
+  return null;
+}
+
+function resolveOne(
+  slug: string,
+  parsed: ParsedFile,
+  canonicalUrl: string,
+): ResolvedArticle {
+  const { path, data, body } = parsed;
+  if (data.status !== 'published')
+    failClosed(`${path}: status is not published`);
+  if (data.reviewed !== true) failClosed(`${path}: not reviewed`);
+  if (!data.publishedAt) failClosed(`${path}: missing publishedAt`);
+  if (typeof data.title !== 'string' || data.title.length === 0)
+    failClosed(`${path}: missing title`);
+  if (typeof data.description !== 'string' || data.description.length === 0)
+    failClosed(`${path}: missing description`);
+  if (
+    typeof data.translationKey !== 'string' ||
+    data.translationKey.length === 0
+  )
+    failClosed(`${path}: missing translationKey`);
+  const dist = data.distribution ?? {};
+  const rawTags = dist.devto?.tags;
+  const rawText = dist.linkedin?.text;
+  const distribution: DistributionInput = {
+    devtoTags:
+      rawTags === undefined ? undefined : (rawTags as unknown[]).map(String),
+    linkedinText: rawText === undefined ? undefined : String(rawText),
+  };
+  validateDistributionInput(distribution, canonicalUrl);
+  return {
+    slug,
+    translationKey: data.translationKey,
+    title: data.title,
+    description: data.description,
+    markdown: absolutizeMarkdown(body.trim(), ORIGIN),
+    canonicalUrl,
+    distribution,
+  };
+}
+
 /**
- * Resolve a PT-BR article by slug. Fails closed unless the article is
- * published, reviewed, dated and carries a PT-BR version (the file itself).
+ * Resolve the PT-BR + EN pair for a slug. Fails closed unless both sides
+ * exist, are published, reviewed and dated, share the same translationKey
+ * and carry the same slug. The EN side must provide DEV.to tags and the
+ * PT side must provide the LinkedIn copy — each validated against its own
+ * canonical URL.
  */
-export async function resolveArticle(
+export async function resolveArticlePair(
   slug: string,
   reader: ArticleReader = fsReader,
-): Promise<ResolvedArticle> {
+): Promise<ResolvedPair> {
   if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug))
     failClosed(`invalid slug: ${slug}`);
-  for (const path of await reader.listPtFiles()) {
-    const { data, body } = splitFrontmatter(await reader.readFile(path));
-    if (data.locale !== 'pt-BR' || data.slug !== slug) continue;
-    if (data.status !== 'published')
-      failClosed(`${path}: status is not published`);
-    if (data.reviewed !== true) failClosed(`${path}: not reviewed`);
-    if (!data.publishedAt) failClosed(`${path}: missing publishedAt`);
-    if (typeof data.title !== 'string' || data.title.length === 0)
-      failClosed(`${path}: missing title`);
-    if (typeof data.description !== 'string' || data.description.length === 0)
-      failClosed(`${path}: missing description`);
-    const dist = data.distribution ?? {};
-    const rawTags = dist.devto?.tags;
-    const rawText = dist.linkedin?.text;
-    const distribution: DistributionInput = {
-      devtoTags:
-        rawTags === undefined ? undefined : (rawTags as unknown[]).map(String),
-      linkedinText: rawText === undefined ? undefined : String(rawText),
-    };
-    const canonicalUrl = canonicalFor(slug);
-    validateDistributionInput(distribution, canonicalUrl);
-    return {
-      slug,
-      translationKey: String(data.translationKey),
-      title: data.title,
-      description: data.description,
-      markdown: absolutizeMarkdown(body.trim(), ORIGIN),
-      canonicalUrl,
-      distribution,
-    };
-  }
-  failClosed(`no published PT-BR article for slug: ${slug}`);
+  const ptParsed = await findOne(
+    slug,
+    'pt-BR',
+    await reader.listPtFiles(),
+    reader,
+  );
+  if (!ptParsed) failClosed(`no published PT-BR article for slug: ${slug}`);
+  const enParsed = await findOne(
+    slug,
+    'en',
+    await reader.listEnFiles(),
+    reader,
+  );
+  if (!enParsed) failClosed(`no published EN article for slug: ${slug}`);
+  const pt = resolveOne(slug, ptParsed, canonicalFor(slug));
+  const en = resolveOne(slug, enParsed, canonicalForEn(slug));
+  if (pt.translationKey !== en.translationKey)
+    failClosed(
+      `translationKey mismatch: pt-BR is ${pt.translationKey}, en is ${en.translationKey}`,
+    );
+  if (pt.distribution.linkedinText === undefined)
+    failClosed(`${ptParsed.path}: missing linkedin text for LinkedIn`);
+  if (en.distribution.devtoTags === undefined)
+    failClosed(`${enParsed.path}: missing devto tags for DEV.to`);
+  return { slug, translationKey: pt.translationKey, pt, en };
 }
 
 /**

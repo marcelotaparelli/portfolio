@@ -1,15 +1,16 @@
 name: Distribute content
 
-# Phase 1 article distribution (DEV.to + LinkedIn). Human approval is the
-# manual workflow_dispatch itself: a human passes the PT-BR article slug,
-# the workflow validates, distributes per channel, and records state on
-# the dedicated `distribution-state` branch. Never commits to main.
+# Article distribution (DEV.to + LinkedIn) for a PT-BR + EN pair.
+# Human approval is the manual workflow_dispatch itself: a human passes the
+# article slug, the workflow validates the pair, distributes per channel
+# (DEV.to from EN, LinkedIn from PT-BR), and records state on the dedicated
+# `distribution-state` branch. Never commits to main.
 # Never publishes in any other circumstance. No rebuild, no deploy.
 on:
   workflow_dispatch:
     inputs:
       article_slug:
-        description: PT-BR article slug (e.g. portfolio-bun-astro-mdx)
+        description: Article slug of the PT-BR + EN pair (e.g. portfolio-bun-astro-mdx)
         required: true
         type: string
 
