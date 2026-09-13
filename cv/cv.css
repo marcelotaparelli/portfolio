@@ -1,0 +1,136 @@
+/* CV print stylesheet. Single A4 page, sober professional look.
+   Fonts are the repo's own @fontsource/inter files so rendering is
+   deterministic wherever Chromium runs. No web requests at print time. */
+
+@font-face {
+  font-family: 'CV Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('../node_modules/@fontsource/inter/files/inter-latin-400-normal.woff2')
+    format('woff2');
+}
+
+@font-face {
+  font-family: 'CV Inter';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('../node_modules/@fontsource/inter/files/inter-latin-500-normal.woff2')
+    format('woff2');
+}
+
+@font-face {
+  font-family: 'CV Inter';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('../node_modules/@fontsource/inter/files/inter-latin-700-normal.woff2')
+    format('woff2');
+}
+
+@page {
+  size: A4;
+  margin: 0;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: #fff;
+  color: #1a1a1a;
+  font-family: 'CV Inter', 'Helvetica Neue', Arial, sans-serif;
+  font-size: 9.5pt;
+  line-height: 1.38;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+.sheet {
+  width: 210mm;
+  min-height: 297mm;
+  padding: 10mm 12mm;
+  margin: 0 auto;
+}
+
+header {
+  text-align: center;
+  margin-bottom: 4pt;
+}
+
+header h1 {
+  font-size: 19pt;
+  font-weight: 700;
+  letter-spacing: 0.4pt;
+  margin: 0 0 2pt;
+  text-transform: uppercase;
+}
+
+header .title {
+  font-size: 10.5pt;
+  font-weight: 500;
+  margin: 0 0 2pt;
+}
+
+header .contact {
+  font-size: 9pt;
+  margin: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+h2 {
+  font-size: 10pt;
+  font-weight: 700;
+  letter-spacing: 1pt;
+  text-transform: uppercase;
+  border-bottom: 0.75pt solid #8a8a8a;
+  padding-bottom: 1.5pt;
+  margin: 7pt 0 3pt;
+}
+
+p {
+  margin: 0 0 3pt;
+}
+
+.job {
+  font-weight: 700;
+  margin: 5pt 0 1pt;
+}
+
+ul {
+  list-style: none;
+  margin: 0 0 2pt;
+  padding: 0;
+}
+
+ul li {
+  margin: 0 0 1.5pt;
+  padding-left: 10pt;
+  position: relative;
+}
+
+ul li::before {
+  content: '•';
+  position: absolute;
+  left: 0;
+}
+
+.skills p {
+  margin-bottom: 1.5pt;
+}
+
+.skills strong {
+  font-weight: 700;
+}

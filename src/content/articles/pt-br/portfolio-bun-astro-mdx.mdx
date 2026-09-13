@@ -125,6 +125,16 @@ A entrega segue um modelo de Continuous Delivery: o mesmo artefato aprovado
 pelo CI é publicado após aprovação manual, sem rebuild, em uma branch
 dedicada de produção e então implantado na Hostinger.
 
+### Distribuição de conteúdo
+
+Além do pipeline de CI/CD, implementei uma esteira de distribuição
+multicanal de conteúdo. Uma única aprovação manual no GitHub Actions
+resolve o par bilíngue do artigo e publica automaticamente a versão em
+inglês no DEV.to e uma publicação adaptada em português no LinkedIn. O
+fluxo utiliza as APIs oficiais, secrets isolados, idempotência por
+canonical URL, ledger de publicação em branch dedicada e recuperação de
+falhas parciais — e já publicou com sucesso nos dois canais.
+
 ## Performance medida
 
 O que segue são medições de laboratório, nunca dados reais de usuários.

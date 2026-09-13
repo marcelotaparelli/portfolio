@@ -146,6 +146,29 @@ These are content, not code. Do not invent them:
   - `check-artifacts.ts dist` clean. No real publish, no deploy, no
     commit. The mistaken PT post on DEV.to must still be deleted manually.
 
+## CV generation — reproducible source (2026-09-13)
+
+- CVs are now generated from versioned source: `cv/pt-br.html`,
+  `cv/en.html`, `cv/cv.css` via `bun run cv:generate`
+  (`scripts/generate-cv.ts`, Playwright/Chromium, repo-local Inter
+  fonts — no new dependencies). Outputs are the same reviewed paths
+  (`public/cv/*.pdf`, `reviewed: true` kept).
+- Content is the previous PDFs' factual content, plus the multichannel
+  distribution evidence inside the Portfolio project line (PT/EN
+  base texts). Nothing invented; Alura line compacted to hold 1 page.
+- Guarantees, fail-closed: webfonts awaited before measuring/printing,
+  single A4 (`@page`, `preferCSSPageSize`), content-overflow check +
+  exactly-1-page PDF byte check per locale. Verified: 1 page each, A4
+  (595×842pt), clickable `mailto`/site/LinkedIn/GitHub link
+  annotations, PT bottom headroom ~37px / EN ~55px.
+- Site case: no separate portfolio project created per decision; the
+  `portfolio-bun-astro-mdx` article subsection (both languages) carries
+  the evidence.
+- Gates re-verified after regeneration: typecheck 0 errors, lint
+  clean, format clean, `bun test` 37 pass, production build 20 pages +
+  `check-artifacts.ts dist` clean, `check-release` ready. No deploy,
+  no publish, no commit.
+
 ## Environment notes
 
 - `git` binary is not installed in this container (a `.git` dir exists but

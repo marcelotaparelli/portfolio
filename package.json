@@ -15,7 +15,8 @@
     "format:check": "bun --bun prettier --check .",
     "test": "bun test tests/unit",
     "test:e2e": "bun --bun playwright test",
-    "check:release": "bun scripts/check-release.ts"
+    "check:release": "bun scripts/check-release.ts",
+    "cv:generate": "bun scripts/generate-cv.ts"
   },
   "dependencies": {
     "astro": "7.3.2",

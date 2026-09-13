@@ -116,6 +116,16 @@ Delivery follows a Continuous Delivery model: the same CI-approved
 artifact is published after explicit manual approval, without rebuilding,
 to a dedicated production branch and then deployed to Hostinger.
 
+### Content distribution
+
+In addition to the CI/CD pipeline, I implemented a multichannel content
+distribution workflow. A single manual approval in GitHub Actions resolves
+the bilingual article pair and automatically publishes the English version
+to DEV.to and a tailored Portuguese post to LinkedIn. The workflow uses the
+official APIs, isolated secrets, canonical-based idempotency, a publication
+ledger on a dedicated branch, and partial-failure recovery — and has already
+published successfully to both channels.
+
 ## Measured performance
 
 What follows are laboratory measurements, never real-user data. I ran
