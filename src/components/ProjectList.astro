@@ -44,6 +44,18 @@ const Heading = headingLevel === 2 ? 'h2' : 'h3';
           {t(locale).readCase}
           <Arrow />
         </a>
+        {entry.data.externalUrl && (
+          <a
+            class="text-link"
+            href={entry.data.externalUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={t(locale).externalAria(entry.data.title)}
+          >
+            {t(locale).external}
+            <Arrow direction="diagonal" />
+          </a>
+        )}
       </div>
     </article>
   ))}

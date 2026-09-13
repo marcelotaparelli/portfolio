@@ -8,6 +8,6 @@ export const site = {
 
 // Set reviewed to true only after the supplied PDF has passed editorial and accessibility review.
 export const cv = {
-  'pt-BR': { path: '/cv/marcelo-taparelli-pt-br.pdf', reviewed: true },
-  en: { path: '/cv/marcelo-taparelli-en.pdf', reviewed: true },
+  'pt-BR': { path: '/cv/marcelo-taparelli-cv-pt-br.pdf', reviewed: true },
+  en: { path: '/cv/marcelo-taparelli-cv-en.pdf', reviewed: true },
 };

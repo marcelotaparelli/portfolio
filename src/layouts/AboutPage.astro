@@ -77,9 +77,7 @@ const text = t(locale).about;
     <h2>{text.complementary}</h2>
     <ul class="complementary-list">
       {text.complementaryItems.map((item) => (
-        <li>
-          <strong>{item.title}</strong> — {item.provider}, {item.hours}
-        </li>
+        <li>{item}</li>
       ))}
     </ul>
     <p class="complementary-cta">

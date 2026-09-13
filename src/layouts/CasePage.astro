@@ -56,7 +56,13 @@ const breadcrumb = {
       <h1>{data.title}</h1>
       <p class="section-description">{data.description}</p>
       {data.externalUrl && (
-        <a class="text-link mt-5" href={data.externalUrl}>
+        <a
+          class="text-link mt-5"
+          href={data.externalUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={text.externalAria(data.title)}
+        >
           {text.external}
           <Arrow direction="diagonal" />
         </a>
