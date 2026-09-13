@@ -11,7 +11,7 @@ import type {
 } from './types';
 
 const API = 'https://api.linkedin.com/rest/posts';
-const API_VERSION = '202501';
+const API_VERSION = '202608';
 
 export function buildLinkedinPayload(
   article: ResolvedArticle,
