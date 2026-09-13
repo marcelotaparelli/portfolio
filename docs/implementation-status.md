@@ -169,6 +169,40 @@ These are content, not code. Do not invent them:
   `check-artifacts.ts dist` clean, `check-release` ready. No deploy,
   no publish, no commit.
 
+## Salus — backend API case + CV evidence (2026-09-13)
+
+- New bilingual project `salus` (`src/content/projects/{pt-br,en}/`
+  `salus.mdx`, `translationKey: salus`, `order: 4`, published + reviewed
+  both languages). Routes `/projetos/salus/` + `/en/projects/salus/`
+  (same slug both locales, as `google-drive-wordpress`). No page,
+  component, schema, or layout changes: cards, case pages, canonical,
+  hreflang, and sitemap are all data-driven from frontmatter.
+- Case content (PT professional, EN technical, no literal translation):
+  problem, layered-architecture decisions, HTTP→…→PostgreSQL flow,
+  domain invariants (CPF check digits etc.), 47 tests (36 unit + 11
+  integration, real PostgreSQL), CI chain, security allow-list, honest
+  trade-offs and limitations (JWT issued but no auth middleware — no
+  route described as protected; no RBAC/refresh/pagination/rate
+  limiting/observability).
+- `externalUrl: https://github.com/marcelotaparelli/salus` uses the
+  existing generic external-link pattern (`Visitar site` / `Visit
+website`); no live demo invented. A custom per-project CTA label
+  would have required schema + layout changes, so the pattern was kept.
+- `scripts/check-release.ts` expected set gained `salus` (pair guard);
+  E2E extended in-pattern: Salus page pair (reciprocal SEO) + PT/EN
+  external-link expectations for the GitHub URL.
+- CVs: Salus added as a second `Projeto público` / `Public project`
+  paragraph in `cv/{pt-br,en}.html` (base texts, lightly compacted);
+  PT also trimmed the PO bullets and the Engenharia line to hold one
+  page. Regenerated via `bun run cv:generate`: 1 A4 page each
+  (pdfinfo-confirmed), clickable mailto/site/LinkedIn/GitHub links,
+  ~18px bottom headroom each.
+- Gates: typecheck 0 errors, lint clean, format clean, `bun test` 37
+  pass, production build 22 pages + `check-artifacts.ts dist` clean
+  (both modes during the run), `check-release` ready, E2E 13 pass
+  against preview build. `dist/` left holding a production build. No
+  deploy, no publish, no commit.
+
 ## Environment notes
 
 - `git` binary is not installed in this container (a `.git` dir exists but

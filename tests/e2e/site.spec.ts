@@ -10,6 +10,7 @@ const pairs = [
   ['/projetos/agencia-catus/', '/en/projects/catus-agency/'],
   ['/projetos/atendimento-evag/', '/en/projects/evag-support/'],
   ['/projetos/google-drive-wordpress/', '/en/projects/google-drive-wordpress/'],
+  ['/projetos/salus/', '/en/projects/salus/'],
 ];
 
 test('all page pairs have equivalent navigation and reciprocal SEO', async ({
@@ -142,6 +143,14 @@ test('project external links are explicit, safe and locale-equivalent', async ({
       aria: 'Visitar site: Atendimento EVAG — abre em nova aba',
     },
     {
+      listing: '/projetos/',
+      casePath: '/projetos/salus/',
+      url: 'https://github.com/marcelotaparelli/salus',
+      readCase: 'Explorar case',
+      cta: 'Visitar site',
+      aria: 'Visitar site: Salus — abre em nova aba',
+    },
+    {
       listing: '/en/projects/',
       casePath: '/en/projects/catus-agency/',
       url: 'https://www.catus.com.br/',
@@ -156,6 +165,14 @@ test('project external links are explicit, safe and locale-equivalent', async ({
       readCase: 'Explore case',
       cta: 'Visit website',
       aria: 'Visit website: Atendimento EVAG — opens in a new tab',
+    },
+    {
+      listing: '/en/projects/',
+      casePath: '/en/projects/salus/',
+      url: 'https://github.com/marcelotaparelli/salus',
+      readCase: 'Explore case',
+      cta: 'Visit website',
+      aria: 'Visit website: Salus — opens in a new tab',
     },
   ];
   for (const item of expectations) {
