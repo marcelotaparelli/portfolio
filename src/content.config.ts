@@ -41,8 +41,9 @@ const articles = defineCollection({
     category: z.string(),
     publishedAt: z.coerce.date().optional(),
     updatedAt: z.coerce.date().optional(),
-    // Distribution input metadata (Phase 1: DEV.to + LinkedIn).
-    // Remote publication state lives in the ledger on the
+    // Distribution input metadata (DEV.to + LinkedIn).
+    // Convention: the EN file carries devto.tags, the PT-BR file carries
+    // linkedin.text. Remote publication state lives in the ledger on the
     // `distribution-state` branch, never in frontmatter.
     distribution: z
       .object({

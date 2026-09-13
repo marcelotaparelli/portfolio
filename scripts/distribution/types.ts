@@ -18,6 +18,19 @@ export interface ResolvedArticle {
   distribution: DistributionInput;
 }
 
+/**
+ * Bilingual article pair for distribution.
+ * DEV.to publishes exclusively from `en` (canonical /en/articles/…);
+ * LinkedIn posts exclusively from `pt` (canonical /artigos/…).
+ * No runtime translation: both versions already exist in the repo.
+ */
+export interface ResolvedPair {
+  slug: string;
+  translationKey: string;
+  pt: ResolvedArticle;
+  en: ResolvedArticle;
+}
+
 export type ChannelStatus =
   'published' | 'already-published' | 'failed' | 'skipped';
 
@@ -33,6 +46,13 @@ export interface LedgerChannelState {
   id: string;
   url: string;
   at: string;
+  /**
+   * Canonical URL that was published. Entries written before this field
+   * existed (e.g. the mistaken PT post on DEV.to) carry no canonical or a
+   * stale one, and must NOT satisfy the skip check for the current
+   * canonical. Always compare before skipping.
+   */
+  canonicalUrl?: string;
 }
 
 export interface LedgerEntry {
