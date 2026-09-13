@@ -41,6 +41,26 @@ const articles = defineCollection({
     category: z.string(),
     publishedAt: z.coerce.date().optional(),
     updatedAt: z.coerce.date().optional(),
+    // Distribution input metadata (Phase 1: DEV.to + LinkedIn).
+    // Remote publication state lives in the ledger on the
+    // `distribution-state` branch, never in frontmatter.
+    distribution: z
+      .object({
+        devto: z
+          .object({
+            // DEV API accepts at most 4 tags.
+            tags: z.array(z.string().min(1)).min(1).max(4),
+          })
+          .optional(),
+        linkedin: z
+          .object({
+            // Versioned post copy, reviewed in PR. Must contain the
+            // canonical URL; LinkedIn allows up to 3000 characters.
+            text: z.string().min(1).max(3000),
+          })
+          .optional(),
+      })
+      .optional(),
   }),
 });
 

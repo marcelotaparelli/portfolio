@@ -96,11 +96,18 @@ system would accept nothing less.
 
 Here, quality is not a promise — it is a pipeline. Every change goes
 through strict typechecking (zero errors), linting, verified formatting,
-unit tests for the publication model (4/4), twelve browser tests
+unit tests for the publication model (4/4), thirteen browser tests
 (reciprocal PT/EN navigation, keyboard menu with Escape, no-JavaScript
-navigation, localized 404, 320px reflow with automated WCAG checks), and
+navigation, localized 404, explicit external links, 320px reflow with
+automated WCAG checks), and
 artifact validation in both build modes. If something breaks, the build
 says so — before any human needs to check.
+
+CI/CD pipeline with GitHub Actions covering type checking, linting, unit
+tests, Playwright E2E tests, artifact validation, and production builds.
+Delivery follows a Continuous Delivery model: the same CI-approved
+artifact is published after explicit manual approval, without rebuilding,
+to a dedicated production branch and then deployed to Hostinger.
 
 ## Measured performance
 

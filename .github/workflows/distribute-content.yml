@@ -1,0 +1,108 @@
+name: Distribute content
+
+# Phase 1 article distribution (DEV.to + LinkedIn). Human approval is the
+# manual workflow_dispatch itself: a human passes the PT-BR article slug,
+# the workflow validates, distributes per channel, and records state on
+# the dedicated `distribution-state` branch. Never commits to main.
+# Never publishes in any other circumstance. No rebuild, no deploy.
+on:
+  workflow_dispatch:
+    inputs:
+      article_slug:
+        description: PT-BR article slug (e.g. portfolio-bun-astro-mdx)
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+# Serialize distributions so two manual runs can never race on the ledger.
+concurrency:
+  group: distribution
+  cancel-in-progress: false
+
+jobs:
+  distribute:
+    permissions:
+      # Write is scoped to pushing the ledger branch below; main is never
+      # touched by this workflow.
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.4.2
+
+      - run: bun install --frozen-lockfile
+
+      - name: Load distribution ledger
+        id: ledger
+        run: |
+          set -euo pipefail
+          if git ls-remote --exit-code --heads origin distribution-state >/dev/null 2>&1; then
+            git fetch --quiet origin distribution-state
+            git show FETCH_HEAD:.distribution/state.json > /tmp/distribution-ledger.json
+          else
+            echo '{}' > /tmp/distribution-ledger.json
+          fi
+          echo "path=/tmp/distribution-ledger.json" >> "$GITHUB_OUTPUT"
+
+      - name: Distribute article
+        id: distribute
+        env:
+          DEVTO_API_KEY: ${{ secrets.DEVTO_API_KEY }}
+          LINKEDIN_ACCESS_TOKEN: ${{ secrets.LINKEDIN_ACCESS_TOKEN }}
+          LINKEDIN_PERSON_URN: ${{ vars.LINKEDIN_PERSON_URN }}
+        run: |
+          set -euo pipefail
+          # Fail closed before any network call when credentials are absent.
+          # (The script re-checks; this keeps the failure reason obvious.)
+          test -n "${DEVTO_API_KEY:-}" || { echo "missing secret: DEVTO_API_KEY" >&2; exit 1; }
+          test -n "${LINKEDIN_ACCESS_TOKEN:-}" || { echo "missing secret: LINKEDIN_ACCESS_TOKEN" >&2; exit 1; }
+          test -n "${LINKEDIN_PERSON_URN:-}" || { echo "missing variable: LINKEDIN_PERSON_URN" >&2; exit 1; }
+          bun scripts/distribution/distribute.ts \
+            --slug "${{ inputs.article_slug }}" \
+            --ledger "${{ steps.ledger.outputs.path }}" | tee /tmp/distribution-summary.txt
+
+      - name: Publish ledger to distribution-state branch
+        if: always()
+        env:
+          PUSH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ARTICLE_SLUG: ${{ inputs.article_slug }}
+        run: |
+          set -euo pipefail
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global init.defaultBranch main
+          TMPDIR="$(mktemp -d)"
+          trap 'rm -rf "$TMPDIR"' EXIT
+          # Isolated clone: never touch the main checkout, never copy .git.
+          # The token is masked in logs by Actions.
+          git clone --quiet "https://x-access-token:${PUSH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" "$TMPDIR/state"
+          cd "$TMPDIR/state"
+          if git ls-remote --exit-code --heads origin distribution-state >/dev/null 2>&1; then
+            git checkout --quiet distribution-state
+          else
+            git checkout --quiet --orphan distribution-state
+            git rm --quiet -rf . || true
+          fi
+          mkdir -p .distribution
+          cp /tmp/distribution-ledger.json .distribution/state.json
+          git add .distribution/state.json
+          if git diff --cached --quiet; then
+            echo "ledger unchanged; nothing to push"
+            exit 0
+          fi
+          git commit --quiet -m "distribution: ${ARTICLE_SLUG}" -m "$(cat /tmp/distribution-summary.txt)"
+          git push origin distribution-state
+
+      - name: Summary
+        if: always()
+        run: |
+          if [ -f /tmp/distribution-summary.txt ]; then
+            cat /tmp/distribution-summary.txt >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "distribution did not run" >> "$GITHUB_STEP_SUMMARY"
+          fi

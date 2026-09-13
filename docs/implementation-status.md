@@ -85,6 +85,31 @@ These are content, not code. Do not invent them:
      two missing reviewed CV PDFs.
 3. Résumés PT-BR and EN to be supplied by the user.
 
+## Distribution — Phase 1 (DEV.to + LinkedIn, 2026-09-13)
+
+- Pipeline code already present and kept as-is: `scripts/distribution/`
+  (`types`, `article`, `devto`, `linkedin`, `distribute`), workflow
+  `.github/workflows/distribute-content.yml` (manual dispatch, ledger on
+  the `distribution-state` branch, never main), schema
+  `distribution` in `src/content.config.ts`, tests
+  `tests/unit/distribution.test.ts`.
+- Fixes applied (no rework of existing design):
+  `distribute.ts` strict-TS narrowing for `--slug`/`--ledger`
+  (`noUncheckedIndexedAccess`); `splitFrontmatter` strips the single
+  leading newline so `body` has no blank-line prefix; test mock for
+  DEV.to pagination now matches `page=2` (the old `page=1` substring
+  also matched `per_page=100`, causing an infinite lookup loop that
+  OOM-killed the runner); test `calls[0]` access narrowed.
+- Content: PT article `portfolio-bun-astro-mdx` now carries reviewed
+  `distribution` input (`devto.tags`: webdev, astro, bun, showdev;
+  `linkedin.text` PT-BR with canonical URL, 550 chars). EN article
+  intentionally untouched (pipeline distributes from the PT source).
+- Gates: `bun typecheck` 0 errors, `bun lint` clean,
+  `bun format:check` clean, `bun test tests/unit` 26 pass,
+  `astro sync` clean, distribution dry-run (resolve + build both
+  payloads, no network, no publish) OK. No real publication, no deploy,
+  production untouched.
+
 ## Environment notes
 
 - `git` binary is not installed in this container (a `.git` dir exists but

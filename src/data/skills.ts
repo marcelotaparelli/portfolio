@@ -3,8 +3,8 @@ export const skills = [
     title: { 'pt-BR': 'Engenharia', en: 'Engineering' },
     description: {
       'pt-BR':
-        'TypeScript, Node.js, APIs REST, arquitetura de software, Clean Architecture, DDD, SOLID, fundamentos de microsserviços, testes unitários e de integração, CI/CD e troubleshooting em produção.',
-      en: 'TypeScript, Node.js, REST APIs, software architecture, Clean Architecture, DDD, SOLID, microservices fundamentals, unit and integration testing, CI/CD, and production troubleshooting.',
+        'TypeScript, Node.js, APIs REST, arquitetura de software, Clean Architecture, DDD, SOLID, fundamentos de microsserviços e troubleshooting em produção. CI/CD com GitHub Actions, testes unitários, de integração e E2E, quality gates automatizados e entrega baseada em artefatos.',
+      en: 'TypeScript, Node.js, REST APIs, software architecture, Clean Architecture, DDD, SOLID, microservices fundamentals, and production troubleshooting. CI/CD with GitHub Actions, unit, integration and E2E testing, automated quality gates, and artifact-based delivery.',
     },
     tools: null,
   },
