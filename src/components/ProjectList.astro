@@ -1,0 +1,50 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import type { Locale } from '../i18n/routes';
+import { contentPath } from '../i18n/routes';
+import { t } from '../i18n/translations';
+import Arrow from './Arrow.astro';
+interface Props {
+  entries: CollectionEntry<'projects'>[];
+  locale: Locale;
+  headingLevel?: 2 | 3;
+}
+const { entries, locale, headingLevel = 3 } = Astro.props;
+const Heading = headingLevel === 2 ? 'h2' : 'h3';
+---
+
+<div class="project-list">
+  {entries.map((entry, index) => (
+    <article class="project-row">
+      <span class="project-number" aria-hidden="true">
+        0{index + 1}
+      </span>
+      <div class="project-info">
+        <p class="eyebrow">{entry.data.category}</p>
+        <Heading>
+          <a href={contentPath('projects', locale, entry.data.slug)}>
+            {entry.data.title}
+            <Arrow direction="diagonal" />
+          </a>
+        </Heading>
+        <p>{entry.data.description}</p>
+        <p class="project-contribution">{entry.data.contribution}</p>
+      </div>
+      <div class="project-aside">
+        <ul class="tags" aria-label={t(locale).stack}>
+          {entry.data.technologies.map((tech) => (
+            <li>{tech}</li>
+          ))}
+        </ul>
+        <a
+          class="text-link"
+          href={contentPath('projects', locale, entry.data.slug)}
+          aria-label={`${t(locale).readCase}: ${entry.data.title}`}
+        >
+          {t(locale).readCase}
+          <Arrow />
+        </a>
+      </div>
+    </article>
+  ))}
+</div>

@@ -1,0 +1,10 @@
+bun.lock
+dist/
+node_modules/
+.astro/
+.tools/
+reports/
+test-results/
+playwright-report/
+assets-reference/
+public/fonts/

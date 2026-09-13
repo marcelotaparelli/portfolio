@@ -1,0 +1,105 @@
+---
+import { render, type CollectionEntry } from 'astro:content';
+import BaseLayout from './BaseLayout.astro';
+import Arrow from '../components/Arrow.astro';
+import { pathFor, contentPath } from '../i18n/routes';
+import { t } from '../i18n/translations';
+import { site } from '../data/site';
+import { equivalentPath } from '../lib/content';
+interface Props {
+  entry: CollectionEntry<'articles'>;
+}
+const { entry } = Astro.props;
+const { data } = entry;
+const locale = data.locale;
+const text = t(locale);
+const { Content, headings } = await render(entry);
+const url = `${site.origin}${contentPath('articles', locale, data.slug)}`;
+const minutes = Math.max(
+  1,
+  Math.ceil((entry.body ?? '').split(/\s+/).length / 220),
+);
+const structured = {
+  '@type': 'BlogPosting',
+  headline: data.title,
+  description: data.description,
+  url,
+  mainEntityOfPage: url,
+  inLanguage: locale,
+  author: { '@id': `${site.origin}/#person` },
+  ...(data.publishedAt
+    ? { datePublished: data.publishedAt.toISOString() }
+    : {}),
+  ...(data.updatedAt ? { dateModified: data.updatedAt.toISOString() } : {}),
+};
+---
+
+<BaseLayout
+  locale={locale}
+  page="articles"
+  title={`${data.title} — Marcelo Taparelli`}
+  description={data.description}
+  equivalent={await equivalentPath(entry)}
+  article
+  structuredData={structured}
+>
+  <div class="container">
+    <nav
+      class="breadcrumb"
+      aria-label={locale === 'en' ? 'Breadcrumb' : 'Navegação estrutural'}
+    >
+      <a href={pathFor('articles', locale)}>{text.nav.articles}</a>
+      <span aria-hidden="true">/</span>
+      <span aria-current="page">{data.category}</span>
+    </nav>
+    <header class="page-intro case-intro">
+      <p class="eyebrow">{data.category}</p>
+      <h1>{data.title}</h1>
+      <p class="section-description">{data.description}</p>
+      <div class="article-meta">
+        <span>Marcelo Taparelli</span>
+        <span>
+          {minutes} {text.minuteRead}
+        </span>
+        {data.publishedAt && (
+          <time datetime={data.publishedAt.toISOString()}>
+            {new Intl.DateTimeFormat(locale, {
+              dateStyle: 'long',
+              timeZone: 'UTC',
+            }).format(data.publishedAt)}
+          </time>
+        )}
+        {data.updatedAt && (
+          <span>
+            {text.updated}:{' '}
+            <time datetime={data.updatedAt.toISOString()}>
+              {new Intl.DateTimeFormat(locale, {
+                dateStyle: 'long',
+                timeZone: 'UTC',
+              }).format(data.updatedAt)}
+            </time>
+          </span>
+        )}
+      </div>
+    </header>
+    <div class="editorial-grid">
+      <aside class="editorial-sidebar">
+        <p class="eyebrow">{text.contents}</p>
+        <nav aria-label={text.contents}>
+          {headings
+            .filter((h) => h.depth === 2)
+            .map((h) => (
+              <a href={`#${h.slug}`}>{h.text}</a>
+            ))}
+        </nav>
+      </aside>
+      <article class="prose">
+        <Content />
+        <a class="text-link" href={pathFor('articles', locale)}>
+          <Arrow direction="left" />
+          {text.backArticles}
+        </a>
+      </article>
+    </div>
+  </div>
+</BaseLayout>

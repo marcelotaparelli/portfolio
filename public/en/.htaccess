@@ -1,0 +1,2 @@
+# Override the inherited error document for all paths below /en/.
+ErrorDocument 404 /en/404/
