@@ -8,6 +8,24 @@ status: published
 reviewed: true
 publishedAt: 2026-09-12
 category: Engenharia · Decisões
+distribution:
+  devto:
+    tags:
+      - webdev
+      - astro
+      - bun
+      - showdev
+  linkedin:
+    text: |
+      Escolher uma stack é uma decisão de produto antes de ser técnica.
+
+      No meu artigo mais recente, documento por que construí meu portfólio com Bun + Astro + MDX — e por que recusei alternativas mais complexas. Cada afirmação remete a algo verificável no repositório: build, SEO, bilinguismo, acessibilidade e medições de laboratório.
+
+      Se você mantém um site de conteúdo sozinho e quer simplicidade sem abrir mão de qualidade, vale a leitura:
+
+      https://marcelotaparelli.com.br/artigos/portfolio-bun-astro-mdx/
+
+      FROM REAL PROBLEMS TO INTELLIGENT PRODUCTS.
 ---
 
 Escolher uma stack é uma decisão de produto antes de ser uma decisão técnica.
@@ -100,11 +118,18 @@ existem nas duas línguas porque o sistema não aceitaria menos.
 
 Qualidade, aqui, não é promessa — é pipeline. Cada mudança passa por
 typecheck estrito (zero erros), lint, formatação verificada, testes de
-unidade do modelo de publicação (4/4), doze testes de navegador (navegação
+unidade do modelo de publicação (4/4), treze testes de navegador (navegação
 PT/EN recíproca, menu por teclado com Escape, navegação sem JavaScript,
-404 localizada, reflow em 320px com checagens WCAG automatizadas) e
+404 localizada, links externos explícitos, reflow em 320px com checagens
+WCAG automatizadas) e
 validação de artefatos nos dois modos de build. Se algo quebra, o build
 conta — antes de qualquer humano precisar conferir.
+
+Pipeline de CI/CD com GitHub Actions, incluindo typecheck, lint, testes
+unitários, E2E com Playwright, validação de artefatos e build de produção.
+A entrega segue um modelo de Continuous Delivery: o mesmo artefato aprovado
+pelo CI é publicado após aprovação manual, sem rebuild, em uma branch
+dedicada de produção e então implantado na Hostinger.
 
 ## Performance medida
 
