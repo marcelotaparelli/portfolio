@@ -41,10 +41,7 @@ const articles = await articlesFor(locale);
       </p>
       <h1 id="hero-title" lang={locale}>
         <span>{text.hero.title.first}</span>
-        <span>
-          {text.hero.title.second}
-          <span class="hero-period">.</span>
-        </span>
+        <span>{text.hero.title.second}</span>
         <span class="hero-title-light">{text.hero.title.third}</span>
         <span class="hero-title-light">
           {text.hero.title.fourth}
@@ -68,11 +65,11 @@ const articles = await articlesFor(locale);
         <Picture
           src={photo}
           widths={[192, 384]}
-          sizes="(max-width: 760px) 112px, (max-width: 1050px) 144px, 176px"
+          sizes="(max-width: 760px) 123px, (max-width: 1050px) 158px, 194px"
           formats={['avif', 'webp']}
           fallbackFormat="jpg"
-          width={176}
-          height={176}
+          width={194}
+          height={194}
           alt="Marcelo Taparelli"
           loading="eager"
         />

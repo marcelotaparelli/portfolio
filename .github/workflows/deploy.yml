@@ -1,0 +1,127 @@
+name: Publish production branch
+
+# Production approval is an explicit manual workflow_dispatch action.
+#
+# Flow: PR -> CI (validated `production-dist` artifact) -> a human runs
+# this workflow by hand, passing the approved CI run id -> the workflow
+# validates that run via the API, downloads exactly its artifact, and
+# publishes it as the deployment branch `production` (Hostinger serves it
+# into public_html). No rebuild, no automatic hosting deploy.
+on:
+  workflow_dispatch:
+    inputs:
+      ci_run_id:
+        description: Approved CI run id (push to main, green, holds production-dist)
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+# Serialize publishes so two manual runs can never race on the production branch.
+concurrency:
+  group: production-branch
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    permissions:
+      contents: write
+      actions: read
+    runs-on: ubuntu-latest
+    steps:
+      # Validate the referenced CI run before touching anything: same
+      # repository, CI workflow, push event on main, completed with success.
+      # Anything else (PR run, fork, failed run, unknown id) fails here.
+      - name: Validate CI run
+        id: validate
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CI_RUN_ID: ${{ inputs.ci_run_id }}
+        run: |
+          set -euo pipefail
+          RUN_JSON="$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$CI_RUN_ID")"
+          fail() { echo "rejecting CI run $CI_RUN_ID: $1" >&2; exit 1; }
+          [ "$(echo "$RUN_JSON" | jq -r .name)" = "CI" ] \
+            || fail "not the CI workflow"
+          [ "$(echo "$RUN_JSON" | jq -r .event)" = "push" ] \
+            || fail "not a push event"
+          [ "$(echo "$RUN_JSON" | jq -r .status)" = "completed" ] \
+            || fail "run not completed"
+          [ "$(echo "$RUN_JSON" | jq -r .conclusion)" = "success" ] \
+            || fail "conclusion is not success"
+          [ "$(echo "$RUN_JSON" | jq -r .head_branch)" = "main" ] \
+            || fail "head branch is not main"
+          [ "$(echo "$RUN_JSON" | jq -r .head_repository.full_name)" = "$GITHUB_REPOSITORY" ] \
+            || fail "run is not from this repository"
+          HEAD_SHA="$(echo "$RUN_JSON" | jq -r .head_sha)"
+          [ -n "$HEAD_SHA" ] && [ "$HEAD_SHA" != "null" ] \
+            || fail "missing head sha"
+          echo "head_sha=$HEAD_SHA" >> "$GITHUB_OUTPUT"
+          echo "approved: CI run $CI_RUN_ID ($HEAD_SHA)"
+
+      # Fetch the validated artifact from the exact approved CI run.
+      # No checkout of source and no build: the artifact below is what CI
+      # validated, byte for byte.
+      - uses: actions/download-artifact@v4
+        with:
+          name: production-dist
+          path: production-dist
+          run-id: ${{ inputs.ci_run_id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Pre-push safety checks
+        run: |
+          set -euo pipefail
+          test -f production-dist/index.html
+          test -f production-dist/.htaccess
+          test -f production-dist/sitemap.xml
+          test -f production-dist/robots.txt
+          test -f production-dist/cv/marcelo-taparelli-cv-pt-br.pdf
+          test -f production-dist/cv/marcelo-taparelli-cv-en.pdf
+          for forbidden in src tests docs .github node_modules package.json bun.lock tsconfig.json; do
+            if [ -e "production-dist/$forbidden" ]; then
+              echo "forbidden path in artifact: $forbidden" >&2
+              exit 1
+            fi
+          done
+          if grep -rEI -e 'BEGIN [A-Z ]*PRIVATE KEY' -e 'aws_secret_access_key' -e 'github_pat_' production-dist/ 2>/dev/null; then
+            echo "possible secret in deploy artifact" >&2
+            exit 1
+          fi
+
+      - name: Publish artifact to production branch
+        env:
+          MAIN_SHA: ${{ steps.validate.outputs.head_sha }}
+          CI_RUN_ID: ${{ inputs.ci_run_id }}
+          PUSH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global init.defaultBranch main
+          TMPDIR="$(mktemp -d)"
+          trap 'rm -rf "$TMPDIR"' EXIT
+          # Work in an isolated clone: never destructive-rm the main tree,
+          # never copy .git. The token is masked in logs by Actions.
+          git clone --quiet "https://x-access-token:${PUSH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" "$TMPDIR/prod"
+          cd "$TMPDIR/prod"
+          if git ls-remote --exit-code --heads origin production >/dev/null; then
+            git checkout --quiet production
+            # Remove previously published files (tracked only, in temp dir).
+            git rm --quiet -rf .
+          else
+            git checkout --quiet --orphan production
+            git rm --quiet -rf . || true
+          fi
+          # Copy artifact content, including dotfiles (.htaccess).
+          cp -a "$GITHUB_WORKSPACE/production-dist/." .
+          git add -A
+          if git diff --cached --quiet; then
+            echo "production already up to date with $MAIN_SHA"
+            exit 0
+          fi
+          git commit --quiet -m "deploy: $MAIN_SHA" -m "Source-Commit: $MAIN_SHA" -m "CI-Run: $CI_RUN_ID"
+          # Plain push on purpose: linear, auditable history. If the branch
+          # moved unexpectedly the push fails instead of rewriting history.
+          git push origin production

@@ -1,0 +1,54 @@
+name: CI
+
+# Full deterministic gates. Read-only: this workflow never writes branches,
+# tags, releases or deployments.
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  # Minimal extra scope: publish the validated production artifact so the
+  # deploy workflow consumes exactly this build (no rebuild on deploy).
+
+jobs:
+  gates:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.4.2
+
+      - run: bun install --frozen-lockfile
+
+      - run: bun typecheck
+      - run: bun lint
+      - run: bun format:check
+      - run: bun test
+
+      # Preview first: the E2E suite expects a preview build (drafts
+      # included, preview noindex). Production is rebuilt afterwards so
+      # the workspace always ends in a deployable state.
+      - run: bun run build:preview
+      - run: bun scripts/check-artifacts.ts dist --preview
+      - run: bunx --bun playwright install --with-deps chromium
+      - run: bun test:e2e
+
+      - run: bun run build
+      - run: bun scripts/check-artifacts.ts dist
+      - run: bun check:release
+
+      # The validated production build becomes the single source of truth
+      # for deploy: only dist/ content, never source, tests or configs.
+      - uses: actions/upload-artifact@v4
+        with:
+          name: production-dist
+          path: dist/
+          if-no-files-found: error
+          # dist/.htaccess is a dotfile at the path root: upload-artifact
+          # excludes hidden files by default, so opt in explicitly. The
+          # deploy job fails closed if .htaccess is missing after download.
+          include-hidden-files: true

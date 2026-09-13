@@ -3,8 +3,8 @@ export const skills = [
     title: { 'pt-BR': 'Engenharia', en: 'Engineering' },
     description: {
       'pt-BR':
-        'Arquitetura de Software, Clean Architecture, DDD, SOLID, testes automatizados, CI/CD, observabilidade e troubleshooting em produção.',
-      en: 'Software Architecture, Clean Architecture, DDD, SOLID, automated testing, CI/CD, observability, and production troubleshooting.',
+        'TypeScript, Node.js, APIs REST, arquitetura de software, Clean Architecture, DDD, SOLID, fundamentos de microsserviços, testes unitários e de integração, CI/CD e troubleshooting em produção.',
+      en: 'TypeScript, Node.js, REST APIs, software architecture, Clean Architecture, DDD, SOLID, microservices fundamentals, unit and integration testing, CI/CD, and production troubleshooting.',
     },
     tools: null,
   },
@@ -27,8 +27,8 @@ export const skills = [
     },
     description: {
       'pt-BR':
-        'Docker, Git, GitLab, GitHub, fundamentos de AWS Cloud, desenvolvimento seguro, autenticação/autorização e logs.',
-      en: 'Docker, Git, GitLab, GitHub, AWS Cloud fundamentals, secure development, authentication/authorization, and logging.',
+        'SQL/PostgreSQL, Docker, Git/GitLab/GitHub, fundamentos de AWS Cloud, autenticação e autorização, desenvolvimento seguro, logs e fundamentos de observabilidade.',
+      en: 'SQL/PostgreSQL, Docker, Git/GitLab/GitHub, AWS Cloud fundamentals, authentication and authorization, secure development, logging, and observability fundamentals.',
     },
     tools: null,
   },
