@@ -70,3 +70,34 @@ These are laboratory measurements, not real-user Core Web Vitals.
 ```bash
 bun install
 bun dev
+```
+
+Development server:
+
+```text
+http://localhost:3000
+```
+
+The project uses a strict port configuration and does not silently fall back to another port.
+
+## Build
+
+```bash
+bun run build
+```
+
+The production artifact is generated in:
+
+```text
+dist/
+```
+
+## Author
+
+**Marcelo Taparelli**
+
+Software Engineer · Applied AI Engineering
+
+- Portfolio: https://marcelotaparelli.com.br
+- LinkedIn: https://www.linkedin.com/in/marcelo-taparelli/
+- GitHub: https://github.com/marcelotaparelli
