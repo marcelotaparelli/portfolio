@@ -1,0 +1,13 @@
+---
+import { projectsFor } from '../../../lib/content';
+import CasePage from '../../../layouts/CasePage.astro';
+export async function getStaticPaths() {
+  return (await projectsFor('en')).map((entry) => ({
+    params: { slug: entry.data.slug },
+    props: { entry },
+  }));
+}
+const { entry } = Astro.props;
+---
+
+<CasePage entry={entry} />

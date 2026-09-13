@@ -1,0 +1,40 @@
+{
+  "name": "marcelo-taparelli-portfolio",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "bun@1.4.2",
+  "scripts": {
+    "dev": "ASTRO_TELEMETRY_DISABLED=1 bun scripts/dev.ts",
+    "build": "ASTRO_TELEMETRY_DISABLED=1 bun --bun astro build",
+    "build:preview": "CONTENT_PREVIEW=true bun run build",
+    "preview": "ASTRO_TELEMETRY_DISABLED=1 bun --bun astro preview",
+    "typecheck": "ASTRO_TELEMETRY_DISABLED=1 bun --bun astro check",
+    "lint": "bun --bun eslint .",
+    "format": "bun --bun prettier --write .",
+    "format:check": "bun --bun prettier --check .",
+    "test": "bun test tests/unit",
+    "test:e2e": "bun --bun playwright test",
+    "check:release": "bun scripts/check-release.ts"
+  },
+  "dependencies": {
+    "astro": "7.3.2",
+    "@astrojs/mdx": "8.0.1"
+  },
+  "devDependencies": {
+    "@astrojs/check": "0.9.10",
+    "@axe-core/playwright": "4.13.0",
+    "@eslint/js": "10.0.1",
+    "@fontsource/inter": "5.3.0",
+    "@playwright/test": "1.63.0",
+    "@tailwindcss/vite": "4.3.3",
+    "@types/bun": "1.4.2",
+    "eslint": "10.10.0",
+    "eslint-plugin-astro": "3.1.0",
+    "prettier": "3.9.6",
+    "prettier-plugin-astro": "1.0.0",
+    "tailwindcss": "4.3.3",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.70.0"
+  }
+}

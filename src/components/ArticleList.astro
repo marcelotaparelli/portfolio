@@ -1,0 +1,37 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import type { Locale } from '../i18n/routes';
+import { contentPath } from '../i18n/routes';
+import { t } from '../i18n/translations';
+import Arrow from './Arrow.astro';
+interface Props {
+  entries: CollectionEntry<'articles'>[];
+  locale: Locale;
+  headingLevel?: 2 | 3;
+}
+const { entries, locale, headingLevel = 3 } = Astro.props;
+const Heading = headingLevel === 2 ? 'h2' : 'h3';
+---
+
+<div class="article-list">
+  {entries.map((entry) => (
+    <article class="article-row">
+      <div>
+        <p class="eyebrow">{entry.data.category}</p>
+        <Heading>
+          <a href={contentPath('articles', locale, entry.data.slug)}>
+            {entry.data.title}
+          </a>
+        </Heading>
+        <p>{entry.data.description}</p>
+      </div>
+      <a
+        class="round-link"
+        href={contentPath('articles', locale, entry.data.slug)}
+        aria-label={`${t(locale).readArticle}: ${entry.data.title}`}
+      >
+        <Arrow direction="diagonal" />
+      </a>
+    </article>
+  ))}
+</div>

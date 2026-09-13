@@ -1,0 +1,42 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import ProjectList from '../components/ProjectList.astro';
+import ArticleList from '../components/ArticleList.astro';
+import ContactBlock from '../components/ContactBlock.astro';
+import { pathFor, otherLocale, type Locale } from '../i18n/routes';
+import { t } from '../i18n/translations';
+import { projectsFor, articlesFor } from '../lib/content';
+interface Props {
+  locale: Locale;
+  collection: 'projects' | 'articles';
+}
+const { locale, collection } = Astro.props;
+const text = t(locale);
+const intro = text[collection];
+const projects = collection === 'projects' ? await projectsFor(locale) : [];
+const articles = collection === 'articles' ? await articlesFor(locale) : [];
+---
+
+<BaseLayout
+  locale={locale}
+  page={collection}
+  title={`${text.nav[collection]} — Marcelo Taparelli`}
+  description={intro.description}
+  equivalent={pathFor(collection, otherLocale(locale))}
+>
+  <section class="container page-intro">
+    <p class="eyebrow">{intro.eyebrow}</p>
+    <h1 class="preserve-lines">{intro.title}</h1>
+    <p class="section-description">{intro.description}</p>
+  </section>
+  <section class="container listing-body" aria-label={text.nav[collection]}>
+    {collection === 'projects' ? (
+      <ProjectList entries={projects} locale={locale} headingLevel={2} />
+    ) : articles.length ? (
+      <ArticleList entries={articles} locale={locale} headingLevel={2} />
+    ) : (
+      <p class="empty-state">{text.articles.empty}</p>
+    )}
+  </section>
+  <ContactBlock locale={locale} />
+</BaseLayout>

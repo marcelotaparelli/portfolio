@@ -1,0 +1,30 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import Arrow from '../components/Arrow.astro';
+import { pathFor, otherLocale, type Locale } from '../i18n/routes';
+import { t } from '../i18n/translations';
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const text = t(locale).notFound;
+---
+
+<BaseLayout
+  locale={locale}
+  page="notFound"
+  title={`404 — Marcelo Taparelli`}
+  description={text.description}
+  equivalent={pathFor('notFound', otherLocale(locale))}
+  noindex
+>
+  <section class="container error-page">
+    <p class="eyebrow">{text.eyebrow}</p>
+    <h1 class="preserve-lines">{text.title}</h1>
+    <p class="section-description">{text.description}</p>
+    <a class="button button-primary" href={pathFor('home', locale)}>
+      {text.action}
+      <Arrow />
+    </a>
+  </section>
+</BaseLayout>

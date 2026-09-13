@@ -1,0 +1,159 @@
+---
+translationKey: portfolio-decisions
+locale: pt-BR
+slug: portfolio-bun-astro-mdx
+title: Por que construí meu portfólio com Bun + Astro + MDX em vez de usar uma stack mais complexa
+description: As decisões de arquitetura por trás deste portfólio — e as evidências que as sustentam — contadas por quem construiu.
+status: published
+reviewed: true
+publishedAt: 2026-09-12
+category: Engenharia · Decisões
+---
+
+Escolher uma stack é uma decisão de produto antes de ser uma decisão técnica.
+Este artigo documenta por que este portfólio roda sobre Bun, Astro e MDX —
+e, principalmente, o raciocínio que me fez recusar alternativas mais
+sofisticadas. Nada aqui é teoria: cada afirmação remete a algo verificável
+neste repositório.
+
+## O problema
+
+Eu precisava de um portfólio que sustentasse autoridade profissional como
+Software Engineer em aprofundamento em Applied AI Engineering. Os requisitos
+eram concretos: conteúdo bilíngue (português e inglês), cases de projeto e
+artigos com identidade própria, bom SEO, performance alta, acessibilidade
+real e uma manutenção tão simples que eu nunca precisasse pensar nela duas
+vezes. Sem backend, sem equipe de plataforma, sem orçamento de
+infraestrutura — só eu, o código e o conteúdo.
+
+## A pergunta que guiou a arquitetura
+
+A pergunta foi simples: qual é a solução mais simples capaz de resolver
+esse problema? Não "qual stack está em alta", nem "qual demonstra mais
+habilidade". Tecnologia escolhida por hype costuma cobrar juros em
+complexidade. Cada camada
+adicionada precisava justificar sua existência contra esse problema
+específico — um site de conteúdo, majoritariamente estático, mantido por
+uma pessoa.
+
+## Por que Bun
+
+O Bun é o toolchain deste projeto: gerenciador de pacotes, executor dos
+scripts de desenvolvimento e runtime das ferramentas de validação. Os
+scripts de dev server, build, validação de artefatos, medição de assets e
+checagem de lançamento são TypeScript executado diretamente pelo Bun, sem
+camada de transpilação separada para tooling. Não afirmo aqui nenhuma
+vantagem comparativa que eu não tenha medido — a decisão foi por
+simplicidade estrutural: uma única ferramenta onde antes haveria várias.
+O observável é objetivo, mas contextualizado: nesta implementação, no
+ambiente local, o build completo gera todas as páginas em cerca de dois
+segundos.
+
+## Por que Astro
+
+O conteúdo deste site é predominantemente estático, então o HTML é gerado
+no build e servido como arquivo — sem servidor de aplicação, sem banco,
+sem runtime por requisição. O Astro foi escolhido exatamente por esse
+modelo: ele me deixa escrever conteúdo editorial composável e entregar
+quase nenhum JavaScript ao navegador. O JavaScript embarcado na página
+inicial tem 277 bytes (198 com gzip) e existe para uma única função: o
+menu mobile. Zero bytes de framework no cliente — medido, não estimado.
+O React não foi instalado porque não havia problema que exigisse React.
+Esse modelo também simplifica o SEO: cada página já nasce como HTML
+completo, com canonical e alternates próprios.
+
+## Por que MDX
+
+Artigos e cases vivem versionados junto ao código, no mesmo repositório,
+com o mesmo processo de revisão. Não há CMS nem backend para manter,
+atualizar ou pagar — e não há conteúdo fora do controle de versão. O MDX
+dá estrutura ao conteúdo (frontmatter com validação de schema exigindo
+par bilíngue, slug, categoria e status de revisão), o que torna cada texto
+um artefato revisável como qualquer outro código. Publicar é fazer merge e
+buildar; reverter é voltar um commit.
+
+## Por que não Next.js, SPA ou CMS
+
+Não porque sejam tecnologias ruins — são excelentes para os problemas
+certos. Um framework full-stack resolveria problemas que eu não tenho:
+renderização por requisição, rotas de API, estado global de cliente. Uma
+SPA com renderização no cliente adicionaria runtime JavaScript e estado no
+navegador a um site cujo trabalho principal é entregar conteúdo pronto
+para leitura. Um CMS trocaria arquivos versionados por
+uma dependência externa com login, backup e fatura. Nenhuma dessas
+complexidades se justificava contra o problema atual, então nenhuma entrou.
+
+## Bilinguismo como requisito de arquitetura
+
+O bilinguismo não é um plugin instalado depois — ele moldou a arquitetura.
+O português vive em `/`, o inglês em `/en/`, e cada conteúdo publicado é
+obrigado a existir nos dois idiomas: o modelo de publicação rejeita no
+build qualquer item publicado sem seu par revisado. Cada página carrega
+canonical próprio e três alternates (idioma atual, idioma oposto e
+x-default), e o validador de artefatos confere os pares em todas as
+páginas geradas. Conteúdo incompleto simplesmente não chega à produção:
+drafts são excluídos do build de produção e incluídos apenas no build de
+preview. A [página de projetos](/projetos/) e a [página sobre](/sobre/)
+existem nas duas línguas porque o sistema não aceitaria menos.
+
+## Qualidade como parte do produto
+
+Qualidade, aqui, não é promessa — é pipeline. Cada mudança passa por
+typecheck estrito (zero erros), lint, formatação verificada, testes de
+unidade do modelo de publicação (4/4), doze testes de navegador (navegação
+PT/EN recíproca, menu por teclado com Escape, navegação sem JavaScript,
+404 localizada, reflow em 320px com checagens WCAG automatizadas) e
+validação de artefatos nos dois modos de build. Se algo quebra, o build
+conta — antes de qualquer humano precisar conferir.
+
+## Performance medida
+
+O que segue são medições de laboratório, nunca dados reais de usuários.
+Rodei o Lighthouse 13.4.1 em Chromium headless, simulação mobile (viewport
+412×823, throttling simulado de rede e CPU), três execuções por página,
+servindo o build estático localmente — metodologia registrada no script
+`scripts/lighthouse.ts`, resultados em `reports/lighthouse-summary.json`.
+Na Home: performance 100 e acessibilidade 100 nas três execuções, LCP
+entre aproximadamente 1,5 s e 1,7 s, CLS de aproximadamente 0,0006, TBT
+zero e transferência inicial de cerca de 93,5 KB. O orçamento de assets
+(`reports/assets.json`) mostra de onde vem a leveza: CSS com gzip de cerca
+de 6 KB, JavaScript de cerca de 0,2 KB inline e fontes somando cerca de
+48 KB. Números de laboratório informam decisões; eles não provam
+experiência de usuário real, e eu não os apresentaria como tal.
+
+## Um bug que valeu a pena encontrar
+
+O validador de artefatos acusou um link quebrado na página 404 em
+português: `/404/`. A causa estava no seletor de idioma do cabeçalho, que
+usava `Astro.url.pathname` como link do idioma atual — e, com barra final
+sempre ativada, esse pathname renderiza `/404/`. Mas o artefato real que o
+Astro gera para `404.astro` é `404.html`, um documento especial de 404
+para hospedagem estática; a rota `/404/` nunca existiu. A correção foi no
+modelo de rota (a página 404 agora liga seus caminhos canônicos
+`/404.html` e `/en/404/`), não no teste. Enfraquecer o validador teria
+escondido o sintoma e destruído o valor dele. O episódio virou regra de
+trabalho: corrija o modelo de publicação, nunca contorne o validador.
+
+## Trade-offs
+
+Toda escolha tem custo, e estes são os meus, assumidos: sem backend, sem
+banco e sem CMS — qualquer conteúdo novo exige commit, build e deploy. Sem
+React no lançamento — interatividade rica futura exigirá reavaliar a
+decisão. Sem analytics — não há telemetria de uso real, então as métricas
+de laboratório acima são o teto do que posso afirmar hoje. E o bilinguismo
+custa revisão duplicada: cada texto precisa existir, fazer sentido e ser
+aprovado nos dois idiomas. É um custo deliberado, porque alcance
+internacional e consistência entre idiomas fazem parte do produto que
+quero construir.
+
+## Conclusão
+
+Engenharia madura não é escolher a stack mais sofisticada — é escolher a
+complexidade proporcional ao problema. Este portfólio poderia ter sido um
+monólito full-stack, uma SPA ou uma instância de CMS; essas abordagens
+poderiam funcionar, mas introduziriam capacidades e custos operacionais
+que os requisitos deste projeto não pediam. A
+tecnologia começa no problema humano, não no código: entender o que
+precisa mudar, escolher com critério e examinar o resultado com evidências.
+FROM REAL PROBLEMS TO INTELLIGENT PRODUCTS — inclusive na hora de montar
+a vitrine.

@@ -1,0 +1,101 @@
+---
+import Mark from './Mark.astro';
+import { pathFor, type Locale, type Page } from '../i18n/routes';
+import { t } from '../i18n/translations';
+interface Props {
+  locale: Locale;
+  page: Page;
+  equivalent: string;
+}
+const { locale, page, equivalent } = Astro.props;
+const text = t(locale);
+const nav = ['projects', 'about', 'articles', 'contact'] as const;
+// The PT 404 document is served as /404.html (Astro special-cases 404.astro),
+// while Astro.url.pathname renders /404/ under trailingSlash:'always'.
+// Linking the self pathname would point to a route that never exists,
+// so 404 pages link their canonical notFound paths instead.
+const selfHref =
+  page === 'notFound' ? pathFor('notFound', locale) : Astro.url.pathname;
+---
+
+<header class="site-header">
+  <div class="container header-inner">
+    <a
+      class="brand"
+      href={pathFor('home', locale)}
+      aria-label="Marcelo Taparelli"
+    >
+      <Mark />
+      <span>
+        Marcelo Taparelli<span class="brand-dot">.</span>
+      </span>
+    </a>
+    <nav class="desktop-nav" aria-label={text.navigation}>
+      {nav.map((item) => (
+        <a
+          href={pathFor(item, locale)}
+          aria-current={page === item ? 'page' : undefined}
+        >
+          {text.nav[item]}
+        </a>
+      ))}
+    </nav>
+    <div class="header-actions">
+      <nav class="language-switch" aria-label={text.language}>
+        <a
+          href={locale === 'pt-BR' ? selfHref : equivalent}
+          lang="pt-BR"
+          hreflang="pt-BR"
+          aria-current={locale === 'pt-BR' ? 'true' : undefined}
+          aria-label="Português"
+        >
+          PT
+        </a>
+        <span aria-hidden="true">/</span>
+        <a
+          href={locale === 'en' ? selfHref : equivalent}
+          lang="en"
+          hreflang="en"
+          aria-current={locale === 'en' ? 'true' : undefined}
+          aria-label="English"
+        >
+          EN
+        </a>
+      </nav>
+      <details class="mobile-menu">
+        <summary aria-label={text.menu}>
+          <span class="menu-lines" aria-hidden="true"></span>
+          <span class="sr-only">{text.menu}</span>
+        </summary>
+        <nav aria-label={text.navigation}>
+          {nav.map((item) => (
+            <a
+              href={pathFor(item, locale)}
+              aria-current={page === item ? 'page' : undefined}
+            >
+              {text.nav[item]}
+            </a>
+          ))}
+        </nav>
+      </details>
+    </div>
+  </div>
+</header>
+<script>
+  const menu = document.querySelector<HTMLDetailsElement>('.mobile-menu');
+  const trigger = menu?.querySelector('summary');
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && menu?.open) {
+      menu.open = false;
+      trigger?.focus();
+    }
+  });
+  document.addEventListener('click', (event) => {
+    if (
+      menu?.open &&
+      event.target instanceof Node &&
+      !menu.contains(event.target)
+    )
+      menu.open = false;
+  });
+</script>

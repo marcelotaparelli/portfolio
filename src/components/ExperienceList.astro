@@ -1,0 +1,23 @@
+---
+import { experience, period } from '../data/experience';
+import type { Locale } from '../i18n/routes';
+interface Props {
+  locale: Locale;
+  full?: boolean;
+}
+const { locale, full = false } = Astro.props;
+---
+
+<ol class="experience-list">
+  {experience.map((item) => (
+    <li>
+      <span class="timeline-dot" aria-hidden="true"></span>
+      <p class="experience-period">{period(item.start, item.end, locale)}</p>
+      <h3>
+        {item.company}
+        <span>{item.role[locale]}</span>
+      </h3>
+      {full && <p>{item.summary[locale]}</p>}
+    </li>
+  ))}
+</ol>

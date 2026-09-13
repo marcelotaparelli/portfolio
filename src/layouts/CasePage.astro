@@ -1,0 +1,100 @@
+---
+import { render, type CollectionEntry } from 'astro:content';
+import BaseLayout from './BaseLayout.astro';
+import Arrow from '../components/Arrow.astro';
+import ContactBlock from '../components/ContactBlock.astro';
+import { pathFor, contentPath } from '../i18n/routes';
+import { t } from '../i18n/translations';
+import { site } from '../data/site';
+import { equivalentPath } from '../lib/content';
+interface Props {
+  entry: CollectionEntry<'projects'>;
+}
+const { entry } = Astro.props;
+const { data } = entry;
+const locale = data.locale;
+const text = t(locale);
+const { Content, headings } = await render(entry);
+const breadcrumb = {
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    {
+      '@type': 'ListItem',
+      position: 1,
+      name: text.nav.projects,
+      item: `${site.origin}${pathFor('projects', locale)}`,
+    },
+    {
+      '@type': 'ListItem',
+      position: 2,
+      name: data.title,
+      item: `${site.origin}${contentPath('projects', locale, data.slug)}`,
+    },
+  ],
+};
+---
+
+<BaseLayout
+  locale={locale}
+  page="projects"
+  title={`${data.title} — Marcelo Taparelli`}
+  description={data.description}
+  equivalent={await equivalentPath(entry)}
+  structuredData={breadcrumb}
+>
+  <div class="container">
+    <nav
+      class="breadcrumb"
+      aria-label={locale === 'en' ? 'Breadcrumb' : 'Navegação estrutural'}
+    >
+      <a href={pathFor('projects', locale)}>{text.nav.projects}</a>
+      <span aria-hidden="true">/</span>
+      <span aria-current="page">{data.title}</span>
+    </nav>
+    <header class="page-intro case-intro">
+      <p class="eyebrow">{data.category}</p>
+      <h1>{data.title}</h1>
+      <p class="section-description">{data.description}</p>
+      {data.externalUrl && (
+        <a class="text-link mt-5" href={data.externalUrl}>
+          {text.external}
+          <Arrow direction="diagonal" />
+        </a>
+      )}
+    </header>
+    <dl class="case-metadata">
+      <div>
+        <dt>{text.role}</dt>
+        <dd>{data.role}</dd>
+      </div>
+      <div>
+        <dt>{text.context}</dt>
+        <dd>{data.context}</dd>
+      </div>
+      <div>
+        <dt>{text.stack}</dt>
+        <dd>{data.technologies.join(' · ')}</dd>
+      </div>
+    </dl>
+    <div class="editorial-grid">
+      <aside class="editorial-sidebar">
+        <p class="eyebrow">{text.contents}</p>
+        <nav aria-label={text.contents}>
+          {headings
+            .filter((h) => h.depth === 2)
+            .map((h) => (
+              <a href={`#${h.slug}`}>{h.text}</a>
+            ))}
+        </nav>
+      </aside>
+      <article class="prose">
+        <Content />
+        <a class="text-link" href={pathFor('projects', locale)}>
+          <Arrow direction="left" />
+          {text.backProjects}
+        </a>
+      </article>
+    </div>
+  </div>
+  <ContactBlock locale={locale} />
+</BaseLayout>

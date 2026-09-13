@@ -1,0 +1,23 @@
+---
+import { file as bunFile } from 'bun';
+import { cv } from '../data/site';
+import { t } from '../i18n/translations';
+import type { Locale } from '../i18n/routes';
+import Arrow from './Arrow.astro';
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const file = cv[locale];
+const available =
+  file.reviewed &&
+  (await bunFile(`${process.cwd()}/public${file.path}`).exists());
+---
+
+{available && (
+  <a class="text-link" href={file.path} download>
+    {t(locale).cv}
+    <span class="file-label">PDF</span>
+    <Arrow direction="diagonal" />
+  </a>
+)}

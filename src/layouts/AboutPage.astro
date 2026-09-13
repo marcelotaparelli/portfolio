@@ -1,0 +1,96 @@
+---
+import { Picture } from 'astro:assets';
+import photo from '../assets/images/profile.png';
+import BaseLayout from './BaseLayout.astro';
+import ExperienceList from '../components/ExperienceList.astro';
+import CvLink from '../components/CvLink.astro';
+import ContactBlock from '../components/ContactBlock.astro';
+import { skills } from '../data/skills';
+import { pathFor, otherLocale, type Locale } from '../i18n/routes';
+import { t } from '../i18n/translations';
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const text = t(locale).about;
+---
+
+<BaseLayout
+  locale={locale}
+  page="about"
+  title={`${t(locale).nav.about} — Marcelo Taparelli`}
+  description={text.intro}
+  equivalent={pathFor('about', otherLocale(locale))}
+>
+  <section class="container page-intro about-hero">
+    <div>
+      <p class="eyebrow">{text.eyebrow}</p>
+      <h1 class="preserve-lines">{text.title}</h1>
+      <p class="section-description">{text.intro}</p>
+      <p class="section-description">{text.body}</p>
+      <div class="mt-6">
+        <CvLink locale={locale} />
+      </div>
+    </div>
+    <figure class="about-photo">
+      <Picture
+        src={photo}
+        formats={['avif', 'webp']}
+        fallbackFormat="jpg"
+        widths={[320, 640]}
+        sizes="(max-width: 760px) 240px, 320px"
+        width={320}
+        height={400}
+        alt="Marcelo Taparelli"
+        loading="eager"
+      />
+      <figcaption lang="en">
+        Software Engineering · Applied AI · Product
+      </figcaption>
+    </figure>
+  </section>
+  <section class="container about-section">
+    <h2>{text.journey}</h2>
+    <p>{text.journeyText}</p>
+  </section>
+  <section class="container about-section">
+    <h2>{text.practice}</h2>
+    <ExperienceList locale={locale} full />
+  </section>
+  <section class="container about-section">
+    <h2>{text.capabilities}</h2>
+    <ul class="skills-list">
+      {skills.map((skill) => (
+        <li>
+          <h3>{skill.title[locale]}</h3>
+          <p>{skill.description[locale]}</p>
+          {skill.tools && <small>{skill.tools}</small>}
+        </li>
+      ))}
+    </ul>
+  </section>
+  <section class="container about-section learning-section">
+    <h2>{text.learning}</h2>
+    <p>{text.learningText}</p>
+  </section>
+  <section class="container about-section complementary-section">
+    <h2>{text.complementary}</h2>
+    <ul class="complementary-list">
+      {text.complementaryItems.map((item) => (
+        <li>
+          <strong>{item.title}</strong> — {item.provider}, {item.hours}
+        </li>
+      ))}
+    </ul>
+    <p class="complementary-cta">
+      <a
+        href={text.complementaryLink}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        {text.complementaryCta}
+      </a>
+    </p>
+  </section>
+  <ContactBlock locale={locale} />
+</BaseLayout>
