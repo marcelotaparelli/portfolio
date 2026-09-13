@@ -1,0 +1,100 @@
+---
+translationKey: salus
+locale: pt-BR
+slug: salus
+title: Salus
+description: Backend API em TypeScript para gestão de pacientes e autenticação de usuários, com arquitetura em camadas, PostgreSQL + Prisma e 47 testes automatizados.
+status: published
+reviewed: true
+order: 4
+category: Backend · API
+role: Desenho e implementação da API
+context: Projeto público autoral — código aberto
+technologies:
+  [
+    TypeScript,
+    Node.js,
+    Express,
+    PostgreSQL,
+    Prisma,
+    Vitest,
+    Docker,
+    GitHub Actions,
+  ]
+externalUrl: https://github.com/marcelotaparelli/salus
+contribution: 'Implementação integral da API: domínio, casos de uso, persistência com Prisma, autenticação e 47 testes automatizados.'
+---
+
+## Problema
+
+Exercícios de backend frequentemente param no CRUD feliz: sem regras de
+domínio consistentes, sem persistência bem isolada, sem autenticação real e
+sem testes suficientes para evitar regressões.
+
+O Salus trabalha um problema pequeno mas realista: gestão de pacientes com
+regras de domínio e autenticação de usuários. O repositório é público, então
+cada decisão descrita aqui pode ser inspecionada no código.
+
+## Decisões de engenharia
+
+- Arquitetura em camadas, com as dependências apontando para o domínio.
+- Domínio independente de Express e Prisma; os casos de uso não conhecem o
+  Prisma.
+- Contratos definidos por repository interfaces; Prisma isolado na camada
+  de infraestrutura.
+- Composição via factories, com injeção explícita de dependências.
+- PostgreSQL como persistência e Docker Compose para o ambiente local.
+- Senhas com Argon2 + pepper server-side; JWT com secret vindo do ambiente,
+  validado com Zod no boot.
+- Tratamento global de erros: erros inesperados não vazam stack ao cliente.
+
+## Implementação
+
+O fluxo conceitual da API:
+
+**HTTP → Routes / Controllers → Application / Use Cases → Domain →
+Repository abstraction → Prisma adapter → PostgreSQL.**
+
+As entidades protegem invariantes como nome, CPF com dígitos verificadores,
+telefone e data de nascimento. A infraestrutura implementa os contratos
+definidos pelas camadas internas, sem que o domínio conheça detalhes de
+framework ou de banco.
+
+## Qualidade
+
+47 testes automatizados — 36 unitários e 11 de integração — cobrindo
+domínio, use cases, adapters, HTTP e PostgreSQL real nos testes de
+integração.
+
+O CI executa, em sequência:
+
+**typecheck → lint → unit tests → build → integration tests.**
+
+## Segurança
+
+O que o projeto garante hoje:
+
+- Hash de senhas com Argon2 + pepper server-side; hash nunca retornado
+  nas respostas.
+- JWT assinado com secret vindo do ambiente; variáveis validadas no boot.
+- Arquivo `.env` fora do Git.
+- Erros inesperados respondidos sem expor stack ao cliente.
+
+## Trade-offs
+
+- Modular monolith em vez de microservices: um único deploy, sem o custo
+  de rede e observabilidade distribuída para este tamanho de problema.
+- As repository interfaces adicionam uma pequena camada de mapping, mas
+  isolam o Prisma e deixam os casos de uso testáveis sem banco.
+- JWT stateless simplifica a infraestrutura, mas não há revogação nem
+  refresh.
+- Invariantes validadas no domínio; os endpoints HTTP ainda não têm
+  schemas Zod dedicados.
+
+## Limitações
+
+Consciência arquitetural, de forma direta: o login emite JWT, mas nenhuma
+rota valida esse token atualmente — portanto nenhuma rota é descrita aqui
+como protegida. Também não há RBAC, refresh-token rotation, paginação,
+rate limiting nem observabilidade estruturada. São os próximos passos
+naturais, não dívidas escondidas.
