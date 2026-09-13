@@ -63,7 +63,7 @@ jobs:
       # Fetch the validated artifact from the exact approved CI run.
       # No checkout of source and no build: the artifact below is what CI
       # validated, byte for byte.
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           name: production-dist
           path: production-dist
