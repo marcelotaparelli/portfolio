@@ -44,6 +44,9 @@ demonstrated need. Current state: `docs/implementation-status.md`.
 - `bun check:release` — launch readiness (bilingual published+reviewed
   pairs, article dates, reviewed CV PDFs, `CONTENT_PREVIEW` off). Expected
   to fail until the user supplies content (see below). Never fake it green.
+- `bun run cv:generate` — regenerates `public/cv/*.pdf` from `cv/*.html` +
+  `cv/cv.css` via Playwright/Chromium (repo-local Inter fonts, no new
+  deps). Fails closed unless each PDF has exactly 1 A4 page.
 - `bun scripts/lighthouse.ts` — lab-only Lighthouse (mobile sim) for `/`,
   `/sobre/`, `/projetos/agencia-catus/` (+ article flags). Requires the
   static server up on `:3100`. Results are LABORATORY, never real-user CWV.
