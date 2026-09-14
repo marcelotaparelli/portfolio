@@ -41,7 +41,12 @@ described here can be inspected in the code.
 - Domain free of Express and Prisma; use cases never touch Prisma.
 - Contracts expressed as repository interfaces; Prisma isolated in the
   infrastructure layer.
+- Use cases depend on ports/interfaces (repositories, PasswordHasher,
+  TokenGenerator), not on infrastructure implementations; in-memory doubles
+  keep the application testable without a database.
 - Composition through factories, with explicit dependency injection.
+- Explicit, readable code: entities guard their own invariants and domain
+  errors map to HTTP without leaking stack traces (Clean Code principles).
 - PostgreSQL for persistence and Docker Compose for the local environment.
 - Passwords with Argon2 + server-side pepper; JWT signed with an
   environment-provided secret, validated with Zod at boot.
@@ -63,7 +68,12 @@ while the domain stays unaware of framework or database details.
 
 47 automated tests — 36 unit and 11 integration — covering the domain, use
 cases, adapters, HTTP, and a real PostgreSQL database in the integration
-tests.
+tests. The tests protect domain rules and application decisions against
+regressions.
+
+Salus was developed using TDD, with tests guiding the implementation and
+evolution of domain rules and application use cases. The implementation was
+written manually, without AI-generated code.
 
 CI runs, in order:
 
