@@ -12,7 +12,13 @@ cada decisão descrita aqui pode ser inspecionada no código.</p>
 Prisma.</li>
 <li>Contratos definidos por repository interfaces; Prisma isolado na camada
 de infraestrutura.</li>
+<li>Casos de uso dependem de ports/interfaces (repositórios, PasswordHasher,
+TokenGenerator), não de implementações de infraestrutura; doubles em
+memória permitem testar a aplicação sem banco.</li>
 <li>Composição via factories, com injeção explícita de dependências.</li>
+<li>Código explícito e legível: entidades protegem seus próprios invariantes
+e erros de domínio são mapeados para HTTP sem vazar stack (princípios de
+Clean Code).</li>
 <li>PostgreSQL como persistência e Docker Compose para o ambiente local.</li>
 <li>Senhas com Argon2 + pepper server-side; JWT com secret vindo do ambiente,
 validado com Zod no boot.</li>
@@ -29,7 +35,11 @@ framework ou de banco.</p>
 <h2 id="qualidade">Qualidade</h2>
 <p>47 testes automatizados — 36 unitários e 11 de integração — cobrindo
 domínio, use cases, adapters, HTTP e PostgreSQL real nos testes de
-integração.</p>
+integração. Os testes protegem regras de domínio e decisões da aplicação
+contra regressões.</p>
+<p>O desenvolvimento do Salus foi conduzido com TDD, usando os testes para
+orientar a implementação e evolução das regras de domínio e dos casos de
+uso. A implementação foi feita manualmente, sem geração de código por IA.</p>
 <p>O CI executa, em sequência:</p>
 <p><strong>typecheck → lint → unit tests → build → integration tests.</strong></p>
 <h2 id="segurança">Segurança</h2>
