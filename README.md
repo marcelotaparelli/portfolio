@@ -92,6 +92,10 @@ The production artifact is generated in:
 dist/
 ```
 
+## Operations
+
+- GitHub Actions and publishing runbook: `docs/github-actions.md`
+
 ## Author
 
 **Marcelo Taparelli**
