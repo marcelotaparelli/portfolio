@@ -2,7 +2,7 @@
 translationKey: ops-triage-ai
 locale: en
 slug: ops-triage-ai
-title: ops-triage-ai
+title: Ops Triage AI
 description: Operational triage system combining a deterministic baseline, a local LLM via Ollama, and a hybrid policy with human review, fallback, and an audit trail — evaluated on a frozen 70-ticket held-out benchmark.
 status: published
 reviewed: true
@@ -23,7 +23,7 @@ technologies:
     Ollama,
   ]
 externalUrl: https://github.com/marcelotaparelli/ops-triage-ai
-contribution: 'End-to-end implementation: classifiers, hybrid policy, auditable persistence, and frozen held-out evaluation.'
+contribution: 'Designed and built the full system — deterministic baseline, local LLM, hybrid policy with human review, and frozen benchmark.'
 ---
 
 ## Problem
@@ -32,7 +32,7 @@ Operational ticket triage usually depends on manual reading or an opaque
 classifier: no structured decision, no audit trail, and no honest measurement
 of where automation is right and where it needs human review.
 
-ops-triage-ai tackles this problem within clear bounds: it receives tickets
+Ops Triage AI tackles this problem within clear bounds: it receives tickets
 and produces structured classification (category, priority, risk, suggested
 team) plus an auditable decision about what can proceed automatically and
 what requires human review. The repository is public, so every decision
