@@ -1,0 +1,78 @@
+---
+translationKey: llm-did-not-win-everywhere
+locale: pt-BR
+slug: llm-did-not-win-everywhere
+title: O LLM não ganhou em tudo — e foi exatamente isso que tornou o projeto interessante
+description: Um benchmark de triagem operacional mostrou onde um LLM local superou regras determinísticas — e onde não superou. O resultado levou a uma arquitetura híbrida com revisão humana e audit trail.
+status: published
+reviewed: true
+publishedAt: 2026-09-15
+category: IA aplicada · Engenharia
+---
+
+Fechei uma etapa importante do `ops-triage-ai`, um sistema de triagem
+operacional que combina baseline determinístico, LLM local e uma política
+híbrida com revisão humana.
+
+O resultado mais interessante não foi simplesmente "o LLM foi melhor".
+
+## O que o benchmark mediu
+
+Avaliação em held-out congelado com 70 tickets sintéticos, em execução
+única. Números do baseline determinístico contra o LLM local:
+
+- Category accuracy: 82,9% → 95,7%
+- HIGH/CRITICAL priority recall: 78,6% → 100%
+- HIGH risk recall: 57,1% → 71,4%
+
+E o ponto que importa: o baseline determinístico ainda foi melhor em risk
+accuracy geral — 95,7% contra 91,4% do LLM.
+
+O LLM não ganhou em tudo. A regressão está publicada junto com os ganhos,
+sem suavização.
+
+## A pergunta mudou
+
+Em vez de:
+
+"Como substituir as regras por IA?"
+
+a arquitetura passou a responder:
+
+"Como combinar comportamentos diferentes de forma segura, observável e
+auditável?"
+
+## A arquitetura final
+
+- Baseline determinístico como referência e fallback;
+- LLM local para interpretação semântica;
+- Política híbrida para decidir quando exigir revisão humana;
+- Audit trail preservando ticket, execução, decisão e feedback.
+
+No benchmark final:
+
+- 51,4% dos casos foram encaminhados para revisão humana;
+- houve divergência entre os classificadores em 32,9% dos tickets;
+- não houve fallback nem falha do LLM durante a execução oficial.
+
+Review rate aqui descreve operação — quantos casos pediram revisão —, não
+precision/recall de revisão. O held-out não tem ground truth independente
+para isso.
+
+## Limites assumidos
+
+Dataset sintético, em inglês, com 70 exemplos. Uma única execução oficial,
+sem medida de variância do LLM. Sistema não validado sob tráfego real de
+produção. Latência híbrida na casa de 6 a 7 segundos: adequada para triagem
+assíncrona, não para caminho síncrono crítico. Os detalhes completos —
+métricas oficiais, trade-offs e as 13 limitações publicadas — estão no
+[case do projeto](/projetos/ops-triage-ai/).
+
+## O aprendizado
+
+Um sistema de IA útil não precisa confiar cegamente no modelo.
+
+Às vezes, a melhor arquitetura nasce justamente de entender onde o modelo é
+melhor — e onde não é.
+
+Projeto: https://github.com/marcelotaparelli/ops-triage-ai

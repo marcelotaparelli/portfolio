@@ -1,0 +1,78 @@
+---
+translationKey: llm-did-not-win-everywhere
+locale: en
+slug: llm-did-not-win-everywhere
+title: The LLM Didn't Win Everywhere — and That's What Made the Project Interesting
+description: An operational triage benchmark showed where a local LLM beat deterministic rules — and where it didn't. The result led to a hybrid architecture with human review and an audit trail.
+status: published
+reviewed: true
+publishedAt: 2026-09-15
+category: Applied AI · Engineering
+---
+
+I closed an important stage of `ops-triage-ai`, an operational triage
+system that combines a deterministic baseline, a local LLM, and a hybrid
+policy with human review.
+
+The most interesting result was not simply "the LLM was better."
+
+## What the benchmark measured
+
+Evaluation on a frozen held-out set of 70 synthetic tickets, in a single
+run. Deterministic baseline versus the local LLM:
+
+- Category accuracy: 82.9% → 95.7%
+- HIGH/CRITICAL priority recall: 78.6% → 100%
+- HIGH risk recall: 57.1% → 71.4%
+
+And the point that matters: the deterministic baseline still won on
+overall risk accuracy — 95.7% against the LLM's 91.4%.
+
+The LLM did not win everywhere. The regression is published alongside the
+gains, with nothing smoothed over.
+
+## The question changed
+
+Instead of:
+
+"How do we replace rules with AI?"
+
+the architecture answers:
+
+"How do we combine different behaviors in a way that is safe, observable,
+and auditable?"
+
+## The final architecture
+
+- Deterministic baseline as reference and fallback;
+- Local LLM for semantic interpretation;
+- Hybrid policy to decide when human review is required;
+- Audit trail preserving ticket, run, decision, and feedback.
+
+In the final benchmark:
+
+- 51.4% of cases were routed to human review;
+- the classifiers disagreed on 32.9% of tickets;
+- there was no fallback and no LLM failure during the official run.
+
+Review rate describes operations here — how many cases asked for review —
+not review precision/recall. The held-out set has no independent ground
+truth for that.
+
+## Accepted limits
+
+Synthetic dataset, in English, with 70 examples. A single official run,
+with no measurement of LLM variance. The system has not been validated
+under real production traffic. Hybrid latency sits around 6 to 7 seconds:
+fine for asynchronous triage, not for a critical synchronous path. The
+full details — official metrics, trade-offs, and the 13 published
+limitations — are in the [project case](/en/projects/ops-triage-ai/).
+
+## The takeaway
+
+A useful AI system does not need to trust the model blindly.
+
+Sometimes the best architecture comes precisely from understanding where
+the model is better — and where it is not.
+
+Project: https://github.com/marcelotaparelli/ops-triage-ai
