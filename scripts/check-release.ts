@@ -9,6 +9,7 @@ const expected = new Set([
   'portfolio-decisions',
   'salus',
   'ops-triage-ai',
+  'llm-did-not-win-everywhere',
 ]);
 const seen = new Map<string, Set<string>>();
 for await (const path of new Glob('src/content/**/*.mdx').scan('.')) {
