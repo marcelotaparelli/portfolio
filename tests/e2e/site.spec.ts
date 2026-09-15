@@ -157,7 +157,7 @@ test('project external links are explicit, safe and locale-equivalent', async ({
       url: 'https://github.com/marcelotaparelli/ops-triage-ai',
       readCase: 'Explorar case',
       cta: 'Visitar site',
-      aria: 'Visitar site: ops-triage-ai — abre em nova aba',
+      aria: 'Visitar site: Ops Triage AI — abre em nova aba',
     },
     {
       listing: '/en/projects/',
@@ -189,7 +189,7 @@ test('project external links are explicit, safe and locale-equivalent', async ({
       url: 'https://github.com/marcelotaparelli/ops-triage-ai',
       readCase: 'Explore case',
       cta: 'Visit website',
-      aria: 'Visit website: ops-triage-ai — opens in a new tab',
+      aria: 'Visit website: Ops Triage AI — opens in a new tab',
     },
   ];
   for (const item of expectations) {

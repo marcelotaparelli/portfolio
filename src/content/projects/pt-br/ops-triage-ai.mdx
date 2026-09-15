@@ -2,7 +2,7 @@
 translationKey: ops-triage-ai
 locale: pt-BR
 slug: ops-triage-ai
-title: ops-triage-ai
+title: Ops Triage AI
 description: Sistema de triagem operacional que combina baseline determinístico, LLM local via Ollama e política híbrida com human review, fallback e audit trail — avaliado em held-out congelado de 70 tickets.
 status: published
 reviewed: true
@@ -23,7 +23,7 @@ technologies:
     Ollama,
   ]
 externalUrl: https://github.com/marcelotaparelli/ops-triage-ai
-contribution: 'Implementação integral do sistema: classificadores, política híbrida, persistência auditável e avaliação em held-out congelado.'
+contribution: 'Concepção e código do sistema completo — baseline determinístico, LLM local, política híbrida com revisão humana e benchmark congelado.'
 ---
 
 ## Problema
@@ -32,7 +32,7 @@ Triagem operacional de tickets costuma depender de leitura manual ou de um
 classificador opaco: sem decisão estruturada, sem trilha de auditoria e sem
 medição honesta de onde a automação acerta e onde precisa de revisão humana.
 
-O ops-triage-ai trabalha esse problema de forma delimitada: recebe tickets e
+O Ops Triage AI trabalha esse problema de forma delimitada: recebe tickets e
 produz classificação estruturada (categoria, prioridade, risco, time sugerido)
 mais uma decisão auditável sobre o que pode seguir automático e o que exige
 revisão humana. O repositório é público, então cada decisão descrita aqui
