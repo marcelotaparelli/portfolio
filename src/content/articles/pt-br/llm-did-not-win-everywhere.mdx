@@ -8,6 +8,46 @@ status: published
 reviewed: true
 publishedAt: 2026-09-15
 category: IA aplicada · Engenharia
+distribution:
+  linkedin:
+    text: |
+      O LLM não ganhou em tudo — e foi exatamente isso que tornou o projeto interessante.
+
+      Fechei uma etapa importante do ops-triage-ai, um sistema de triagem operacional que combina baseline determinístico, LLM local e uma política híbrida com revisão humana.
+
+      Em um held-out congelado com 70 tickets sintéticos:
+
+      - Category accuracy: 82,9% → 95,7%
+      - HIGH/CRITICAL priority recall: 78,6% → 100%
+      - HIGH risk recall: 57,1% → 71,4%
+
+      Mas o baseline determinístico ainda foi melhor em risk accuracy geral: 95,7% vs 91,4%.
+
+      Isso mudou a pergunta.
+
+      Em vez de 'como substituir as regras por IA?', a arquitetura passou a responder:
+
+      'Como combinar comportamentos diferentes de forma segura, observável e auditável?'
+
+      A solução final combina baseline determinístico, LLM local, política híbrida, human review e audit trail.
+
+      No benchmark final:
+
+      - 51,4% dos casos foram encaminhados para revisão humana;
+      - houve divergência entre os classificadores em 32,9% dos tickets;
+      - não houve fallback nem falha do LLM durante a execução oficial.
+
+      O principal aprendizado:
+
+      um sistema de IA útil não precisa confiar cegamente no modelo.
+
+      Às vezes, a melhor arquitetura nasce justamente de entender onde o modelo é melhor — e onde não é.
+
+      Projeto:
+      https://github.com/marcelotaparelli/ops-triage-ai
+
+      Artigo completo:
+      https://marcelotaparelli.com.br/artigos/llm-did-not-win-everywhere/
 ---
 
 Fechei uma etapa importante do `ops-triage-ai`, um sistema de triagem
