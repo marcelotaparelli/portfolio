@@ -1,0 +1,148 @@
+---
+translationKey: ops-triage-ai
+locale: en
+slug: ops-triage-ai
+title: ops-triage-ai
+description: Operational triage system combining a deterministic baseline, a local LLM via Ollama, and a hybrid policy with human review, fallback, and an audit trail — evaluated on a frozen 70-ticket held-out benchmark.
+status: published
+reviewed: true
+order: 0
+category: Applied AI · Systems
+role: System design and implementation
+context: Authored open-source project
+technologies:
+  [
+    Bun,
+    TypeScript,
+    PostgreSQL,
+    Prisma,
+    Vitest,
+    Zod,
+    Docker,
+    GitHub Actions,
+    Ollama,
+  ]
+externalUrl: https://github.com/marcelotaparelli/ops-triage-ai
+contribution: 'End-to-end implementation: classifiers, hybrid policy, auditable persistence, and frozen held-out evaluation.'
+---
+
+## Problem
+
+Operational ticket triage usually depends on manual reading or an opaque
+classifier: no structured decision, no audit trail, and no honest measurement
+of where automation is right and where it needs human review.
+
+ops-triage-ai tackles this problem within clear bounds: it receives tickets
+and produces structured classification (category, priority, risk, suggested
+team) plus an auditable decision about what can proceed automatically and
+what requires human review. The repository is public, so every decision
+described here can be inspected in the code.
+
+## Architecture
+
+The system's main flow:
+
+**HTTP → validation → PersistedTriageService → TriageTicket →
+DeterministicTriageClassifier → OllamaTriageClassifier → HybridPolicy →
+TriageDecision → Prisma/PostgreSQL → Feedback/Audit Trail.**
+
+Each piece has an explicit responsibility:
+
+- **DeterministicTriageClassifier:** a predictable, cheap, reproducible
+  baseline with heuristic signals and confidence.
+- **OllamaTriageClassifier:** semantic interpretation with a local LLM
+  (qwen2.5:7b-instruct-q5_K_S) and validated structured output.
+- **HybridPolicy:** decides human review, fallback, and decision source. It
+  is a pure decision layer — no field-level merging between classifiers.
+- **PersistedTriageService:** orchestrates the persisted lifecycle: IDs,
+  runs, decisions, and feedback.
+- **Persistence:** Ticket → TriageRun → TriageDecision → Feedback, with
+  append-only feedback — the original decision is never overwritten.
+
+## Engineering decisions
+
+- The deterministic classifier is the guardrail and comparison signal; the
+  LLM is the semantic classifier. Both receive the same ticket and are not
+  treated as statistically independent.
+- Known LLM failures (timeout, unavailability, invalid response) produce a
+  deterministic fallback decision, always with human review. Unknown failures
+  keep propagating — graceful degradation without claiming the results are
+  equivalent.
+- Security and operations from the start: API key, body and concurrency
+  limits, X-Request-Id, redacted JSON logs, `/metrics`, `/health`, `/ready`,
+  graceful shutdown, and abandoned-run reconciliation.
+
+## Evaluation
+
+The official evaluation is a frozen held-out benchmark: 70 synthetic
+tickets, a single run, no rule tuning against held-out errors. Frozen
+parameters — commit `f36e8ef8fcc70be09ab5ba9883efc7c34f3591a2`, prompt
+`ollama-triage-v3`, model `qwen2.5:7b-instruct-q5_K_S`, 120000ms timeout.
+
+The harness compares the deterministic baseline, the standalone LLM, and the
+hybrid on quality, severity recall, disagreement, fallback, review reasons,
+and latency. It deliberately does not emit: human-review precision/recall
+(the held-out set has no independent ground truth for it), suggested-team
+correctness, standalone LLM latency, or separate persistence/HTTP latency.
+
+## Official results
+
+|                        Metric | Deterministic |         LLM |      Hybrid |
+| ----------------------------: | ------------: | ----------: | ----------: |
+|             Category accuracy |        0.8286 |      0.9571 |      0.9571 |
+|             Category macro-F1 |        0.8512 |      0.9550 | not emitted |
+|             Priority accuracy |        0.9000 |      0.9143 |      0.9143 |
+|                 Risk accuracy |        0.9571 |      0.9143 |      0.9143 |
+| HIGH/CRITICAL priority recall |        0.7857 |      1.0000 |      1.0000 |
+|              HIGH risk recall |        0.5714 |      0.7143 |      0.7143 |
+|          Exact tuple accuracy |   not emitted | not emitted |      0.8286 |
+
+Operationally on the held-out set: 0.5143 review rate (severity,
+disagreement, and confidence signals), 0.3286 baseline/LLM disagreement, 0
+fallback, no LLM failures, 70/70 decisions with hybrid source. Hybrid
+latency: p50 6257.7ms, p95 7078.6ms, max 7556.9ms.
+
+On a frozen 70-ticket held-out benchmark, the local LLM improved category
+accuracy from 82.9% to 95.7% and HIGH/CRITICAL priority recall from 78.6% to
+100%, while the deterministic baseline retained higher overall risk accuracy
+(95.7% vs 91.4%). The hybrid policy preserved the LLM's classification
+quality while routing 51.4% of cases to human review based on severity,
+disagreement, and confidence signals.
+
+## Trade-offs
+
+- The hybrid preserves LLM quality and pays for it with human review on more
+  than half the cases plus 6-to-7-second latency — fit for async triage, not
+  for a latency-critical synchronous path.
+- The baseline won on overall risk accuracy (95.71% vs 91.43%): the LLM was
+  not better at everything, and the regression is published above.
+- An adversarial DEV baseline (out of distribution) dropped the
+  deterministic classifier to 0.5 category, 0.5 priority, and 0.75 risk
+  accuracy — evidence that explicit rules are brittle outside known
+  vocabulary, which justifies combining with the LLM instead of a straight
+  swap.
+
+## Limitations
+
+Stated directly, what this case does not claim:
+
+- Synthetic English-only dataset with 70 examples.
+- A single local model evaluated.
+- One official run — no LLM variance measured.
+- Confidence is heuristic, not calibrated probability.
+- The held-out set has no independent ground truth for human review.
+- Review rate is not precision/recall.
+- Suggested-team correctness was not emitted.
+- Standalone LLM latency was not emitted.
+- Separate persistence/HTTP latency was not emitted.
+- The system was not validated under real production traffic.
+- The baseline had higher overall risk accuracy.
+- Hybrid latency landed at roughly 6 to 7 seconds.
+- The adversarial DEV baseline showed 0.5 category accuracy, 0.5 priority
+  accuracy, and 0.75 risk accuracy.
+
+## Evidence
+
+- Repository: https://github.com/marcelotaparelli/ops-triage-ai
+- Official held-out report: https://github.com/marcelotaparelli/ops-triage-ai/blob/main/docs/evaluation/official-held-out-f36e8ef.md
+- Machine-readable artifact: https://github.com/marcelotaparelli/ops-triage-ai/blob/main/artifacts/official-held-out-f36e8ef.json

@@ -8,6 +8,7 @@ const expected = new Set([
   'drive-wordpress',
   'portfolio-decisions',
   'salus',
+  'ops-triage-ai',
 ]);
 const seen = new Map<string, Set<string>>();
 for await (const path of new Glob('src/content/**/*.mdx').scan('.')) {
