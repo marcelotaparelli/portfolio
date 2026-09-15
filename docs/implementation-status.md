@@ -1,27 +1,28 @@
 # Implementation status
 
-Date: 2026-09-13. All quality gates below were re-verified on this date.
+Date: 2026-09-15. All quality gates below were re-verified on this date
+(previous full verification: 2026-09-13).
 Previous lab numbers (perf 1 / a11y 1, LCP ~1654 ms, CLS ~0.0006, TBT 0,
 ~93.5 KB transfer on Home mobile simulation) are **laboratory measurements,
 not real-user Core Web Vitals**. Never present them as production RUM data.
 Fresh lab numbers for this build are in `reports/lighthouse-summary.json`
 and `reports/assets.json`.
 
-## Quality gates (all green except editorial release)
+## Quality gates (all green)
 
 | Gate                       | Command                                         | Result                                             |
 | -------------------------- | ----------------------------------------------- | -------------------------------------------------- |
 | Typecheck                  | `bun typecheck`                                 | 0 errors, 0 warnings                               |
 | Lint                       | `bun lint`                                      | clean                                              |
 | Format                     | `bun format:check`                              | clean (normalized with `bun format` on 2026-09-13) |
-| Unit                       | `bun test`                                      | 4 pass                                             |
-| Production build           | `bun run build`                                 | 12 pages, drafts excluded                          |
-| Production artifacts       | `bun scripts/check-artifacts.ts dist`           | 12 documents checked, clean                        |
-| Preview build              | `bun run build:preview`                         | 20 pages, drafts included (18 + 2 article drafts)  |
-| Preview artifacts          | `bun scripts/check-artifacts.ts dist --preview` | 18 documents checked, clean                        |
-| E2E (against preview dist) | `bun test:e2e`                                  | 12 passed                                          |
+| Unit                       | `bun test`                                      | 37 pass                                            |
+| Production build           | `bun run build`                                 | 24 pages, drafts excluded                          |
+| Production artifacts       | `bun scripts/check-artifacts.ts dist`           | 24 documents checked, clean                        |
+| Preview build              | `bun run build:preview`                         | 24 pages (no drafts remain)                        |
+| Preview artifacts          | `bun scripts/check-artifacts.ts dist --preview` | 24 documents checked, clean                        |
+| E2E (against preview dist) | `bun test:e2e`                                  | 13 passed                                          |
 | Dev server                 | `bun dev`                                       | serves `0.0.0.0:3000`, strictPort configured       |
-| Release readiness          | `bun check:release`                             | NOT ready — editorial pendencies only (see below)  |
+| Release readiness          | `bun check:release`                             | ready                                              |
 
 ## Bugs fixed on 2026-09-13
 
@@ -44,23 +45,27 @@ and `reports/assets.json`.
 ## Known non-issues (do not "fix")
 
 - `No files found matching "**/*.mdx" in directory "src/content/articles"`
-  during `astro check` / `build`: expected. The articles collection is
-  empty because the launch article has not been written yet. Not the cause
-  of any failure.
+  during `astro check` / `build`: historical (2026-09-13 state, when the
+  articles collection was still empty). The launch article has since been
+  written and published, so this warning no longer applies.
 - `The collection "articles" does not exist or is empty` build warnings:
-  same expected cause.
+  same historical cause, no longer applicable.
 - `bun typecheck` failure reported in a previous session no longer
   reproduces (0 errors). No code change was needed for it.
 
-## Editorial pendencies (launch blockers, awaiting the user)
+## Editorial pendencies (resolved 2026-09-15)
 
-These are content, not code. Do not invent them:
+These were content, not code. All resolved — `bun check:release` passes.
+History kept below; do not re-invent resolved items:
 
-1. `bun check:release` fails on: 6 project files awaiting bilingual
+1. `bun check:release` failed on: 6 project files awaiting bilingual
    editorial approval (`status: draft`, `reviewed: false`); missing
    bilingual article `portfolio-decisions`; missing reviewed résumé PDFs
    (`public/cv/marcelo-taparelli-pt-br.pdf`,
    `public/cv/marcelo-taparelli-en.pdf`).
+   Resolved: all 5 project cases + the article are published and reviewed
+   in both languages; both CV PDFs are reviewed (`reviewed: true`) and
+   regenerated from source (1 A4 page each).
 2. Launch article (write only with real build measurements in hand):
    PT "Por que construí meu portfólio com Bun + Astro + MDX em vez de
    usar uma stack mais complexa" / EN "Why I Built My Portfolio with Bun
@@ -84,6 +89,8 @@ These are content, not code. Do not invent them:
      order Catus → EVAG → Drive). `check:release` now fails only on the
      two missing reviewed CV PDFs.
 3. Résumés PT-BR and EN to be supplied by the user.
+   Resolved 2026-09-13: user-supplied content incorporated; PDFs generated
+   from versioned `cv/*.html` source (see CV section below).
 
 ## Distribution — Phase 1 (DEV.to + LinkedIn, 2026-09-13)
 
@@ -168,6 +175,15 @@ These are content, not code. Do not invent them:
   clean, format clean, `bun test` 37 pass, production build 20 pages +
   `check-artifacts.ts dist` clean, `check-release` ready. No deploy,
   no publish, no commit.
+- Update 2026-09-15: CV lines evolved with positioning work (TDD added to
+  the Engenharia/Engineering line with `princípios de DDD` / `DDD
+principles` softening; `fundamentos de microsserviços` / `microservices
+fundamentals` kept; ops-triage-ai added as a third `Projeto público` /
+  `Public project` paragraph). Compactions to hold 1 page were measured
+  line-by-line: Alura line (PT/EN), Portfolio paragraph (PT/EN), Salus
+  tail (PT/EN), PO bullet (PT) and its EN mirror, AI-assisted line (EN).
+  No experience entries, dates, or claims removed. Regenerated via
+  `bun run cv:generate`: 1 A4 page each, PT/EN bottom headroom 15.9px.
 
 ## Salus — backend API case + CV evidence (2026-09-13)
 
@@ -203,16 +219,77 @@ website`); no live demo invented. A custom per-project CTA label
   against preview build. `dist/` left holding a production build. No
   deploy, no publish, no commit.
 
+## Positioning — TDD evidence for Salus (commit 5b9b35c, 2026-09-14)
+
+- Correction of the earlier audit conclusion (tests exist ≠ TDD proven):
+  per the author's factual statement, Salus was developed manually with
+  TDD guiding rules and use cases, without AI-generated code. No
+  red-green-refactor claims about specific commits; scope limited to
+  Salus + the skills lines, never generalized to ops-triage-ai or
+  employer work, no specialist titles.
+- `cv/{pt-br,en}.html` Engenharia/Engineering lines now read `Clean
+Architecture, princípios de DDD / DDD principles, SOLID, Clean Code,
+TDD, fundamentos de microsserviços / microservices fundamentals, …`
+  (microsserviços kept in both). `src/data/skills.ts` mirrors the same
+  wording. Salus cases gained one factual TDD + manual-implementation
+  paragraph each (PT/EN) in Quality; nothing else in the cases changed.
+- PDFs regenerated from source (1 A4 page each). Identity for the commit
+  passed via `git -c` flags; no `git config` touched.
+
+## ops-triage-ai — Applied AI case publication (commit d5a25cd, 2026-09-15)
+
+- New bilingual project `ops-triage-ai`
+  (`src/content/projects/{pt-br,en}/ops-triage-ai.mdx`,
+  `translationKey: ops-triage-ai`, same slug both locales as `salus`,
+  `order: 0`, published + reviewed both languages). Routes
+  `/projetos/ops-triage-ai/` + `/en/projects/ops-triage-ai/`, first in
+  home/projects listings; Salus and all other cases untouched. No page,
+  component, schema, or layout changes — data-driven from frontmatter.
+- Case content: problem, hybrid architecture (deterministic baseline +
+  local Ollama LLM + pure HybridPolicy, no field-merge), persisted
+  lifecycle with append-only feedback, security/observability allow-list,
+  frozen held-out methodology (70 synthetic tickets, single run, commit
+  `f36e8ef…`, prompt `ollama-triage-v3`, qwen2.5:7b-instruct-q5_K_S,
+  120s timeout), official results table (e.g. category 0.8286→0.9571,
+  HIGH/CRITICAL recall 0.7857→1.0, risk-accuracy regression disclosed),
+  operations (review 0.5143, disagreement 0.3286, 0 fallback, p50/p95/max
+  latency), trade-offs, 13 published limitations, evidence links (repo +
+  official report + machine-readable artifact). No prohibited claims
+  (no "LLM best at everything", no production validation, no calibrated
+  confidence, no review P/R, no suggested-team correctness).
+- `scripts/check-release.ts` expected set gained `ops-triage-ai`; E2E
+  extended in-pattern: page pair (reciprocal SEO) + PT/EN external-link
+  expectations for the GitHub URL.
+- `src/data/skills.ts` AI skill extended contextually (LLM integration
+  with evaluation, hybrid human-in-the-loop systems, audit trail); main
+  Engineering skill untouched. `about.learningText` (PT/EN) gained one
+  sentence on the completed case — no metrics duplicated outside the
+  MDX sources.
+- CVs: ops-triage-ai added as a third `Projeto público` / `Public
+project` paragraph (hybrid architecture, frozen held-out, headline
+  result, risk honesty). Regenerated via `bun run cv:generate`: 1 A4
+  page each, PT/EN headroom 15.9px.
+- Gates: typecheck 0 errors, lint clean, format clean, `bun test` 37
+  pass, production build 24 pages + `check-artifacts.ts dist` clean,
+  preview build 24 pages + `--preview` clean, `check-release` ready,
+  E2E 13 pass against preview build (new pair included). `dist/` left
+  holding a production build (24 pages, sitemap lists both new URLs
+  first among projects). No deploy, no publish, no push.
+
 ## Environment notes
 
-- `git` binary is not installed in this container (a `.git` dir exists but
-  no commits could be inspected or created). Do not assume git history is
-  available.
+- `git` 2.47.3 is available in this container and history is usable
+  (`git log`/`status`/`show` verified; commits created with `git -c`
+  identity flags, no `git config` touched). Earlier notes claiming no
+  git binary are outdated.
 - Playwright browsers + OS deps (`libglib` etc.) were missing and were
   installed via `bunx --bun playwright install chromium` and
   `bunx --bun playwright install-deps chromium`. If E2E fails with
   `Executable doesn't exist` or `libglib-2.0.so.0`, reinstall those.
 - No `curl`/`ps`/`pkill` in this container; use `bun -e 'fetch(...)'` and
   `/proc` scans to probe/kill background servers.
-- `dist/` currently holds a **production** build (12 pages). Rebuild with
-  `bun run build:preview` before running the E2E suite, which expects drafts.
+- `dist/` currently holds a **production** build (24 pages, includes
+  `/projetos/ops-triage-ai/` + `/en/projects/ops-triage-ai/` and both
+  URLs in `sitemap.xml`). Rebuild with `bun run build:preview` before
+  running the E2E suite, which serves `dist` on `:3100` (preview
+  noindex expected).
