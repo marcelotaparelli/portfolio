@@ -115,7 +115,7 @@ const pt = {
     capabilities: 'Competências em contexto',
     learning: 'Aprofundamento atual',
     learningText:
-      'Engenharia de IA Aplicada: entender quando a IA é necessária, como avaliar sua qualidade e como lidar com custo, latência e falhas. Hoje aprofundo essa frente por meio de estudo, experimentação e construção prática, avaliando quando a IA realmente agrega valor ao produto.',
+      'Engenharia de IA Aplicada: entender quando a IA é necessária, como avaliar sua qualidade e como lidar com custo, latência e falhas. Hoje aprofundo essa frente por meio de estudo, experimentação e construção prática, avaliando quando a IA realmente agrega valor ao produto. O case ops-triage-ai aplica isso na prática: triagem operacional com LLM local, baseline determinístico e política híbrida com human review e audit trail, avaliado em benchmark held-out congelado.',
     complementary: 'Formação complementar — Alura',
     complementaryItems: [
       'Engenharia de Software',
@@ -255,7 +255,7 @@ const en: Translations = {
     capabilities: 'Capabilities in context',
     learning: 'Current focus',
     learningText:
-      'Applied AI Engineering: understanding when AI is needed, how to evaluate its quality, and how to handle cost, latency, and failures. Today, I deepen this area through study, experimentation, and practical building, evaluating when AI genuinely adds value to a product.',
+      'Applied AI Engineering: understanding when AI is needed, how to evaluate its quality, and how to handle cost, latency, and failures. Today, I deepen this area through study, experimentation, and practical building, evaluating when AI genuinely adds value to a product. The completed ops-triage-ai case applies this in practice: operational triage with a local LLM, a deterministic baseline, and a hybrid policy with human review and an audit trail, evaluated on a frozen held-out benchmark.',
     complementary: 'Additional training — Alura',
     complementaryItems: [
       'Software Engineering',

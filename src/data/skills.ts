@@ -15,8 +15,8 @@ export const skills = [
     },
     description: {
       'pt-BR':
-        'Agentic Software Development, AI coding agents, workflows com revisão humana e quality gates automatizados.',
-      en: 'Agentic Software Development, AI coding agents, human-in-the-loop workflows, and automated quality gates.',
+        'Agentic Software Development, AI coding agents, integração de LLMs com avaliação, sistemas híbridos com human-in-the-loop, audit trail e quality gates automatizados.',
+      en: 'Agentic Software Development, AI coding agents, LLM integration with evaluation, hybrid systems with human-in-the-loop, audit trails, and automated quality gates.',
     },
     tools: null,
   },
