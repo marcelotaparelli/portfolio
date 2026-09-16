@@ -333,6 +333,11 @@ project` paragraph (hybrid architecture, frozen held-out, headline
   both modes, `check-release` ready, E2E 14 pass against preview build.
   `dist/` left holding a production build. No deploy, no publish,
   no commit.
+- Follow-up (same day): the dedicated E2E test was removed again — it
+  duplicated the validator as enforcement, so it was cost without
+  benefit (user decision, option 1). The validator remains the single
+  guarantee; E2E back to 13 pass, all other gates re-verified green,
+  `dist/` holding a production build.
 
 ## Environment notes
 

@@ -109,21 +109,6 @@ for (const path of [
   });
 }
 
-test('article external links open in a new tab safely', async ({ page }) => {
-  for (const path of [
-    '/artigos/evals-stop-guessing-start-measuring/',
-    '/en/articles/evals-stop-guessing-start-measuring/',
-  ]) {
-    await page.goto(path!);
-    const link = page.locator(
-      'article a[href="https://martinfowler.com/articles/gen-ai-patterns/"]',
-    );
-    await expect(link).toHaveCount(1);
-    await expect(link).toHaveAttribute('target', '_blank');
-    await expect(link).toHaveAttribute('rel', 'noopener noreferrer');
-  }
-});
-
 test('errors are localized and return 404', async ({ page }) => {
   for (const [path, locale] of [
     ['/missing/', 'pt-BR'],
