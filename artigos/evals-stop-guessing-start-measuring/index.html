@@ -1,0 +1,182 @@
+<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#061321"><title>Evals: parei de perguntar se a LLM “parece boa” e comecei a medir — Marcelo Taparelli</title><meta name="description" content="Como usei um baseline determinístico, um dataset com respostas esperadas e métricas objetivas para avaliar uma LLM de triagem — em vez de confiar em impressão subjetiva."><link rel="canonical" href="https://marcelotaparelli.com.br/artigos/evals-stop-guessing-start-measuring/"><link rel="alternate" hreflang="pt-BR" href="https://marcelotaparelli.com.br/artigos/evals-stop-guessing-start-measuring/"><link rel="alternate" hreflang="en" href="https://marcelotaparelli.com.br/en/articles/evals-stop-guessing-start-measuring/"><link rel="alternate" hreflang="x-default" href="https://marcelotaparelli.com.br/artigos/evals-stop-guessing-start-measuring/"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="preload" href="/fonts/inter-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin><meta property="og:type" content="article"><meta property="og:site_name" content="Marcelo Taparelli"><meta property="og:title" content="Evals: parei de perguntar se a LLM “parece boa” e comecei a medir — Marcelo Taparelli"><meta property="og:description" content="Como usei um baseline determinístico, um dataset com respostas esperadas e métricas objetivas para avaliar uma LLM de triagem — em vez de confiar em impressão subjetiva."><meta property="og:url" content="https://marcelotaparelli.com.br/artigos/evals-stop-guessing-start-measuring/"><meta property="og:locale" content="pt_BR"><meta property="og:locale:alternate" content="en_US"><meta property="og:image" content="https://marcelotaparelli.com.br/og/pt-br.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="Marcelo Taparelli — From real problems to intelligent products."><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Evals: parei de perguntar se a LLM “parece boa” e comecei a medir — Marcelo Taparelli"><meta name="twitter:description" content="Como usei um baseline determinístico, um dataset com respostas esperadas e métricas objetivas para avaliar uma LLM de triagem — em vez de confiar em impressão subjetiva."><meta name="twitter:image" content="https://marcelotaparelli.com.br/og/pt-br.png"><meta name="twitter:image:alt" content="Marcelo Taparelli — From real problems to intelligent products."><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Person","@id":"https://marcelotaparelli.com.br/#person","name":"Marcelo Taparelli","url":"https://marcelotaparelli.com.br","jobTitle":"Software Engineer","sameAs":["https://www.linkedin.com/in/marcelo-taparelli/","https://github.com/marcelotaparelli"]},{"@type":"WebSite","@id":"https://marcelotaparelli.com.br/#website","url":"https://marcelotaparelli.com.br","name":"Marcelo Taparelli","inLanguage":["pt-BR","en"]},{"@type":"BlogPosting","headline":"Evals: parei de perguntar se a LLM “parece boa” e comecei a medir","description":"Como usei um baseline determinístico, um dataset com respostas esperadas e métricas objetivas para avaliar uma LLM de triagem — em vez de confiar em impressão subjetiva.","url":"https://marcelotaparelli.com.br/artigos/evals-stop-guessing-start-measuring/","mainEntityOfPage":"https://marcelotaparelli.com.br/artigos/evals-stop-guessing-start-measuring/","inLanguage":"pt-BR","author":{"@id":"https://marcelotaparelli.com.br/#person"},"datePublished":"2026-09-16T00:00:00.000Z"}]}</script><link rel="stylesheet" href="/_astro/BaseLayout.B0y8D7di.css"></head><body><a class="skip-link" href="#main">Pular para o conteúdo</a><header class="site-header"><div class="container header-inner"><a class="brand" href="/" aria-label="Marcelo Taparelli"><svg width="30" height="30" viewBox="0 0 40 40" fill="none" aria-hidden="true"><path d="M5 30V10l10 12 10-12v20M25 10h12M31 10v20" stroke="currentColor" stroke-width="2" stroke-linejoin="round"></path></svg><span>Marcelo Taparelli<span class="brand-dot">.</span></span></a><nav class="desktop-nav" aria-label="Navegação principal"><a href="/projetos/">Projetos</a><a href="/sobre/">Sobre</a><a href="/artigos/" aria-current="page">Artigos</a><a href="/contato/">Contato</a></nav><div class="header-actions"><nav class="language-switch" aria-label="Selecionar idioma"><a href="/artigos/evals-stop-guessing-start-measuring/" lang="pt-BR" hreflang="pt-BR" aria-current="true" aria-label="Português">PT</a><span aria-hidden="true">/</span><a href="/en/articles/evals-stop-guessing-start-measuring/" lang="en" hreflang="en" aria-label="English">EN</a></nav><details class="mobile-menu"><summary aria-label="Menu"><span class="menu-lines" aria-hidden="true"></span><span class="sr-only">Menu</span></summary><nav aria-label="Navegação principal"><a href="/projetos/">Projetos</a><a href="/sobre/">Sobre</a><a href="/artigos/" aria-current="page">Artigos</a><a href="/contato/">Contato</a></nav></details></div></div></header><script type="module">var e=document.querySelector(`.mobile-menu`),t=e?.querySelector(`summary`);document.addEventListener(`keydown`,n=>{n.key===`Escape`&&e?.open&&(e.open=!1,t?.focus())}),document.addEventListener(`click`,t=>{e?.open&&t.target instanceof Node&&!e.contains(t.target)&&(e.open=!1)});</script><main id="main" tabindex="-1"><div class="container"><nav class="breadcrumb" aria-label="Navegação estrutural"><a href="/artigos/">Artigos</a><span aria-hidden="true">/</span><span aria-current="page">IA aplicada · Engenharia</span></nav><header class="page-intro case-intro"><p class="eyebrow">IA aplicada · Engenharia</p><h1>Evals: parei de perguntar se a LLM “parece boa” e comecei a medir</h1><p class="section-description">Como usei um baseline determinístico, um dataset com respostas esperadas e métricas objetivas para avaliar uma LLM de triagem — em vez de confiar em impressão subjetiva.</p><div class="article-meta"><span>Marcelo Taparelli</span><span>4 min de leitura</span><time datetime="2026-09-16T00:00:00.000Z">16 de setembro de 2026</time></div></header><div class="editorial-grid"><aside class="editorial-sidebar"><p class="eyebrow">Neste artigo</p><nav aria-label="Neste artigo"><a href="#o-que-é-um-eval">O que é um eval?</a><a href="#antes-da-llm-escrevi-código">Antes da LLM, escrevi código</a><a href="#depois-criei-respostas-esperadas">Depois criei respostas esperadas</a><a href="#meu-código-virou-parte-do-experimento">Meu código virou parte do experimento</a><a href="#e-então-o-eval-começou-a-influenciar-a-arquitetura">E então o eval começou a influenciar a arquitetura</a><a href="#isso-também-muda-como-você-desenvolve-com-llms">Isso também muda como você desenvolve com LLMs</a><a href="#nem-toda-métrica-precisa-vir-de-uma-llm">Nem toda métrica precisa vir de uma LLM</a><a href="#o-principal-aprendizado">O principal aprendizado</a><a href="#continuar-explorando">Continuar explorando</a></nav></aside><article class="prose"><p>Quando comecei a trabalhar com LLMs, uma das perguntas mais difíceis parecia simples:</p>
+<p><strong>como saber se o modelo está realmente melhorando?</strong></p>
+<p>Rodar alguns exemplos manualmente e pensar “essa resposta parece boa” funciona no começo.</p>
+<p>Mas isso não escala.</p>
+<p>E, principalmente, não produz evidência.</p>
+<p>Foi aí que comecei a entender melhor o papel de <strong>evals</strong>.</p>
+<h2 id="o-que-é-um-eval">O que é um eval?</h2>
+<p>Um eval é uma forma estruturada de testar o comportamento de um sistema de IA.</p>
+<p>A ideia é relativamente simples:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="text"><code><span class="line"><span>entrada</span></span>
+<span class="line"><span>+</span></span>
+<span class="line"><span>resposta produzida</span></span>
+<span class="line"><span>+</span></span>
+<span class="line"><span>resposta esperada</span></span>
+<span class="line"><span>+</span></span>
+<span class="line"><span>métrica</span></span>
+<span class="line"><span>=</span></span>
+<span class="line"><span>avaliação</span></span></code></pre>
+<p>Em vez de perguntar subjetivamente se a resposta ficou boa, você define antecipadamente o que espera e mede a distância entre o comportamento real e o esperado.</p>
+<p>Um artigo do Martin Fowler sobre <a href="https://martinfowler.com/articles/gen-ai-patterns/">GenAI patterns</a> descreve esse tipo de mecanismo como <strong>scoring and judging</strong>: a saída do modelo passa por um scorer que produz métricas ou feedback sobre o resultado.</p>
+<p>Foi exatamente esse princípio que apliquei no meu projeto de triagem operacional.</p>
+<h2 id="antes-da-llm-escrevi-código">Antes da LLM, escrevi código</h2>
+<p>No <code>ops-triage-ai</code>, o sistema recebe tickets e precisa determinar coisas como:</p>
+<ul>
+<li>categoria;</li>
+<li>prioridade;</li>
+<li>risco;</li>
+<li>time sugerido.</li>
+</ul>
+<p>Antes de colocar uma LLM no problema, implementei um classificador determinístico com regras escritas em TypeScript.</p>
+<p>Simplificando:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="text"><code><span class="line"><span>ticket</span></span>
+<span class="line"><span>   ↓</span></span>
+<span class="line"><span>regras determinísticas</span></span>
+<span class="line"><span>   ↓</span></span>
+<span class="line"><span>classificação</span></span></code></pre>
+<p>Isso criou algo extremamente importante:</p>
+<p><strong>um baseline.</strong></p>
+<p>Agora eu tinha uma implementação concreta contra a qual comparar qualquer solução com IA.</p>
+<h2 id="depois-criei-respostas-esperadas">Depois criei respostas esperadas</h2>
+<p>Separei um conjunto de tickets e defini previamente qual deveria ser a classificação correta de cada um.</p>
+<p>Algo conceitualmente parecido com:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="json"><code><span class="line"><span style="color:#E1E4E8">{</span></span>
+<span class="line"><span style="color:#79B8FF">  &quot;ticket&quot;</span><span style="color:#E1E4E8">: {</span></span>
+<span class="line"><span style="color:#79B8FF">    &quot;title&quot;</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">&quot;Production API unavailable&quot;</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">    &quot;description&quot;</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">&quot;Users cannot access the service&quot;</span></span>
+<span class="line"><span style="color:#E1E4E8">  },</span></span>
+<span class="line"><span style="color:#79B8FF">  &quot;expected&quot;</span><span style="color:#E1E4E8">: {</span></span>
+<span class="line"><span style="color:#79B8FF">    &quot;category&quot;</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">&quot;INCIDENT&quot;</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">    &quot;priority&quot;</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">&quot;CRITICAL&quot;</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">    &quot;risk&quot;</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">&quot;HIGH&quot;</span></span>
+<span class="line"><span style="color:#E1E4E8">  }</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span></code></pre>
+<p>O classificador recebe o ticket.</p>
+<p>A saída é comparada com o <code>expected</code>.</p>
+<p>E então calculamos métricas.</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="text"><code><span class="line"><span>               ┌──────────────────┐</span></span>
+<span class="line"><span>ticket ───────►│    classifier    │</span></span>
+<span class="line"><span>               └────────┬─────────┘</span></span>
+<span class="line"><span>                        │</span></span>
+<span class="line"><span>                        ▼</span></span>
+<span class="line"><span>                 predicted output</span></span>
+<span class="line"><span>                        │</span></span>
+<span class="line"><span>expected output ────────┤</span></span>
+<span class="line"><span>                        ▼</span></span>
+<span class="line"><span>                    scorer</span></span>
+<span class="line"><span>                        │</span></span>
+<span class="line"><span>                        ▼</span></span>
+<span class="line"><span>                    metrics</span></span></code></pre>
+<p>Esse scorer pode ser código comum.</p>
+<p>Não precisa ser outra LLM.</p>
+<h2 id="meu-código-virou-parte-do-experimento">Meu código virou parte do experimento</h2>
+<p>Foi aí que achei a ideia mais interessante.</p>
+<p>O código determinístico que eu escreveria normalmente para resolver o problema virou também uma <strong>referência experimental</strong>.</p>
+<p>Eu conseguia executar:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="text"><code><span class="line"><span>dataset</span></span>
+<span class="line"><span>   ├── deterministic classifier</span></span>
+<span class="line"><span>   └── LLM classifier</span></span></code></pre>
+<p>e comparar os dois sobre exatamente os mesmos exemplos.</p>
+<p>No held-out final do projeto, com 70 tickets sintéticos, por exemplo:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="text"><code><span class="line"><span>Category accuracy</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>Determinístico: 82,9%</span></span>
+<span class="line"><span>LLM:           95,7%</span></span></code></pre>
+<p>Para recall de prioridades <code>HIGH/CRITICAL</code>:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="text"><code><span class="line"><span>Determinístico: 78,6%</span></span>
+<span class="line"><span>LLM:           100%</span></span></code></pre>
+<p>Mas aconteceu algo ainda mais importante.</p>
+<p>O modelo <strong>não ganhou em tudo</strong>.</p>
+<p>Na classificação geral de risco:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="text"><code><span class="line"><span>Determinístico: 95,7%</span></span>
+<span class="line"><span>LLM:            91,4%</span></span></code></pre>
+<p>Sem eval, seria muito fácil olhar algumas respostas boas da LLM e concluir que ela simplesmente era melhor.</p>
+<p>As métricas mostraram uma história mais interessante.</p>
+<h2 id="e-então-o-eval-começou-a-influenciar-a-arquitetura">E então o eval começou a influenciar a arquitetura</h2>
+<p>Nesse momento a pergunta deixou de ser:</p>
+<blockquote>
+<p>Como faço a LLM substituir minhas regras?</p>
+</blockquote>
+<p>e passou a ser:</p>
+<blockquote>
+<p>Onde cada abordagem funciona melhor?</p>
+</blockquote>
+<p>Isso levou o projeto para uma arquitetura híbrida.</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="text"><code><span class="line"><span>                 ticket</span></span>
+<span class="line"><span>                   │</span></span>
+<span class="line"><span>          ┌────────┴────────┐</span></span>
+<span class="line"><span>          ▼                 ▼</span></span>
+<span class="line"><span> deterministic           LLM</span></span>
+<span class="line"><span> classifier           classifier</span></span>
+<span class="line"><span>          │                 │</span></span>
+<span class="line"><span>          └────────┬────────┘</span></span>
+<span class="line"><span>                   ▼</span></span>
+<span class="line"><span>              hybrid policy</span></span>
+<span class="line"><span>                   │</span></span>
+<span class="line"><span>             ┌─────┴─────┐</span></span>
+<span class="line"><span>             ▼           ▼</span></span>
+<span class="line"><span>          decisão     human review</span></span></code></pre>
+<p>O baseline deixou de ser apenas uma versão antiga do sistema.</p>
+<p>Ele passou a funcionar como:</p>
+<ul>
+<li>referência;</li>
+<li>sinal de divergência;</li>
+<li>fallback;</li>
+<li>componente da política de revisão humana.</li>
+</ul>
+<p>O eval não apenas mediu a arquitetura.</p>
+<p><strong>Ele ajudou a determinar a arquitetura.</strong></p>
+<h2 id="isso-também-muda-como-você-desenvolve-com-llms">Isso também muda como você desenvolve com LLMs</h2>
+<p>Sem avaliação estruturada, o ciclo tende a ser:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="text"><code><span class="line"><span>mudo o prompt</span></span>
+<span class="line"><span>↓</span></span>
+<span class="line"><span>rodo alguns exemplos</span></span>
+<span class="line"><span>↓</span></span>
+<span class="line"><span>parece melhor</span></span>
+<span class="line"><span>↓</span></span>
+<span class="line"><span>deploy</span></span></code></pre>
+<p>Com evals:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="text"><code><span class="line"><span>mudo prompt/modelo/política</span></span>
+<span class="line"><span>↓</span></span>
+<span class="line"><span>executo dataset</span></span>
+<span class="line"><span>↓</span></span>
+<span class="line"><span>meço resultados</span></span>
+<span class="line"><span>↓</span></span>
+<span class="line"><span>comparo com baseline</span></span>
+<span class="line"><span>↓</span></span>
+<span class="line"><span>analiso regressões</span></span>
+<span class="line"><span>↓</span></span>
+<span class="line"><span>decido</span></span></code></pre>
+<p>Essa diferença parece pequena.</p>
+<p>Mas é a diferença entre experimentar e simplesmente confiar na impressão.</p>
+<h2 id="nem-toda-métrica-precisa-vir-de-uma-llm">Nem toda métrica precisa vir de uma LLM</h2>
+<p>Existe bastante discussão sobre <strong>LLM-as-a-judge</strong>, onde outro modelo avalia a resposta produzida.</p>
+<p>Isso é útil quando critérios são subjetivos, como:</p>
+<ul>
+<li>clareza;</li>
+<li>relevância;</li>
+<li>coerência;</li>
+<li>qualidade de uma resposta aberta.</li>
+</ul>
+<p>Mas quando existe uma resposta verificável, código tradicional geralmente é mais simples.</p>
+<p>No meu caso:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="ts"><code><span class="line"><span style="color:#E1E4E8">predicted.category </span><span style="color:#F97583">===</span><span style="color:#E1E4E8"> expected.category;</span></span></code></pre>
+<p>já responde uma pergunta importante.</p>
+<p>A ferramenta de avaliação deve ser proporcional ao problema.</p>
+<h2 id="o-principal-aprendizado">O principal aprendizado</h2>
+<p>Antes eu pensava em evals como algo que acontecia depois de construir um sistema de IA.</p>
+<p>Hoje vejo de outra forma.</p>
+<p>O eval faz parte do próprio desenvolvimento.</p>
+<p>Ele ajuda a responder:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="text"><code><span class="line"><span>o modelo melhorou?</span></span>
+<span class="line"><span>onde piorou?</span></span>
+<span class="line"><span>quanto melhorou?</span></span>
+<span class="line"><span>em quais casos?</span></span>
+<span class="line"><span>comparado com o quê?</span></span></code></pre>
+<p>E talvez a pergunta mais importante:</p>
+<p><strong>essa melhoria realmente justifica colocar a LLM nessa parte do sistema?</strong></p>
+<p>Sem isso, é fácil construir uma demonstração convincente.</p>
+<p>Com isso, começa a aparecer engenharia.</p>
+<h2 id="continuar-explorando">Continuar explorando</h2>
+<p>Os detalhes completos — métricas oficiais, trade-offs e limitações — estão no <a href="/projetos/ops-triage-ai/">case do projeto</a>.</p>
+<p>Projeto: <a href="https://github.com/marcelotaparelli/ops-triage-ai">https://github.com/marcelotaparelli/ops-triage-ai</a></p><a class="text-link" href="/artigos/"><svg class="arrow arrow--left" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12h15m-6-6 6 6-6 6"></path></svg>Voltar aos artigos</a></article></div></div></main><footer class="site-footer"><div class="container footer-top"><div><a class="brand" href="/"><svg width="30" height="30" viewBox="0 0 40 40" fill="none" aria-hidden="true"><path d="M5 30V10l10 12 10-12v20M25 10h12M31 10v20" stroke="currentColor" stroke-width="2" stroke-linejoin="round"></path></svg><span>Marcelo Taparelli<span class="brand-dot">.</span></span></a><p>Problema primeiro. Tecnologia depois.</p></div><nav class="footer-links" aria-label="Redes profissionais e currículo"><a href="https://github.com/marcelotaparelli">GitHub</a><a href="https://www.linkedin.com/in/marcelo-taparelli/">LinkedIn</a><a href="mailto:contato@marcelotaparelli.com.br">Email</a><a class="text-link" href="/cv/marcelo-taparelli-cv-pt-br.pdf" download>Baixar currículo<span class="file-label">PDF</span><svg class="arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 18 18 6M6 6h12v12"></path></svg></a></nav></div><div class="container footer-bottom"><span>© 2026 Marcelo Taparelli</span><span lang="en">Software Engineering · Applied AI · Product</span></div></footer></body></html>
