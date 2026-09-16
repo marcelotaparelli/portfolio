@@ -72,6 +72,16 @@ demonstrated need. Current state: `docs/implementation-status.md`.
 - `src/data/site.ts` `cv` entries: `reviewed` stays `false` and no link
   renders until a user-supplied PDF passes review (`CvLink.astro` hides
   unreviewed/missing PDFs; E2E asserts zero dead `/cv/` links).
+- External links always open in a new tab, without exception. In MDX
+  bodies, authors write off-site links as explicit anchors
+  (`<a href="https://…" target="_blank" rel="noopener noreferrer">…</a>`)
+  — never plain markdown links, never hand-rolled variants, and never a
+  bare URL as the link text (the GFM autolinker would nest a second
+  anchor inside it). In `.astro` components the same attributes apply.
+  `scripts/check-artifacts.ts` fails the build on any rendered off-site
+  `http(s)` anchor missing `target="_blank"` +
+  `rel="noopener noreferrer"`. Same-origin, anchor, and `mailto:` links
+  are untouched.
 
 ## Workflow rules
 

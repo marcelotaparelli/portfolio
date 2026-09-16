@@ -30,8 +30,12 @@ const text = t(locale);
           : 'Redes profissionais e currículo'
       }
     >
-      <a href={site.github}>GitHub</a>
-      <a href={site.linkedin}>LinkedIn</a>
+      <a href={site.github} target="_blank" rel="noopener noreferrer">
+        GitHub
+      </a>
+      <a href={site.linkedin} target="_blank" rel="noopener noreferrer">
+        LinkedIn
+      </a>
       <a href={`mailto:${site.email}`}>Email</a>
       <CvLink locale={locale} />
     </nav>

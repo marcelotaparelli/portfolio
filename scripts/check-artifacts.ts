@@ -19,7 +19,21 @@ for await (const relative of new Glob('**/*.html').scan(root)) {
   await new HTMLRewriter()
     .on('a[href]', {
       element(el) {
-        links.push(el.getAttribute('href')!);
+        const href = el.getAttribute('href')!;
+        links.push(href);
+        // External links must open in a new tab without leaking context.
+        if (
+          (href.startsWith('http://') || href.startsWith('https://')) &&
+          !href.startsWith('https://marcelotaparelli.com.br')
+        ) {
+          const rel = (el.getAttribute('rel') ?? '').split(/\s+/);
+          if (
+            el.getAttribute('target') !== '_blank' ||
+            !rel.includes('noopener') ||
+            !rel.includes('noreferrer')
+          )
+            failures.push(`${relative}: external link is not new-tab safe`);
+        }
       },
     })
     .on('img[src],script[src]', {

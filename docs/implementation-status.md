@@ -303,6 +303,37 @@ project` paragraph (hybrid architecture, frozen held-out, headline
   build 28 pages + `--preview` clean, `check-release` ready, E2E 13 pass
   against preview build. `dist/` left holding a production build.
 
+## External links — new-tab rule enforced by the validator (2026-09-16)
+
+- Rule (now in `AGENTS.md`, Content model): every rendered off-site
+  `http(s)` anchor must carry `target="_blank"` +
+  `rel="noopener noreferrer"`. In MDX bodies authors write explicit
+  anchors — never plain markdown links, and never a bare URL as link
+  text (Sätteri's GFM autolinker nests a second anchor inside it).
+  Same-origin, anchor, and `mailto:` links are untouched.
+- Why not a rehype plugin: Astro 7 uses Sätteri; `rehypePlugins` in
+  `mdx()`/`markdown` config are ignored unless `@astrojs/markdown-remark`
+  is installed — a new dependency for a handful of links, rejected as
+  disproportionate. A prototype (`src/lib/rehype-external-links.ts` +
+  unit test) was written, verified in isolation, then deleted; the
+  validator is this repo's enforcement mechanism, so the rule lives
+  there (`scripts/check-artifacts.ts` fails the build on violation).
+- Fixes applied (visible text/URLs unchanged, behavior only): Fowler
+  link in `evals-stop-guessing-start-measuring` PT+EN → explicit anchor;
+  bare repo URLs in both evals articles, both `llm-did-not-win-everywhere`
+  articles, and both `ops-triage-ai` cases → explicit anchors with
+  descriptive labels; `Footer.astro` GitHub/LinkedIn and `ContactBlock.astro`
+  LinkedIn → `target`/`rel` (the validator caught these plus the GFM
+  autolinked bare URLs on the first enforcing run — 10 violations, all
+  fixed, none pre-existing after the fix).
+- E2E extended in-pattern: article external links open in a new tab
+  safely (Fowler link on both evals pages). Gates re-verified:
+  typecheck 0 errors, lint clean, format clean, `bun test` 37 pass,
+  production + preview builds 28 pages with `check-artifacts` clean in
+  both modes, `check-release` ready, E2E 14 pass against preview build.
+  `dist/` left holding a production build. No deploy, no publish,
+  no commit.
+
 ## Environment notes
 
 - `git` 2.47.3 is available in this container and history is usable
