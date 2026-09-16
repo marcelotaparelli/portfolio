@@ -1,0 +1,305 @@
+---
+translationKey: evals-stop-guessing-start-measuring
+locale: en
+slug: evals-stop-guessing-start-measuring
+title: 'Evals: I Stopped Asking Whether the LLM “Looks Good” and Started Measuring'
+description: How I used a deterministic baseline, a labeled dataset, and objective metrics to evaluate an LLM-based triage system instead of trusting subjective impressions.
+status: published
+reviewed: true
+publishedAt: 2026-09-16
+category: Applied AI · Engineering
+distribution:
+  devto:
+    tags:
+      - ai
+      - llm
+      - machinelearning
+      - programming
+---
+
+When I started working with LLMs, one of the hardest questions looked deceptively simple:
+
+**how do I know the model is actually getting better?**
+
+Running a few examples by hand and thinking "that answer looks good" works at first.
+
+But it does not scale.
+
+And, more importantly, it produces no evidence.
+
+That is when I started to understand the role of **evals**.
+
+## What is an eval?
+
+An eval is a structured way of testing the behavior of an AI system.
+
+The idea is fairly simple:
+
+```text
+input
++
+produced answer
++
+expected answer
++
+metric
+=
+evaluation
+```
+
+Instead of subjectively asking whether an answer turned out well, you define up front what you expect and measure the distance between actual behavior and expected behavior.
+
+An article by Martin Fowler on [GenAI patterns](https://martinfowler.com/articles/gen-ai-patterns/) describes this kind of mechanism as **scoring and judging**: the model's output goes through a scorer that produces metrics or feedback about the result.
+
+That is exactly the principle I applied in my operational triage project.
+
+## Before the LLM, I wrote code
+
+In `ops-triage-ai`, the system receives tickets and has to determine things like:
+
+- category;
+- priority;
+- risk;
+- suggested team.
+
+Before putting an LLM on the problem, I implemented a deterministic classifier with hand-written rules in TypeScript.
+
+Simplified:
+
+```text
+ticket
+   ↓
+deterministic rules
+   ↓
+classification
+```
+
+That created something extremely valuable:
+
+**a baseline.**
+
+I now had a concrete implementation to compare any AI-based solution against.
+
+## Then I wrote down expected answers
+
+I set aside a collection of tickets and defined in advance what the correct classification for each one should be.
+
+Conceptually something like:
+
+```json
+{
+  "ticket": {
+    "title": "Production API unavailable",
+    "description": "Users cannot access the service"
+  },
+  "expected": {
+    "category": "INCIDENT",
+    "priority": "CRITICAL",
+    "risk": "HIGH"
+  }
+}
+```
+
+The classifier receives the ticket.
+
+Its output is compared against `expected`.
+
+And then we compute metrics.
+
+```text
+               ┌──────────────────┐
+ticket ───────►│    classifier    │
+               └────────┬─────────┘
+                        │
+                        ▼
+                 predicted output
+                        │
+expected output ────────┤
+                        ▼
+                    scorer
+                        │
+                        ▼
+                    metrics
+```
+
+That scorer can be plain code.
+
+It does not need to be another LLM.
+
+## My code became part of the experiment
+
+That is where I found the most interesting idea.
+
+The deterministic code I would normally write to solve the problem also became an **experimental reference**.
+
+I could run:
+
+```text
+dataset
+   ├── deterministic classifier
+   └── LLM classifier
+```
+
+and compare both on exactly the same examples.
+
+On the project's final held-out set of 70 synthetic tickets, for instance:
+
+```text
+Category accuracy
+
+Deterministic: 82.9%
+LLM:           95.7%
+```
+
+For `HIGH/CRITICAL` priority recall:
+
+```text
+Deterministic: 78.6%
+LLM:           100%
+```
+
+But something even more important happened.
+
+The model **did not win everywhere**.
+
+On overall risk classification:
+
+```text
+Deterministic: 95.7%
+LLM:            91.4%
+```
+
+Without an eval, it would have been easy to look at a few good LLM answers and conclude the model was simply better.
+
+The metrics told a more interesting story.
+
+## And then the eval started shaping the architecture
+
+At that point the question stopped being:
+
+> How do I make the LLM replace my rules?
+
+and became:
+
+> Where does each approach work best?
+
+That pushed the project toward a hybrid architecture.
+
+```text
+                 ticket
+                   │
+          ┌────────┴────────┐
+          ▼                 ▼
+ deterministic           LLM
+ classifier           classifier
+          │                 │
+          └────────┬────────┘
+                   ▼
+              hybrid policy
+                   │
+             ┌─────┴─────┐
+             ▼           ▼
+         decision    human review
+```
+
+The baseline stopped being just an old version of the system.
+
+It started serving as:
+
+- a reference;
+- a divergence signal;
+- a fallback;
+- a component of the human-review policy.
+
+The eval did not just measure the architecture.
+
+**It helped determine the architecture.**
+
+## It also changes how you develop with LLMs
+
+Without structured evaluation, the loop tends to look like this:
+
+```text
+change the prompt
+↓
+run a few examples
+↓
+looks better
+↓
+deploy
+```
+
+With evals:
+
+```text
+change prompt/model/policy
+↓
+run the dataset
+↓
+measure results
+↓
+compare against baseline
+↓
+analyze regressions
+↓
+decide
+```
+
+That difference looks small.
+
+But it is the difference between experimenting and simply trusting an impression.
+
+## Not every metric needs to come from an LLM
+
+There is a lot of discussion about **LLM-as-a-judge**, where another model grades the produced answer.
+
+That is useful when the criteria are subjective, such as:
+
+- clarity;
+- relevance;
+- coherence;
+- quality of an open-ended answer.
+
+But when there is a verifiable answer, traditional code is usually simpler.
+
+In my case:
+
+```ts
+predicted.category === expected.category;
+```
+
+already answers an important question.
+
+The evaluation tool should be proportional to the problem.
+
+## The main takeaway
+
+I used to think of evals as something that happens after building an AI system.
+
+I see it differently now.
+
+The eval is part of development itself.
+
+It helps answer:
+
+```text
+did the model improve?
+where did it get worse?
+by how much?
+in which cases?
+compared to what?
+```
+
+And perhaps the most important question:
+
+**does this improvement actually justify putting the LLM in this part of the system?**
+
+Without that, it is easy to build a convincing demo.
+
+With it, engineering starts to show up.
+
+## Keep exploring
+
+The full details — official metrics, trade-offs, and limitations — are in the [project case](/en/projects/ops-triage-ai/).
+
+Project: https://github.com/marcelotaparelli/ops-triage-ai

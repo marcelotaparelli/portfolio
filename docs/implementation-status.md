@@ -276,6 +276,33 @@ project` paragraph (hybrid architecture, frozen held-out, headline
   holding a production build (24 pages, sitemap lists both new URLs
   first among projects). No deploy, no publish, no push.
 
+## Evals article — bilingual publication ready for distribution (2026-09-16)
+
+- New bilingual article `evals-stop-guessing-start-measuring`
+  (`src/content/articles/{pt-br,en}/evals-stop-guessing-start-measuring.mdx`,
+  `translationKey: evals-stop-guessing-start-measuring`, same slug both
+  locales, `status: published`, `reviewed: true`,
+  `publishedAt: 2026-09-16` both languages). Category follows the existing
+  taxonomy from `llm-did-not-win-everywhere` (`IA aplicada · Engenharia` /
+  `Applied AI · Engineering`); no new taxonomy invented. No schema, page,
+  component, workflow, or distribution-script changes — content only.
+- Distribution input per pipeline convention (audited against
+  `llm-did-not-win-everywhere` + `scripts/distribution/*`): PT-BR carries
+  only `distribution.linkedin.text` (1380 chars, contains the PT canonical,
+  saved verbatim); EN carries only `distribution.devto.tags`
+  (`ai, llm, machinelearning, programming` — pipeline requires 1–4
+  non-empty tags, no allow-list). Titles quoted in frontmatter because the
+  `Evals:` colon breaks YAML plain scalars.
+- Dry-run (resolve + build both payloads, no network, no publish): pair
+  resolves with per-locale canonicals (`/artigos/<slug>/`,
+  `/en/articles/<slug>/`); DEV.to payload EN-only; LinkedIn payload PT
+  copy, `PUBLIC`/`PUBLISHED`. No real publication, no deploy, no push.
+- Gates: typecheck 0 errors, lint clean, format clean (normalized the 2
+  new files with the repo's own Prettier), `bun test` 37 pass,
+  production build 28 pages + `check-artifacts.ts dist` clean, preview
+  build 28 pages + `--preview` clean, `check-release` ready, E2E 13 pass
+  against preview build. `dist/` left holding a production build.
+
 ## Environment notes
 
 - `git` 2.47.3 is available in this container and history is usable
@@ -288,8 +315,9 @@ project` paragraph (hybrid architecture, frozen held-out, headline
   `Executable doesn't exist` or `libglib-2.0.so.0`, reinstall those.
 - No `curl`/`ps`/`pkill` in this container; use `bun -e 'fetch(...)'` and
   `/proc` scans to probe/kill background servers.
-- `dist/` currently holds a **production** build (24 pages, includes
-  `/projetos/ops-triage-ai/` + `/en/projects/ops-triage-ai/` and both
-  URLs in `sitemap.xml`). Rebuild with `bun run build:preview` before
+- `dist/` currently holds a **production** build (28 pages, includes
+  `/artigos/evals-stop-guessing-start-measuring/` +
+  `/en/articles/evals-stop-guessing-start-measuring/` and both URLs in
+  `sitemap.xml`). Rebuild with `bun run build:preview` before
   running the E2E suite, which serves `dist` on `:3100` (preview
   noindex expected).
