@@ -47,13 +47,20 @@
   with human review. RAG was removed as practical experience. AWS remains
   `AWS Cloud fundamentals` only.
 - Security wording distinguishes implemented authentication and validation
-  from authorization hardening in progress. Performance wording uses resource
+  from ownership-based authorization now evidenced in the latest Salus
+  hardening. Performance wording uses resource
   limits, observability, Core Web Vitals, and measured Ops Triage AI latency;
   no high-performance or specialist claim was added.
-- Salus remains at 47 tests (36 unit + 11 integration) in the audited local
-  repository state; its current code still issues JWTs without route
-  verification or patient ownership enforcement. Ops Triage AI wording keeps
-  the frozen 70-ticket synthetic benchmark and p95 7078.6ms context.
+- At the time of this CV commit, the remote Salus HEAD available for read-only
+  inspection remained `ead5252b20bcd176a5b6ad873ef4935dc2557d6c`. The newer
+  hardening evidence supplied from the local development result supersedes
+  that older remote snapshot for CV wording: 64 tests (47 unit + 17
+  integration), JWT verification with issuer/audience/subject, per-user
+  ownership isolation, bounded cursor pagination, request validation, safe
+  logs, health/readiness, graceful shutdown, migrations, and artifact smoke
+  coverage. The original core remains manually implemented with TDD; the
+  later production-hardening phase used AI-assisted workflows under human
+  review.
 - `bun run cv:generate` produced exactly one A4 page per locale with 4.2px
   bottom headroom. Font size was unchanged; only the bottom sheet padding was
   compacted to preserve the one-page constraint.
