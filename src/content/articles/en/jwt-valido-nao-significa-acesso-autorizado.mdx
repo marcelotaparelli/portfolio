@@ -1,0 +1,80 @@
+---
+translationKey: jwt-valido-nao-significa-acesso-autorizado
+locale: en
+slug: jwt-valido-nao-significa-acesso-autorizado
+title: A Valid JWT Does Not Mean Authorized Access
+description: A Salus security review highlighted why authentication alone cannot authorize access to each patient and how to make ownership testable.
+status: published
+reviewed: true
+publishedAt: 2026-09-19
+category: Security · Engineering
+distribution:
+  devto:
+    tags:
+      - security
+      - api
+      - backend
+      - typescript
+---
+
+A security review of Salus brought me back to a question that remains after authentication:
+
+**Can this user access this specific resource?**
+
+Consider this scenario:
+
+1. User A creates patient X.
+2. User B signs in and receives a valid JWT.
+3. B calls `GET /patients/X`.
+
+If the application looks up the patient by `patientId` alone, B may receive a patient belonging to A. B is authenticated, but is not authorized to access that object. This is **Broken Object Level Authorization (BOLA)**.
+
+## Authorization must reach the query
+
+A valid JWT establishes who made the request. The access rule still needs to use that identity to scope the resource lookup:
+
+```text
+patientId + currentUser.id → authorized resource
+```
+
+Instead of:
+
+```text
+findById(patientId)
+```
+
+the operation could conceptually use:
+
+```text
+findByIdAndOwner(patientId, currentUser.id)
+```
+
+The method name is incidental. The access boundary belongs in the rule and the lookup, including reads, updates, and deletes.
+
+## What should the API return for someone else's patient?
+
+A `403 Forbidden` response can tell B that patient X exists. When even that fact is sensitive, `404 Not Found` may be preferable: X is outside the set of resources B is allowed to see.
+
+The choice depends on the API's policy and should be applied consistently. It makes HTTP responses less useful for probing which IDs exist.
+
+## Security as testable behavior
+
+The path does not end at `login → JWT → middleware`. It continues through the operation on each object:
+
+```text
+identity → authentication → authorization → ownership → resource access
+```
+
+This is the property I want to turn into a Salus security regression test:
+
+```text
+User A creates patient X.
+User B tries to access X.
+Expected result: 404.
+```
+
+Today Salus issues JWTs at login, but its routes do not yet validate them or apply patient ownership. The scenario above is part of the current hardening work: it describes a safeguard I intend to implement and protect with TDD and regression tests, not a guarantee the project already provides.
+
+Security should be verifiable behavior, not just configuration.
+
+Project: <a href="https://github.com/marcelotaparelli/salus" target="_blank" rel="noopener noreferrer">Salus on GitHub</a>

@@ -30,27 +30,25 @@
 - Gates: typecheck 0 errors/0 warnings (16 existing hints), lint and format
   clean, 37 unit tests pass, production build 28 pages and artifact check
   clean, preview build 30 pages and artifact check clean, E2E 13 pass.
-  `bun check:release` is pending editorial approval of the separate BOLA
-  draft pair from the previous task; it correctly reports both drafts as
-  unreviewed and undated. `dist/` currently holds the **preview** build.
+  `bun check:release` is green after the BOLA pair was approved and
+  published. `dist/` currently holds the **preview** build.
 - GitHub profile README is in a separate repository; no file there changed.
 
-## JWT and object authorization article — draft (2026-09-19)
+## JWT and object authorization article — published (2026-09-19)
 
-- Added the PT-BR and EN pair `jwt-valido-nao-significa-acesso-autorizado`
-  as `status: draft`, `reviewed: false`, with no publication date. The
-  article frames BOLA, owner-scoped lookup, a context-dependent 404
-  response, and an intended cross-user test. Both versions explicitly
-  state that Salus currently issues JWTs but does not validate them on
-  routes; no protection or passing test is claimed.
-- No distribution metadata yet; the supplied PT copy and EN adaptation
-  await editorial review before publication or channel distribution.
-- New MDX files pass Prettier; `astro check` via Node reports 0 errors,
-  0 warnings, 16 pre-existing hints. This container has no `bun` command,
-  so Bun-specific quality gates and artifact validations remain unrun.
-  A Node-based preview build cannot resolve the existing `bun` import in
-  `CvLink.astro`. The attempted build may have changed `dist/`; rebuild
-  with Bun before serving or validating that directory.
+- Published the PT-BR and EN pair `jwt-valido-nao-significa-acesso-autorizado`
+  with `status: published`, `reviewed: true`, `publishedAt: 2026-09-19`,
+  and shared `translationKey`. The article covers BOLA, owner-scoped lookup,
+  the 404/403 information-disclosure trade-off, and TDD/security regression
+  tests. Both versions explicitly state that Salus currently issues JWTs but
+  does not validate them on routes or apply patient ownership; no protection
+  is claimed as implemented.
+- Distribution metadata follows the existing convention: PT-BR LinkedIn
+  copy includes the PT canonical (1,256 characters); EN carries DEV.to tags
+  `security`, `api`, `backend`, `typescript`. Distribution dry-run resolved
+  both canonicals and payloads without network publication.
+- New MDX files pass Prettier. The release gate, production and preview
+  builds, both artifact validations, and E2E all pass after publication.
 
 Date: 2026-09-15. All quality gates below were re-verified on this date
 (previous full verification: 2026-09-13).
@@ -68,9 +66,9 @@ and `reports/assets.json`.
 | Lint                       | `bun lint`                                      | clean                                              |
 | Format                     | `bun format:check`                              | clean (normalized with `bun format` on 2026-09-13) |
 | Unit                       | `bun test`                                      | 37 pass                                            |
-| Production build           | `bun run build`                                 | 24 pages, drafts excluded                          |
+| Production build           | `bun run build`                                 | 30 pages, drafts excluded                          |
 | Production artifacts       | `bun scripts/check-artifacts.ts dist`           | 24 documents checked, clean                        |
-| Preview build              | `bun run build:preview`                         | 24 pages (no drafts remain)                        |
+| Preview build              | `bun run build:preview`                         | 30 pages (no drafts remain)                        |
 | Preview artifacts          | `bun scripts/check-artifacts.ts dist --preview` | 24 documents checked, clean                        |
 | E2E (against preview dist) | `bun test:e2e`                                  | 13 passed                                          |
 | Dev server                 | `bun dev`                                       | serves `0.0.0.0:3000`, strictPort configured       |

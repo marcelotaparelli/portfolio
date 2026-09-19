@@ -1,0 +1,105 @@
+---
+translationKey: jwt-valido-nao-significa-acesso-autorizado
+locale: pt-BR
+slug: jwt-valido-nao-significa-acesso-autorizado
+title: JWT válido não significa acesso autorizado
+description: Uma revisão de segurança no Salus mostrou por que autenticar um usuário não basta para autorizar o acesso a cada paciente e como transformar ownership em teste.
+status: published
+reviewed: true
+publishedAt: 2026-09-19
+category: Segurança · Engenharia
+distribution:
+  linkedin:
+    text: |
+      JWT válido não significa acesso autorizado.
+
+      Uma revisão de segurança no Salus me levou a separar duas perguntas que muitas APIs confundem:
+
+      - quem fez a chamada?
+      - essa pessoa pode acessar este objeto?
+
+      Imagine:
+
+      User A cria o Patient X.
+      User B faz login, recebe um JWT válido e chama GET /patients/X.
+
+      Se a consulta usa apenas patientId, autenticação não impede que B veja um recurso de A. Esse é o tipo de falha conhecido como Broken Object Level Authorization (BOLA).
+
+      A autorização precisa chegar à regra e à consulta:
+
+      patientId + currentUser.id → recurso autorizado
+
+      Em alguns contextos, responder 403 também revela que o recurso existe. Um 404 pode ser preferível para não transformar a API em uma ferramenta de enumeração de IDs.
+
+      No Salus, JWT é emitido no login, mas as rotas ainda não validam o token nem aplicam ownership. Isso faz parte do hardening atual, não de uma proteção já implementada.
+
+      A direção é transformar a propriedade em teste de regressão: A cria X, B tenta acessar X, resultado esperado 404. TDD e testes de segurança devem proteger essa decisão durante a implementação.
+
+      Artigo completo:
+      https://marcelotaparelli.com.br/artigos/jwt-valido-nao-significa-acesso-autorizado/
+
+      Projeto:
+      https://github.com/marcelotaparelli/salus
+---
+
+Uma revisão de segurança no Salus me levou a uma pergunta que continua existindo depois da autenticação:
+
+**este usuário pode acessar este recurso específico?**
+
+Imagine o seguinte cenário:
+
+1. O usuário A cria o paciente X.
+2. O usuário B faz login e recebe um JWT válido.
+3. B chama `GET /patients/X`.
+
+Se a aplicação consulta apenas pelo `patientId`, B pode receber um paciente que pertence a A. B está autenticado, mas não está autorizado a acessar aquele objeto. Essa falha é conhecida como **Broken Object Level Authorization (BOLA)**.
+
+## A autorização precisa chegar à consulta
+
+Ter um JWT válido responde quem fez a chamada. A regra de acesso ainda precisa usar essa identidade para limitar o recurso consultado:
+
+```text
+patientId + currentUser.id → recurso autorizado
+```
+
+Em vez de uma busca como:
+
+```text
+findById(patientId)
+```
+
+a operação pode ser desenhada conceitualmente como:
+
+```text
+findByIdAndOwner(patientId, currentUser.id)
+```
+
+O nome exato do método não é o ponto. O ponto é que o limite de acesso precisa fazer parte da regra e da busca, inclusive em leituras, alterações e exclusões.
+
+## O que responder quando o paciente pertence a outra pessoa?
+
+Um `403 Forbidden` pode indicar a B que o paciente X existe. Em contextos nos quais essa informação também é sensível, `404 Not Found` pode ser a resposta preferível: para B, X não está entre os recursos que ele pode acessar.
+
+Essa escolha depende da política da API, mas deve ser consistente. Ela reduz a possibilidade de usar respostas HTTP para testar quais IDs existem.
+
+## Segurança como comportamento verificável
+
+A sequência não termina em `login → JWT → middleware`. Ela precisa chegar à operação sobre o objeto:
+
+```text
+identidade → autenticação → autorização → ownership → acesso ao recurso
+```
+
+É essa propriedade que quero transformar em teste de regressão de segurança no Salus:
+
+```text
+Usuário A cria o paciente X.
+Usuário B tenta acessar X.
+Resultado esperado: 404.
+```
+
+O Salus hoje emite JWT no login, mas suas rotas ainda não validam o token nem aplicam ownership de pacientes. O cenário acima faz parte do hardening atual: descreve a proteção que pretendo implementar e proteger com TDD e testes de regressão, não um comportamento já garantido pelo projeto.
+
+Segurança como comportamento verificável, não apenas configuração.
+
+Projeto: <a href="https://github.com/marcelotaparelli/salus" target="_blank" rel="noopener noreferrer">Salus no GitHub</a>
