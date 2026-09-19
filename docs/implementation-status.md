@@ -34,6 +34,30 @@
   published. `dist/` currently holds the **preview** build.
 - GitHub profile README is in a separate repository; no file there changed.
 
+## CV positioning review — final (2026-09-19)
+
+- `cv/pt-br.html` and `cv/en.html` now keep Software Engineer as the primary
+  identity and Applied AI Engineering as the current direction. The summaries
+  add reliable, testable software, security, observability, performance, LLM
+  systems, measurable evaluation, and production-oriented controls without
+  creating specialist titles.
+- Applied AI skills now reflect implemented Ops Triage AI evidence: LLM
+  integration, structured outputs, deterministic baselines, evals, held-out
+  benchmarks, hybrid policies, human review, fallbacks, and AI coding agents
+  with human review. RAG was removed as practical experience. AWS remains
+  `AWS Cloud fundamentals` only.
+- Security wording distinguishes implemented authentication and validation
+  from authorization hardening in progress. Performance wording uses resource
+  limits, observability, Core Web Vitals, and measured Ops Triage AI latency;
+  no high-performance or specialist claim was added.
+- Salus remains at 47 tests (36 unit + 11 integration) in the audited local
+  repository state; its current code still issues JWTs without route
+  verification or patient ownership enforcement. Ops Triage AI wording keeps
+  the frozen 70-ticket synthetic benchmark and p95 7078.6ms context.
+- `bun run cv:generate` produced exactly one A4 page per locale with 4.2px
+  bottom headroom. Font size was unchanged; only the bottom sheet padding was
+  compacted to preserve the one-page constraint.
+
 ## JWT and object authorization article — published (2026-09-19)
 
 - Published the PT-BR and EN pair `jwt-valido-nao-significa-acesso-autorizado`
