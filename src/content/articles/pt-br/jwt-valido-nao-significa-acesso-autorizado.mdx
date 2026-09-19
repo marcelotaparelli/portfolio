@@ -31,9 +31,11 @@ distribution:
 
       Em alguns contextos, responder 403 também revela que o recurso existe. Um 404 pode ser preferível para não transformar a API em uma ferramenta de enumeração de IDs.
 
-      No Salus, JWT é emitido no login, mas as rotas ainda não validam o token nem aplicam ownership. Isso faz parte do hardening atual, não de uma proteção já implementada.
+      No Salus, um teste reproduziu esse cenário: A cria X, B recebe um JWT válido e tenta acessar X. O teste falhou (RED) porque a operação não estava escopada pelo usuário atual.
 
-      A direção é transformar a propriedade em teste de regressão: A cria X, B tenta acessar X, resultado esperado 404. TDD e testes de segurança devem proteger essa decisão durante a implementação.
+      O hardening introduziu ownership, escopou as operações por ownerId e passou a retornar 404 para recursos fora do ownership nesse contexto. O teste de acesso cross-user agora passa (GREEN), junto com a verificação do JWT nas rotas de pacientes.
+
+      TDD e testes de regressão de segurança protegem essa decisão durante a evolução do sistema.
 
       Artigo completo:
       https://marcelotaparelli.com.br/artigos/jwt-valido-nao-significa-acesso-autorizado/
@@ -98,7 +100,7 @@ Usuário B tenta acessar X.
 Resultado esperado: 404.
 ```
 
-O Salus hoje emite JWT no login, mas suas rotas ainda não validam o token nem aplicam ownership de pacientes. O cenário acima faz parte do hardening atual: descreve a proteção que pretendo implementar e proteger com TDD e testes de regressão, não um comportamento já garantido pelo projeto.
+No Salus, as rotas de pacientes verificam o JWT e as operações são escopadas por `ownerId`. Quando um usuário tenta acessar o paciente de outra pessoa, a API retorna 404 nesse contexto. O teste de regressão reproduz o fluxo A cria X, B tenta acessar X e mantém essa propriedade verificável.
 
 Segurança como comportamento verificável, não apenas configuração.
 

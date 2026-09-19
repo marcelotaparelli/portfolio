@@ -3,7 +3,7 @@ translationKey: salus
 locale: pt-BR
 slug: salus
 title: Salus
-description: API backend em TypeScript para gestão de pacientes, emissão de JWT e regras de domínio, com arquitetura em camadas, PostgreSQL + Prisma e 47 testes automatizados.
+description: API backend em TypeScript para gestão de pacientes com JWT obrigatório, isolamento por usuário, autorização por ownership, paginação limitada e 64 testes automatizados.
 status: published
 reviewed: true
 order: 4
@@ -22,7 +22,7 @@ technologies:
     GitHub Actions,
   ]
 externalUrl: https://github.com/marcelotaparelli/salus
-contribution: 'API autoral: domínio, login com emissão de JWT, persistência com Prisma e 47 testes; evolução atual voltada a autorização e limites operacionais.'
+contribution: 'API autoral desenvolvida com TDD: autenticação JWT, isolamento por usuário, autorização por ownership, integridade de dados e hardening operacional.'
 ---
 
 ## Problema
@@ -50,8 +50,8 @@ cada decisão descrita aqui pode ser inspecionada no código.
   e erros de domínio são mapeados para HTTP sem vazar stack (princípios de
   Clean Code).
 - PostgreSQL como persistência e Docker Compose para o ambiente local.
-- Senhas com Argon2 + pepper server-side; JWT com secret vindo do ambiente,
-  validado com Zod no boot.
+- Senhas com Argon2 + pepper server-side; JWT obrigatório nas rotas de
+  pacientes, verificado com issuer, audience, subject e expiry.
 - Tratamento global de erros: erros inesperados não vazam stack ao cliente.
 
 ## Implementação
@@ -68,17 +68,18 @@ framework ou de banco.
 
 ## Qualidade
 
-47 testes automatizados — 36 unitários e 11 de integração — cobrindo
-domínio, use cases, adapters, HTTP e PostgreSQL real nos testes de
-integração. Os testes protegem regras de domínio e decisões da aplicação
-contra regressões.
+64 testes automatizados — 47 unitários e 17 de integração — cobrindo domínio,
+use cases, adapters, HTTP, isolamento entre usuários, autorização, paginação,
+confirmação de constraints e PostgreSQL real nos testes de integração. Os
+testes protegem regras de domínio e decisões da aplicação contra regressões.
 
 O desenvolvimento do Salus foi conduzido com TDD, usando os testes para
 orientar a implementação e evolução das regras de domínio e dos casos de
 uso. A implementação foi feita manualmente, sem geração de código por IA.
 
-A fase atual de hardening usa desenvolvimento assistido por agente com revisão
-humana. Ela não altera a origem manual do core descrito acima.
+A fase posterior de production hardening foi desenvolvida com assistência de
+agente/IA sob revisão humana. Ela não altera a origem manual do core descrito
+acima.
 
 O CI executa, em sequência:
 
@@ -94,18 +95,18 @@ O que o projeto garante hoje:
 - Arquivo `.env` fora do Git.
 - Erros inesperados respondidos sem expor stack ao cliente.
 
-## Evolução em curso
+## Segurança e confiabilidade
 
-A revisão atual examina verificação do JWT nas rotas, autorização por objeto
-e ownership de pacientes, validação das requisições HTTP, erros tipados e
-testes de regressão para acesso entre usuários. O cenário em que B tenta ler
-um paciente de A e recebe 404 é uma propriedade desejada, ainda não uma
-garantia publicada.
+As rotas de pacientes exigem JWT verificado. Consultas e mutações são
+escopadas por `ownerId`, isolando os pacientes de cada usuário; um acesso
+cross-user retorna 404. A API valida requests com Zod, normaliza email e CPF,
+trata conflitos UNIQUE explicitamente e usa erros tipados.
 
-Também estão no escopo da revisão paginação e limites de recursos, logs
-seguros, correlação de requisições, health/readiness e shutdown gracioso.
-A listagem atual usa `findMany()` sem paginação. Não há benchmark de latência;
-por isso este case não atribui ganhos de performance à API.
+O acesso às coleções usa cursor pagination com limite padrão 20 e máximo 100,
+ordenação estável por `createdAt + id`, índice correspondente e
+`UNIQUE(ownerId, cpf)`. O runtime inclui `X-Request-Id`, logs JSON redigidos,
+liveness, readiness com banco, graceful shutdown, migrations versionadas e
+artifact smoke test.
 
 ## Trade-offs
 
@@ -113,14 +114,18 @@ por isso este case não atribui ganhos de performance à API.
   de rede e observabilidade distribuída para este tamanho de problema.
 - As repository interfaces adicionam uma pequena camada de mapping, mas
   isolam o Prisma e deixam os casos de uso testáveis sem banco.
-- JWT stateless simplifica a infraestrutura, mas não há revogação nem
-  refresh.
-- Invariantes validadas no domínio; os endpoints HTTP ainda não têm
-  schemas Zod dedicados.
+- JWT stateless simplifica a infraestrutura, mas o access token tem validade de
+  7 dias e não há revogação nem refresh.
+- O readiness timeout não cancela a query subjacente; shutdown durante uma
+  request longa ainda não tem teste determinístico.
+- Não há rate limiting; advisories de dependências permanecem documentados
+  para acompanhamento.
 
 ## Limitações
 
-Consciência arquitetural, de forma direta: o login emite JWT, mas nenhuma
-rota valida esse token atualmente — portanto nenhuma rota é descrita aqui
-como protegida. Também não há RBAC, refresh-token rotation, paginação,
-rate limiting nem observabilidade estruturada comprovados neste case.
+O case não reivindica production-ready, enterprise-grade ou segurança
+completa. Os riscos residuais incluem ausência de rate limiting, diferença de
+timing entre email inexistente e senha incorreta, access token de 7 dias sem
+revogação, readiness timeout sem cancelamento da query subjacente, shutdown
+durante request longa sem teste determinístico e advisories de dependências
+documentados.

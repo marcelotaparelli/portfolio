@@ -11,15 +11,19 @@
 - Home/About and skills now mention critical-rule tests, access boundaries,
   validation, secret management, request and concurrency limits, redacted
   logs, observability, and measured latency in context. The Salus case
-  distinguishes the manually TDD-built core from current agent-assisted
-  hardening, labels authorization/pagination/operational controls as work in
-  progress, and explicitly makes no API performance claim. The Ops Triage AI
-  highlight references its implemented controls and its frozen benchmark.
-- Current Salus HEAD `ead5252b20bcd176a5b6ad873ef4935dc2557d6c` was
-  audited read-only: JWT issuance exists but no route verification or owner
-  scoping does; the patient repository lists with unbounded `findMany()`.
-  Accordingly no authorization, pagination, or API performance result is
-  presented as implemented.
+  distinguishes the manually TDD-built core from the later agent-assisted
+  production hardening and documents the implemented authorization,
+  pagination, and operational controls. The Ops Triage AI highlight
+  references its implemented controls and its frozen benchmark.
+- The remote Salus refs checked read-only remain `main` at
+  `ead5252b20bcd176a5b6ad873ef4935dc2557d6c` and `deep-clean` at
+  `4bf326fbcdfd33dd800931b7d0f82a3b084492b7`; neither contains the current
+  hardening state. The local hardening result supplied for this synchronization
+  is the authoritative evidence used in the case and article: 64 tests (47
+  unit + 17 integration), JWT verification and patient-route enforcement,
+  owner-scoped access with cross-user 404, bounded cursor pagination,
+  validation, integrity constraints, redacted logs, request correlation,
+  health checks, graceful shutdown, migrations, and artifact smoke coverage.
 - Current Ops Triage AI HEAD `fa443d79f162fb738dd88ab28a86485ea16e47f1`
   was audited read-only: `src/server.ts` implements API key checks, body and
   concurrency limits, request IDs, metrics, health/readiness, and controlled
@@ -70,12 +74,10 @@
 - Published the PT-BR and EN pair `jwt-valido-nao-significa-acesso-autorizado`
   with `status: published`, `reviewed: true`, `publishedAt: 2026-09-19`,
   and shared `translationKey`. The article covers BOLA, owner-scoped lookup,
-  the 404/403 information-disclosure trade-off, and TDD/security regression
-  tests. Both versions explicitly state that Salus currently issues JWTs but
-  does not validate them on routes or apply patient ownership; no protection
-  is claimed as implemented.
+  the 404/403 information-disclosure trade-off, and the concrete RED →
+  ownership fix → GREEN regression-test path now implemented in Salus.
 - Distribution metadata follows the existing convention: PT-BR LinkedIn
-  copy includes the PT canonical (1,256 characters); EN carries DEV.to tags
+  copy includes the PT canonical (1,407 characters); EN carries DEV.to tags
   `security`, `api`, `backend`, `typescript`. Distribution dry-run resolved
   both canonicals and payloads without network publication.
 - New MDX files pass Prettier. The release gate, production and preview

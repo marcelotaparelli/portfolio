@@ -3,7 +3,7 @@ translationKey: salus
 locale: en
 slug: salus
 title: Salus
-description: TypeScript backend API for patient management, JWT issuance, and domain rules, with layered architecture, PostgreSQL + Prisma, and 47 automated tests.
+description: TypeScript backend API for patient management with enforced JWT authentication, per-user isolation, ownership-based authorization, bounded pagination, and 64 automated tests.
 status: published
 reviewed: true
 order: 4
@@ -22,7 +22,7 @@ technologies:
     GitHub Actions,
   ]
 externalUrl: https://github.com/marcelotaparelli/salus
-contribution: 'Authored the domain, login with JWT issuance, Prisma persistence, and 47 tests; current work examines authorization and operational limits.'
+contribution: 'Authored a TDD-developed API with JWT authentication, per-user isolation, ownership-based authorization, data integrity, and production hardening.'
 ---
 
 ## Problem
@@ -48,8 +48,8 @@ described here can be inspected in the code.
 - Explicit, readable code: entities guard their own invariants and domain
   errors map to HTTP without leaking stack traces (Clean Code principles).
 - PostgreSQL for persistence and Docker Compose for the local environment.
-- Passwords with Argon2 + server-side pepper; JWT signed with an
-  environment-provided secret, validated with Zod at boot.
+- Passwords with Argon2 + server-side pepper; patient routes require JWTs
+  verified with issuer, audience, subject, and expiry.
 - Global error handling: unexpected errors never leak stack traces to the
   client.
 
@@ -66,17 +66,18 @@ while the domain stays unaware of framework or database details.
 
 ## Quality
 
-47 automated tests — 36 unit and 11 integration — covering the domain, use
-cases, adapters, HTTP, and a real PostgreSQL database in the integration
-tests. The tests protect domain rules and application decisions against
-regressions.
+64 automated tests — 47 unit and 17 integration — covering the domain, use
+cases, adapters, HTTP, per-user isolation, authorization, pagination,
+constraint behavior, and a real PostgreSQL database in integration tests. The
+tests protect domain rules and application decisions against regressions.
 
 Salus was developed using TDD, with tests guiding the implementation and
 evolution of domain rules and application use cases. The implementation was
 written manually, without AI-generated code.
 
-The current hardening phase uses agent-assisted development with human
-review. This does not change how the original core was built.
+The later production-hardening phase was developed with agent-assisted
+workflows under human review. This does not change how the original core was
+built manually with TDD.
 
 CI runs, in order:
 
@@ -93,18 +94,18 @@ What the project guarantees today:
 - `.env` file kept out of Git.
 - Unexpected errors answered without exposing stack traces to the client.
 
-## Current evolution
+## Security and reliability
 
-The current review examines JWT verification on routes, object-level
-authorization and patient ownership, HTTP request validation, typed errors,
-and regression tests for access across users. A test where B attempts to read
-A's patient and receives a 404 is an intended property, not a published
-guarantee yet.
+Patient routes require verified JWTs. Queries and mutations are scoped by
+`ownerId`, isolating each user's patients; cross-user access returns 404. The
+API validates requests with Zod, normalizes email and CPF, handles UNIQUE
+conflicts explicitly, and uses typed errors.
 
-Pagination and resource limits, safe logging, request correlation,
-health/readiness, and graceful shutdown are also under review. The current
-patient list uses `findMany()` without pagination. There is no published
-latency benchmark, so this case makes no API performance claim.
+Collections use cursor pagination with a default limit of 20 and a maximum of
+100, stable `createdAt + id` ordering, a matching index, and
+`UNIQUE(ownerId, cpf)`. Runtime controls include `X-Request-Id`, structured
+redacted logs, liveness, database-backed readiness, graceful shutdown,
+versioned migrations, and a production artifact smoke test.
 
 ## Trade-offs
 
@@ -112,15 +113,18 @@ latency benchmark, so this case makes no API performance claim.
   distributed networking and observability cost for a problem this size.
 - Repository interfaces add a thin mapping layer, but they isolate Prisma
   and keep use cases testable without a database.
-- Stateless JWT keeps infrastructure simple, but there is no revocation
-  or refresh.
-- Invariants validated in the domain; HTTP endpoints do not have
-  dedicated Zod schemas yet.
+- Stateless JWT keeps infrastructure simple, but access tokens last 7 days
+  and there is no revocation or refresh.
+- Readiness timeout does not cancel the underlying query; shutdown during a
+  long request still lacks a deterministic test.
+- There is no rate limiting, and dependency advisories remain documented for
+  follow-up.
 
 ## Limitations
 
-Stated directly, as architectural awareness: login issues a JWT, but no
-route validates that token yet — so no route is described here as
-protected. There is also no RBAC, no refresh-token rotation, no
-pagination, no rate limiting, and no structured observability demonstrated
-in this case.
+This case does not claim production-ready, enterprise-grade, or fully secure
+software. Residual risks include no rate limiting, timing differences between
+an unknown email and a wrong password, 7-day access tokens without
+revocation, readiness timeout without cancellation of the underlying query,
+long-request shutdown without a deterministic test, and documented dependency
+advisories.

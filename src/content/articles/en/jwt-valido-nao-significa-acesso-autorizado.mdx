@@ -65,7 +65,7 @@ The path does not end at `login → JWT → middleware`. It continues through th
 identity → authentication → authorization → ownership → resource access
 ```
 
-This is the property I want to turn into a Salus security regression test:
+This is the property that became a Salus security regression test:
 
 ```text
 User A creates patient X.
@@ -73,7 +73,9 @@ User B tries to access X.
 Expected result: 404.
 ```
 
-Today Salus issues JWTs at login, but its routes do not yet validate them or apply patient ownership. The scenario above is part of the current hardening work: it describes a safeguard I intend to implement and protect with TDD and regression tests, not a guarantee the project already provides.
+The hardening work reproduced this scenario as a failing test (RED): User A creates X, User B receives a valid JWT and tries to access it. Ownership was then introduced, operations were scoped by `ownerId`, and cross-user access began returning 404 in this context. The regression test now passes (GREEN), alongside JWT verification on patient routes.
+
+TDD and security regression tests protect this behavior as the system evolves.
 
 Security should be verifiable behavior, not just configuration.
 
