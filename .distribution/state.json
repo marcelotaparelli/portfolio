@@ -40,5 +40,19 @@
       "at": "2026-09-16T16:03:29.051Z",
       "canonicalUrl": "https://marcelotaparelli.com.br/artigos/evals-stop-guessing-start-measuring/"
     }
+  },
+  "jwt-valido-nao-significa-acesso-autorizado": {
+    "devto": {
+      "id": "4696205",
+      "url": "https://dev.to/marcelotaparelli/a-valid-jwt-does-not-mean-authorized-access-1m38",
+      "at": "2026-09-19T21:12:04.691Z",
+      "canonicalUrl": "https://marcelotaparelli.com.br/en/articles/jwt-valido-nao-significa-acesso-autorizado/"
+    },
+    "linkedin": {
+      "id": "urn:li:share:7507184765662535680",
+      "url": "urn:li:share:7507184765662535680",
+      "at": "2026-09-19T21:12:05.368Z",
+      "canonicalUrl": "https://marcelotaparelli.com.br/artigos/jwt-valido-nao-significa-acesso-autorizado/"
+    }
   }
 }
