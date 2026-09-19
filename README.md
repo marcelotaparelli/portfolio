@@ -37,7 +37,8 @@ No backend, database, CMS or application server is required.
 - dependencies only when justified
 - accessibility as a product requirement
 - automated quality gates
-- performance measured rather than assumed
+- security controls proportional to trust boundaries
+- bounded resource use and performance measured rather than assumed
 - human review in AI-assisted development
 
 ## Quality

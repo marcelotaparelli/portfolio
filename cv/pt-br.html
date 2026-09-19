@@ -99,13 +99,14 @@
           <strong>Engenharia:</strong> Clean Architecture, princípios de DDD,
           SOLID, Clean Code, TDD, fundamentos de microsserviços, testes
           unitários, de integração e E2E, CI/CD com GitHub Actions, quality
-          gates automatizados e troubleshooting em produção
+          gates, limites de recursos, latência medida e troubleshooting em
+          produção
         </p>
         <p>
           <strong>Dados, infraestrutura e segurança:</strong> SQL/PostgreSQL,
-          Docker, Git/GitLab/GitHub, fundamentos de AWS Cloud,
-          autenticação/autorização, desenvolvimento seguro, logs e fundamentos
-          de observabilidade
+          Docker, Git/GitLab/GitHub, fundamentos de AWS Cloud, autenticação,
+          gestão de segredos, validação, logs redigidos e observabilidade;
+          autorização por objeto em estudo
         </p>
         <p>
           <strong>IA aplicada (em aprofundamento):</strong> Python/PyTorch,
@@ -123,15 +124,15 @@
         </p>
         <p>
           <strong>Projeto público:</strong> Salus — API backend em TypeScript
-          com arquitetura em camadas para gestão de pacientes e autenticação
-          (JWT + Argon2), PostgreSQL/Prisma, 47 testes e CI.
+          com arquitetura em camadas, login com emissão de JWT, Argon2,
+          PostgreSQL/Prisma, 47 testes e CI; autorização em evolução.
         </p>
         <p>
           <strong>Projeto público:</strong> ops-triage-ai — Triagem operacional
           com baseline determinístico, LLM local via Ollama e política híbrida
-          (human review, fallback, audit trail). Held-out congelado de 70
-          tickets: categoria 82,9%→95,7% e recall HIGH/CRITICAL 78,6%→100%, com
-          baseline mantendo maior risk accuracy.
+          (revisão humana, fallback, trilha de auditoria). API com limites e
+          logs redigidos; held-out de 70 tickets: categoria 82,9%→95,7%,
+          latência híbrida p95 7078,6ms em execução única.
         </p>
       </div>
 

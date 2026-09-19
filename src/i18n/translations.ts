@@ -36,7 +36,7 @@ const pt = {
       fourth: 'INTELIGENTES',
     },
     intro:
-      'Construo software para resolver problemas reais. Estou aprofundando essa experiência em Engenharia de IA Aplicada para desenvolver sistemas e produtos inteligentes.',
+      'Construo software para resolver problemas reais, com atenção a segurança, confiabilidade e desempenho. Estou aprofundando essa experiência em Engenharia de IA Aplicada para desenvolver sistemas e produtos inteligentes.',
     work: 'Ver projetos',
     contact: 'Vamos conversar',
     caption: 'Engenharia com perspectiva de produto.',
@@ -63,7 +63,7 @@ const pt = {
       },
       {
         title: 'Examinar o resultado',
-        text: 'Olhar para o que foi entregue, reconhecer os limites e identificar o que ainda precisa ser medido.',
+        text: 'Testar as regras críticas, observar falhas e latência, reconhecer os limites e medir o que importa.',
       },
     ],
   },
@@ -107,7 +107,7 @@ const pt = {
     title: 'Software, produto\ne o problema humano.',
     intro:
       'Sou Marcelo Taparelli, engenheiro de software. Minha trajetória combina experiência prática em desenvolvimento de software e produto com formação em Análise e Desenvolvimento de Sistemas, concluída em 2026, complementada por estudos em Engenharia de Software pela Alura e aprofundamento atual em Engenharia de IA Aplicada.',
-    body: 'Atuo com aplicações web, automação e manutenção de sistemas. Hoje, estou aprofundando essa base em Engenharia de IA Aplicada, com foco em sistemas e produtos inteligentes. Também incorporo agentes de IA ao fluxo de engenharia de software para apoiar planejamento, implementação, debugging, testes e validação, mantendo revisão humana e critérios explícitos de qualidade.',
+    body: 'Atuo com aplicações web, automação e manutenção de sistemas. Considero segurança parte do desenho do software: explicito limites de acesso, valido entradas, protejo segredos e testo regras críticas conforme o contexto de cada projeto. Para desempenho e confiabilidade, prefiro limites de recursos, acesso a dados previsível e latência medida a otimizações sem evidência. Hoje aprofundo essa base em Engenharia de IA Aplicada e incorporo agentes de IA ao fluxo de engenharia para apoiar planejamento, implementação, debugging, testes e validação, com revisão humana e critérios explícitos de qualidade.',
     journey: 'Uma trajetória de conexões',
     journeyText:
       'Antes e ao longo do trabalho com software, vendas, negociação e ensino de inglês ampliaram meu repertório de comunicação. Na atuação como Product Owner, trabalhei com briefing, requisitos, priorização e o ciclo de entrega de websites.',
@@ -178,7 +178,7 @@ const en: Translations = {
       fourth: 'PRODUCTS',
     },
     intro:
-      'I build software to solve real problems. I’m deepening that experience through Applied AI Engineering to develop intelligent systems and products.',
+      'I build software to solve real problems, with attention to security, reliability, and performance. I’m deepening that experience through Applied AI Engineering to develop intelligent systems and products.',
     work: 'View projects',
     contact: 'Let’s talk',
     caption: 'Engineering with a product perspective.',
@@ -204,7 +204,7 @@ const en: Translations = {
       },
       {
         title: 'Examine the outcome',
-        text: 'Look at what was delivered, acknowledge its limits, and identify what still needs to be measured.',
+        text: 'Test critical rules, observe failures and latency, acknowledge limits, and measure what matters.',
       },
     ],
   },
@@ -247,7 +247,7 @@ const en: Translations = {
     title: 'Software, product,\nand the human problem.',
     intro:
       'I’m Marcelo Taparelli, a software engineer. My background combines hands-on experience in software development and product with a completed degree in Systems Analysis and Development, complemented by Software Engineering studies at Alura and my current focus on Applied AI Engineering.',
-    body: 'I work on web applications, automation, and system maintenance. Today, I’m deepening that foundation through Applied AI Engineering, with a focus on intelligent systems and products. I also incorporate AI coding agents into my software engineering workflow for planning, implementation, debugging, testing, and validation, while maintaining human review and explicit quality gates.',
+    body: 'I work on web applications, automation, and system maintenance. I treat security as part of software design: I make access boundaries explicit, validate inputs, protect secrets, and test critical rules in the context of each project. For performance and reliability, I favor resource limits, predictable data access, and measured latency over optimization without evidence. I’m deepening this foundation through Applied AI Engineering and use AI coding agents to support planning, implementation, debugging, testing, and validation, with human review and explicit quality gates.',
     journey: 'A path of connections',
     journeyText:
       'Before and alongside software, sales, negotiation, and teaching English broadened my communication skills. As a Product Owner, I worked on briefs, requirements, prioritization, and the website delivery lifecycle.',

@@ -3,7 +3,7 @@ translationKey: salus
 locale: pt-BR
 slug: salus
 title: Salus
-description: Backend API em TypeScript para gestão de pacientes e autenticação de usuários, com arquitetura em camadas, PostgreSQL + Prisma e 47 testes automatizados.
+description: API backend em TypeScript para gestão de pacientes, emissão de JWT e regras de domínio, com arquitetura em camadas, PostgreSQL + Prisma e 47 testes automatizados.
 status: published
 reviewed: true
 order: 4
@@ -22,7 +22,7 @@ technologies:
     GitHub Actions,
   ]
 externalUrl: https://github.com/marcelotaparelli/salus
-contribution: 'API autoral de ponta a ponta: modelagem do domínio, autenticação, persistência com Prisma e 47 testes guiando a implementação.'
+contribution: 'API autoral: domínio, login com emissão de JWT, persistência com Prisma e 47 testes; evolução atual voltada a autorização e limites operacionais.'
 ---
 
 ## Problema
@@ -77,6 +77,9 @@ O desenvolvimento do Salus foi conduzido com TDD, usando os testes para
 orientar a implementação e evolução das regras de domínio e dos casos de
 uso. A implementação foi feita manualmente, sem geração de código por IA.
 
+A fase atual de hardening usa desenvolvimento assistido por agente com revisão
+humana. Ela não altera a origem manual do core descrito acima.
+
 O CI executa, em sequência:
 
 **typecheck → lint → unit tests → build → integration tests.**
@@ -90,6 +93,19 @@ O que o projeto garante hoje:
 - JWT assinado com secret vindo do ambiente; variáveis validadas no boot.
 - Arquivo `.env` fora do Git.
 - Erros inesperados respondidos sem expor stack ao cliente.
+
+## Evolução em curso
+
+A revisão atual examina verificação do JWT nas rotas, autorização por objeto
+e ownership de pacientes, validação das requisições HTTP, erros tipados e
+testes de regressão para acesso entre usuários. O cenário em que B tenta ler
+um paciente de A e recebe 404 é uma propriedade desejada, ainda não uma
+garantia publicada.
+
+Também estão no escopo da revisão paginação e limites de recursos, logs
+seguros, correlação de requisições, health/readiness e shutdown gracioso.
+A listagem atual usa `findMany()` sem paginação. Não há benchmark de latência;
+por isso este case não atribui ganhos de performance à API.
 
 ## Trade-offs
 
@@ -107,5 +123,4 @@ O que o projeto garante hoje:
 Consciência arquitetural, de forma direta: o login emite JWT, mas nenhuma
 rota valida esse token atualmente — portanto nenhuma rota é descrita aqui
 como protegida. Também não há RBAC, refresh-token rotation, paginação,
-rate limiting nem observabilidade estruturada. São os próximos passos
-naturais, não dívidas escondidas.
+rate limiting nem observabilidade estruturada comprovados neste case.

@@ -3,7 +3,7 @@ translationKey: salus
 locale: en
 slug: salus
 title: Salus
-description: TypeScript backend API for patient management and user authentication, with layered architecture, PostgreSQL + Prisma, and 47 automated tests.
+description: TypeScript backend API for patient management, JWT issuance, and domain rules, with layered architecture, PostgreSQL + Prisma, and 47 automated tests.
 status: published
 reviewed: true
 order: 4
@@ -22,7 +22,7 @@ technologies:
     GitHub Actions,
   ]
 externalUrl: https://github.com/marcelotaparelli/salus
-contribution: 'Authored API from domain modeling to authentication, Prisma persistence, and 47 tests guiding the build.'
+contribution: 'Authored the domain, login with JWT issuance, Prisma persistence, and 47 tests; current work examines authorization and operational limits.'
 ---
 
 ## Problem
@@ -75,6 +75,9 @@ Salus was developed using TDD, with tests guiding the implementation and
 evolution of domain rules and application use cases. The implementation was
 written manually, without AI-generated code.
 
+The current hardening phase uses agent-assisted development with human
+review. This does not change how the original core was built.
+
 CI runs, in order:
 
 **typecheck → lint → unit tests → build → integration tests.**
@@ -89,6 +92,19 @@ What the project guarantees today:
   at boot.
 - `.env` file kept out of Git.
 - Unexpected errors answered without exposing stack traces to the client.
+
+## Current evolution
+
+The current review examines JWT verification on routes, object-level
+authorization and patient ownership, HTTP request validation, typed errors,
+and regression tests for access across users. A test where B attempts to read
+A's patient and receives a 404 is an intended property, not a published
+guarantee yet.
+
+Pagination and resource limits, safe logging, request correlation,
+health/readiness, and graceful shutdown are also under review. The current
+patient list uses `findMany()` without pagination. There is no published
+latency benchmark, so this case makes no API performance claim.
 
 ## Trade-offs
 
@@ -106,5 +122,5 @@ What the project guarantees today:
 Stated directly, as architectural awareness: login issues a JWT, but no
 route validates that token yet — so no route is described here as
 protected. There is also no RBAC, no refresh-token rotation, no
-pagination, no rate limiting, and no structured observability. These are
-natural next steps, not hidden debt.
+pagination, no rate limiting, and no structured observability demonstrated
+in this case.

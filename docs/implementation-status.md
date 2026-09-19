@@ -1,5 +1,57 @@
 # Implementation status
 
+## Positioning review — software, AI, security, reliability (2026-09-19)
+
+- Audited Home/About copy, skills, all published project and article topics,
+  both CV sources, the Salus and Ops Triage AI cases, and the separate GitHub
+  profile README. Software Engineer remains the only professional title;
+  Applied AI Engineering remains a direction of depth. Security and
+  performance are described as engineering considerations with named
+  project evidence, never specialist titles.
+- Home/About and skills now mention critical-rule tests, access boundaries,
+  validation, secret management, request and concurrency limits, redacted
+  logs, observability, and measured latency in context. The Salus case
+  distinguishes the manually TDD-built core from current agent-assisted
+  hardening, labels authorization/pagination/operational controls as work in
+  progress, and explicitly makes no API performance claim. The Ops Triage AI
+  highlight references its implemented controls and its frozen benchmark.
+- Current Salus HEAD `ead5252b20bcd176a5b6ad873ef4935dc2557d6c` was
+  audited read-only: JWT issuance exists but no route verification or owner
+  scoping does; the patient repository lists with unbounded `findMany()`.
+  Accordingly no authorization, pagination, or API performance result is
+  presented as implemented.
+- Current Ops Triage AI HEAD `fa443d79f162fb738dd88ab28a86485ea16e47f1`
+  was audited read-only: `src/server.ts` implements API key checks, body and
+  concurrency limits, request IDs, metrics, health/readiness, and controlled
+  errors; `src/index.ts` handles shutdown; its official held-out artifact
+  reports hybrid p50 6257.7313ms, p95 7078.5636ms, max 7556.8916ms.
+- CV PT-BR/EN sources and PDFs updated; `bun run cv:generate` confirmed
+  exactly one A4 page per locale, 15.9px bottom headroom each.
+- Gates: typecheck 0 errors/0 warnings (16 existing hints), lint and format
+  clean, 37 unit tests pass, production build 28 pages and artifact check
+  clean, preview build 30 pages and artifact check clean, E2E 13 pass.
+  `bun check:release` is pending editorial approval of the separate BOLA
+  draft pair from the previous task; it correctly reports both drafts as
+  unreviewed and undated. `dist/` currently holds the **preview** build.
+- GitHub profile README is in a separate repository; no file there changed.
+
+## JWT and object authorization article — draft (2026-09-19)
+
+- Added the PT-BR and EN pair `jwt-valido-nao-significa-acesso-autorizado`
+  as `status: draft`, `reviewed: false`, with no publication date. The
+  article frames BOLA, owner-scoped lookup, a context-dependent 404
+  response, and an intended cross-user test. Both versions explicitly
+  state that Salus currently issues JWTs but does not validate them on
+  routes; no protection or passing test is claimed.
+- No distribution metadata yet; the supplied PT copy and EN adaptation
+  await editorial review before publication or channel distribution.
+- New MDX files pass Prettier; `astro check` via Node reports 0 errors,
+  0 warnings, 16 pre-existing hints. This container has no `bun` command,
+  so Bun-specific quality gates and artifact validations remain unrun.
+  A Node-based preview build cannot resolve the existing `bun` import in
+  `CvLink.astro`. The attempted build may have changed `dist/`; rebuild
+  with Bun before serving or validating that directory.
+
 Date: 2026-09-15. All quality gates below were re-verified on this date
 (previous full verification: 2026-09-13).
 Previous lab numbers (perf 1 / a11y 1, LCP ~1654 ms, CLS ~0.0006, TBT 0,
@@ -351,7 +403,8 @@ project` paragraph (hybrid architecture, frozen held-out, headline
   `Executable doesn't exist` or `libglib-2.0.so.0`, reinstall those.
 - No `curl`/`ps`/`pkill` in this container; use `bun -e 'fetch(...)'` and
   `/proc` scans to probe/kill background servers.
-- `dist/` currently holds a **production** build (28 pages, includes
+- Before the 2026-09-19 attempted Node preview build, `dist/` held a
+  **production** build (28 pages, includes
   `/artigos/evals-stop-guessing-start-measuring/` +
   `/en/articles/evals-stop-guessing-start-measuring/` and both URLs in
   `sitemap.xml`). Rebuild with `bun run build:preview` before
