@@ -82,6 +82,12 @@
   both canonicals and payloads without network publication.
 - New MDX files pass Prettier. The release gate, production and preview
   builds, both artifact validations, and E2E all pass after publication.
+- LinkedIn publication convention: every new PT-BR distribution copy should
+  contain a concise PT-BR section, a concise EN section, the PT-BR canonical,
+  and the EN canonical. This keeps the social post bilingual while directing
+  readers to the complete versions on the portfolio site. The distribution
+  workflow still receives the shared article slug; the convention is authored
+  in each article's `distribution.linkedin.text` field.
 
 Date: 2026-09-15. All quality gates below were re-verified on this date
 (previous full verification: 2026-09-13).
