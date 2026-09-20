@@ -11,36 +11,29 @@ category: Segurança · Engenharia
 distribution:
   linkedin:
     text: |
+      🇧🇷 PT-BR
+
       JWT válido não significa acesso autorizado.
 
-      Uma revisão de segurança no Salus me levou a separar duas perguntas que muitas APIs confundem:
+      Uma revisão no Salus separou duas perguntas que muitas APIs confundem: quem fez a chamada e se essa pessoa pode acessar o objeto.
 
-      - quem fez a chamada?
-      - essa pessoa pode acessar este objeto?
+      User A cria o Patient X. User B faz login, recebe um JWT válido e chama GET /patients/X. Se a consulta usa apenas patientId, B pode acessar um recurso de A. Esse é o risco de Broken Object Level Authorization (BOLA).
 
-      Imagine:
+      O hardening reproduziu o cenário em um teste (RED), introduziu ownership, escopou as operações por ownerId e passou a retornar 404 para recursos fora do ownership nesse contexto. O teste cross-user agora passa (GREEN), junto com a verificação do JWT nas rotas de pacientes.
 
-      User A cria o Patient X.
-      User B faz login, recebe um JWT válido e chama GET /patients/X.
-
-      Se a consulta usa apenas patientId, autenticação não impede que B veja um recurso de A. Esse é o tipo de falha conhecido como Broken Object Level Authorization (BOLA).
-
-      A autorização precisa chegar à regra e à consulta:
-
-      patientId + currentUser.id → recurso autorizado
-
-      Em alguns contextos, responder 403 também revela que o recurso existe. Um 404 pode ser preferível para não transformar a API em uma ferramenta de enumeração de IDs.
-
-      No Salus, um teste reproduziu esse cenário: A cria X, B recebe um JWT válido e tenta acessar X. O teste falhou (RED) porque a operação não estava escopada pelo usuário atual.
-
-      O hardening introduziu ownership, escopou as operações por ownerId e passou a retornar 404 para recursos fora do ownership nesse contexto. O teste de acesso cross-user agora passa (GREEN), junto com a verificação do JWT nas rotas de pacientes.
-
-      TDD e testes de regressão de segurança protegem essa decisão durante a evolução do sistema.
-
-      Artigo completo:
+      Leia a análise completa em português:
       https://marcelotaparelli.com.br/artigos/jwt-valido-nao-significa-acesso-autorizado/
 
-      Projeto:
+      🇺🇸 ENGLISH
+
+      A valid JWT proves authentication, not authorization. The Salus hardening reproduced a cross-user access case as a failing test, introduced ownership-scoped operations, and now returns 404 for resources outside that ownership in this context.
+
+      Read the complete English analysis:
+      https://marcelotaparelli.com.br/en/articles/jwt-valido-nao-significa-acesso-autorizado/
+
+      Security as verifiable behavior, not just configuration.
+
+      Projeto / Project:
       https://github.com/marcelotaparelli/salus
 ---
 
