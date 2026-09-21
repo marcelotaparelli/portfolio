@@ -36,7 +36,7 @@ const pt = {
       fourth: 'INTELIGENTES',
     },
     intro:
-      'Construo software para resolver problemas reais, com atenção a segurança, confiabilidade e desempenho. Estou aprofundando essa experiência em Engenharia de IA Aplicada para desenvolver sistemas e produtos inteligentes.',
+      'Transformo problemas reais em software confiável, seguro e eficiente. Estou aprofundando essa base em Engenharia de IA Aplicada para construir sistemas inteligentes com comportamento mensurável e foco em produção.',
     work: 'Ver projetos',
     contact: 'Vamos conversar',
     caption: 'Engenharia com perspectiva de produto.',
@@ -178,7 +178,7 @@ const en: Translations = {
       fourth: 'PRODUCTS',
     },
     intro:
-      'I build software to solve real problems, with attention to security, reliability, and performance. I’m deepening that experience through Applied AI Engineering to develop intelligent systems and products.',
+      'I turn real problems into reliable, secure, and efficient software. I’m deepening that foundation in Applied AI Engineering to build intelligent systems with measurable behavior and a production focus.',
     work: 'View projects',
     contact: 'Let’s talk',
     caption: 'Engineering with a product perspective.',
