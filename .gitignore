@@ -8,3 +8,6 @@ reports/
 .env
 .env.*
 !.env.example
+
+# Local agent operational memory — never version
+.agent/
