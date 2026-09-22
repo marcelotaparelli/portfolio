@@ -1,0 +1,104 @@
+---
+translationKey: resilient-transaction-api
+locale: en
+slug: resilient-transaction-api
+title: Resilient Transaction API
+description: A transactional API for studying idempotency, concurrency, and provider failure resilience, with a reproducible benchmark on a local containerized stack.
+status: published
+reviewed: true
+order: 1
+category: Backend · Distributed Systems
+role: System design and implementation
+context: Authored open-source project
+technologies: [Bun, TypeScript, PostgreSQL, Redis, Docker, Terraform]
+externalUrl: https://github.com/marcelotaparelli/resilient-transaction-api
+contribution: 'Transactional API with an idempotency claim in PostgreSQL, explicit provider resilience, and local measurements published with context and limitations.'
+---
+
+## Problem
+
+Transactional operations must handle concurrency, ambiguous external
+responses, and dependencies that can fail. This project explores those
+properties in a payment API, with public code, tests, and measurements; it is
+not a financial system running in production.
+
+## Architecture and decisions
+
+The main flow is **HTTP → service-to-service authentication → rate limiting
+→ validation → idempotency claim → provider resilience → persistence
+→ response**.
+
+- **PostgreSQL is the source of truth.** The `Idempotency-Key` is claimed
+  atomically in the database. Results distinguish a new claim, completed
+  replay, fingerprint conflict, and an operation in progress. The database
+  transaction is not held open during the external provider call.
+- **Redis is degradable.** It supports cache-aside and distributed rate
+  limiting; it is not the source of truth. During an outage, reads continue
+  through PostgreSQL, with timeout cost and reduced rate-limiting protection.
+- **The provider can fail.** The system uses timeouts, bounded retries,
+  exponential backoff, jitter, and a circuit breaker, while classifying
+  definitive, transient, and ambiguous failures. Retries can add latency and
+  cost; an ambiguous failure does not prove that the external operation did
+  not happen.
+- **Operational visibility.** The API records `X-Request-Id`, redacted JSON
+  logs, Prometheus metrics at `/metrics`, liveness, and readiness. Shutdown
+  handles SIGTERM and drains in-flight requests.
+
+The local Compose stack runs PostgreSQL, Redis, migrations, and a fake
+provider. The Docker image is multi-stage, runs Bun as PID 1 and a non-root
+user, with a read-only filesystem, dropped capabilities, and
+`no-new-privileges`.
+
+## Local benchmark
+
+The baseline ran in containers on the same Linux x86_64 host, with 4 vCPUs
+and approximately 3.8 GiB RAM; Bun 1.4.2, PostgreSQL 15.19, Redis 7.2.16,
+Docker, and a fake provider. Each main scenario had three 300-request runs at
+concurrency 25, after warmup. These are local measurements, not a production
+or AWS throughput forecast.
+
+| Scenario              |       p50 |       p95 |       p99 |    Throughput |
+| --------------------- | --------: | --------: | --------: | ------------: |
+| GET cache hit         |  3.065 ms |  4.818 ms |  5.833 ms | 7,524.7 req/s |
+| GET cache miss        |  7.301 ms | 10.210 ms | 11.706 ms | 3,289.3 req/s |
+| GET persistent replay |  6.712 ms |  9.696 ms | 11.513 ms | 3,502.0 req/s |
+| New POST              | 20.871 ms | 31.805 ms | 35.610 ms | 1,129.9 req/s |
+
+Additional controlled runs: a provider with 100 ms artificial latency had a
+109.281 ms p50 and 149.119 ms p95; a `503 → success` retry completed in
+626.263 ms, with one retry recorded. With 20 concurrent POSTs sharing a key,
+there was one creation, four completed replays, and 15 responses indicating
+processing. With Redis unavailable, observed requests returned 200; three
+runs had p50 values between 192.934 ms and 753.890 ms, a spread that does not
+support summarizing fallback with one typical latency. The rate-limit test
+observed 429 with `Retry-After` after exceeding the configured limit.
+
+## Validation and limitations
+
+The container validation report records 164 tests, 662 assertions, zero
+failures — including 20 PostgreSQL and 11 Redis integration tests — and a real
+SIGTERM shutdown during a request: the request completed, the process exited
+without SIGKILL, and shutdown took about 2.31 s. The same report ends with a
+“Still pending” list that repeats those items; these are therefore described
+as recorded runs, not as general certification that the phase is complete.
+
+- The benchmark is local, specific to the hardware described, uses a fake
+  provider, and runs client and server on the same host; it does not represent
+  production, AWS, or multiple replicas.
+- There is no exactly-once guarantee. The external outcome still depends on
+  the provider honoring the same idempotency key.
+- Redis fail-open preserves part of service availability but reduces rate
+  limiting protection during an outage; timeouts can significantly increase
+  latency.
+- The circuit breaker is process-local and is not coordinated across replicas.
+- The Terraform directory describes a target architecture and has not been
+  applied. The AWS lab is in progress; this case makes no AWS deployment
+  claim.
+
+## Evidence
+
+- Repository: <a href="https://github.com/marcelotaparelli/resilient-transaction-api" target="_blank" rel="noopener noreferrer">resilient-transaction-api on GitHub</a>
+- ADRs: <a href="https://github.com/marcelotaparelli/resilient-transaction-api/tree/main/docs/adr" target="_blank" rel="noopener noreferrer">architecture decisions</a>
+- Container validation: <a href="https://github.com/marcelotaparelli/resilient-transaction-api/blob/main/docs/validation/phase-7v-progress.md" target="_blank" rel="noopener noreferrer">phase-7v-progress.md</a>
+- Benchmark report: <a href="https://github.com/marcelotaparelli/resilient-transaction-api/blob/main/docs/performance/phase-8-baseline.md" target="_blank" rel="noopener noreferrer">phase-8-baseline.md</a>
+- Machine-readable benchmark artifacts: <a href="https://github.com/marcelotaparelli/resilient-transaction-api/tree/main/artifacts/benchmarks" target="_blank" rel="noopener noreferrer">artifacts/benchmarks</a>

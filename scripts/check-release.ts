@@ -9,6 +9,7 @@ const expected = new Set([
   'portfolio-decisions',
   'salus',
   'ops-triage-ai',
+  'resilient-transaction-api',
   'llm-did-not-win-everywhere',
 ]);
 const seen = new Map<string, Set<string>>();
