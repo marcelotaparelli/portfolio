@@ -1,5 +1,6 @@
 import { file, Glob, YAML } from 'bun';
 import { cv } from '../src/data/site';
+import { resolveArticlePair } from './distribution/article';
 
 const issues: string[] = [];
 const expected = new Set([
@@ -11,8 +12,10 @@ const expected = new Set([
   'ops-triage-ai',
   'resilient-transaction-api',
   'llm-did-not-win-everywhere',
+  'jev-1-13-decision-model-benchmark',
 ]);
 const seen = new Map<string, Set<string>>();
+const articleSlugs = new Set<string>();
 for await (const path of new Glob('src/content/**/*.mdx').scan('.')) {
   const source = await file(path).text();
   const frontmatter = source.match(/^---\n([\s\S]*?)\n---/);
@@ -22,6 +25,12 @@ for await (const path of new Glob('src/content/**/*.mdx').scan('.')) {
   }
   const data = YAML.parse(frontmatter[1]) as Record<string, unknown>;
   const key = String(data.translationKey);
+  if (
+    path.includes('/articles/') &&
+    typeof data.slug === 'string' &&
+    data.status === 'published'
+  )
+    articleSlugs.add(data.slug);
   const languages = seen.get(key) ?? new Set<string>();
   languages.add(String(data.locale));
   seen.set(key, languages);
@@ -29,6 +38,15 @@ for await (const path of new Glob('src/content/**/*.mdx').scan('.')) {
     issues.push(`${path}: awaiting bilingual editorial approval`);
   if (path.includes('/articles/') && !data.publishedAt)
     issues.push(`${path}: publication date must be set at release`);
+}
+for (const slug of articleSlugs) {
+  try {
+    await resolveArticlePair(slug);
+  } catch (error) {
+    issues.push(
+      `article ${slug}: ${error instanceof Error ? error.message : String(error)}`,
+    );
+  }
 }
 for (const key of expected) {
   if (!seen.get(key)?.has('pt-BR') || !seen.get(key)?.has('en'))

@@ -13,11 +13,11 @@ itself).
 
 ## 1. Visão geral
 
-| Workflow (nome real no GitHub) | Arquivo                                    | Trigger                                             | Manual/Automático                 | Objetivo                                                                                                               |
-| ------------------------------ | ------------------------------------------ | --------------------------------------------------- | --------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
-| CI                             | `.github/workflows/ci.yml`                 | `pull_request` (qualquer branch) e `push` em `main` | Automático                        | Rodar todos os gates determinísticos e publicar o artefato `production-dist` validado                                  |
-| Publish production branch      | `.github/workflows/deploy.yml`             | `workflow_dispatch` com input `ci_run_id`           | Manual (clique no GitHub Actions) | Publicar o artefato exato de um CI verde na branch `production` (o que a Hostinger serve)                              |
-| Distribute content             | `.github/workflows/distribute-content.yml` | `workflow_dispatch` com input `article_slug`        | Manual (clique no GitHub Actions) | Distribuir um par de artigos PT-BR + EN para DEV.to (EN) e LinkedIn (PT-BR), com ledger na branch `distribution-state` |
+| Workflow (nome real no GitHub) | Arquivo                                    | Trigger                                             | Manual/Automático                 | Objetivo                                                                                    |
+| ------------------------------ | ------------------------------------------ | --------------------------------------------------- | --------------------------------- | ------------------------------------------------------------------------------------------- |
+| CI                             | `.github/workflows/ci.yml`                 | `pull_request` (qualquer branch) e `push` em `main` | Automático                        | Rodar todos os gates determinísticos e publicar o artefato `production-dist` validado       |
+| Publish production branch      | `.github/workflows/deploy.yml`             | `workflow_dispatch` com input `ci_run_id`           | Manual (clique no GitHub Actions) | Publicar o artefato exato de um CI verde na branch `production` (o que a Hostinger serve)   |
+| Distribute content             | `.github/workflows/distribute-content.yml` | `workflow_dispatch` com input `article_slug`        | Manual (clique no GitHub Actions) | Publicar artigo EN no DEV.to e um post bilíngue no LinkedIn; ledger em `distribution-state` |
 
 ### 1.1. CI
 
@@ -243,8 +243,8 @@ Workflow real: `Distribute content`
 ### Objetivo
 
 Com uma única aprovação manual (o dispatch com o slug), validar o par
-bilíngue do artigo e publicar **a versão EN no DEV.to** e **um post
-adaptado em PT-BR no LinkedIn**, registrando o estado no ledger
+bilíngue do artigo e publicar **a versão EN no DEV.to** e **um único
+post bilíngue PT-BR + EN no LinkedIn**, registrando o estado no ledger
 (`distribution-state`, nunca `main`).
 
 ### Como disparar
@@ -267,9 +267,10 @@ textos já existem no repo.
 
 (`scripts/distribution/types.ts`): DEV.to publica **exclusivamente**
 a partir do `en` (título, descrição, markdown e canonical
-`/en/articles/…`); LinkedIn posta **exclusivamente** a partir do
-`pt` (texto customizado + canonical `/artigos/…`). Canais existentes:
-só esses dois. `ORIGIN` (base das canonicals) é
+`/en/articles/…`). LinkedIn faz **uma publicação** a partir do campo
+`pt.distribution.linkedin.text`, com a seção PT-BR primeiro, a seção EN
+depois, e as duas canonicals (`/artigos/…` e `/en/articles/…`). Canais
+existentes: só esses dois. `ORIGIN` (base das canonicals) é
 `https://marcelotaparelli.com.br`, igual ao `site` do
 `astro.config.mjs`.
 
@@ -286,15 +287,15 @@ validado pela **sua** canonical:
 - `translationKey` **igual** nos dois lados (`translationKey
 mismatch`).
 - PT-BR: `distribution.linkedin.text` presente; não vazio; ≤ 3000
-  caracteres; **contém a canonical PT**
-  (`https://marcelotaparelli.com.br/artigos/<slug>/`).
+  caracteres; contém a canonical PT e a EN, e o marcador
+  `English version below 🇬🇧` antes da seção em inglês.
 - EN: `distribution.devto.tags` presente; 1 a 4 tags, todas strings
   não vazias.
 
 Canais usam exatamente esse frontmatter (convenção documentada no
 schema `src/content.config.ts`: o arquivo EN carrega `devto.tags`, o
-PT-BR carrega `linkedin.text`; estado remoto vive no ledger, nunca
-no frontmatter). Links raiz-relativos no corpo (`/…`) são
+PT-BR carrega `linkedin.text` bilíngue; estado remoto vive no ledger,
+nunca no frontmatter). Links raiz-relativos no corpo (`/…`) são
 reescritos para URLs absolutas fora de code fences antes do envio ao
 DEV.to (`absolutizeMarkdown`).
 
@@ -374,8 +375,10 @@ Antes do commit:
       publicar; `check-release.ts` exige para itens esperados).
 - [ ] `publishedAt` definido nos dois (artigos; exigido no release).
 - [ ] `category` preenchida nos dois (exigida pelo schema).
-- [ ] PT-BR: `distribution.linkedin.text` presente, ≤ 3000 chars,
-      contendo `https://marcelotaparelli.com.br/artigos/<slug>/`.
+- [ ] PT-BR: `distribution.linkedin.text` contém uma seção PT-BR, depois
+      `---` e `English version below 🇬🇧`, seção EN, canonical PT
+      (`https://marcelotaparelli.com.br/artigos/<slug>/`) e canonical EN
+      (`https://marcelotaparelli.com.br/en/articles/<slug>/`); total ≤ 3000 chars.
 - [ ] EN: `distribution.devto.tags` com 1–4 tags não vazias.
 - [ ] Links internos do corpo válidos (o validador de artefatos
       confere links/recursos locais nos dois modos de build).
@@ -403,7 +406,7 @@ Antes de distribuir:
 6. Verificar o site em produção (as duas canonicals do artigo).
 7. Executar `Distribute content` com o `article_slug`.
 8. Verificar o post no DEV.to (canonical EN).
-9. Verificar o post no LinkedIn (texto PT-BR com canonical PT).
+9. Verificar uma única publicação no LinkedIn com as duas seções e canonicals.
 10. Em falha parcial (um canal publicou, outro não): corrigir a causa
     e rodar `Distribute content` de novo — o canal ok é pulado, o
     outro é retentado.
@@ -416,12 +419,12 @@ Derivado das validações reais (`article.ts`, `devto.ts`,
 | Sintoma                                                                                       | Causa provável                                                                                                          | Como verificar                                                      | Correção                                                                                                   |
 | --------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
 | `DEV.to: failed (article not distributable)` + `LinkedIn: failed (article not distributable)` | `resolveArticlePair` lançou; o motivo real está na linha `Website: failed (...)`                                        | Ler a linha `Website:` do resumo do run                             | Corrigir o frontmatter apontado e republicar o conteúdo (seções 5–6)                                       |
-| `missing linkedin text for LinkedIn`                                                          | PT-BR sem `distribution.linkedin.text`                                                                                  | Abrir o MDX PT e conferir o bloco `distribution:`                   | Adicionar `linkedin.text` (com a canonical PT, ≤ 3000 chars)                                               |
+| `missing linkedin text for LinkedIn`                                                          | PT-BR sem `distribution.linkedin.text`                                                                                  | Abrir o MDX PT e conferir o bloco `distribution:`                   | Adicionar post bilíngue com as duas canonicals, marcador inglês e ≤ 3000 chars                             |
 | `missing devto tags for DEV.to`                                                               | EN sem `distribution.devto.tags`                                                                                        | Abrir o MDX EN e conferir o bloco `distribution:`                   | Adicionar 1–4 tags                                                                                         |
 | `translationKey mismatch`                                                                     | PT e EN com `translationKey` diferentes                                                                                 | Comparar os dois frontmatters                                       | Igualar as keys (a identidade do par é `translationKey` + `locale`)                                        |
 | `no published PT-BR/EN article for slug`                                                      | Lado ausente, slug divergente ou `locale` errado                                                                        | Conferir `slug`/`locale` nos dois arquivos e o input `article_slug` | Alinhar slug/locale; rodar o workflow com o slug exato                                                     |
 | `status is not published` / `not reviewed` / `missing publishedAt`                            | Artigo em draft, não revisado ou sem data                                                                               | Frontmatter dos dois lados                                          | Completar revisão/data; publicar via deploy antes de distribuir                                            |
-| `linkedin text must contain the canonical URL` / `exceeds 3000`                               | Texto sem a canonical PT ou longo demais                                                                                | Buscar a canonical PT no texto; contar caracteres                   | Incluir `https://marcelotaparelli.com.br/artigos/<slug>/`; encurtar                                        |
+| `invalid LinkedIn copy`                                                                       | Falta canonical EN/seção inglesa ou excede 3000 chars                                                                   | Conferir canonicals, marcador EN e tamanho                          | Adicionar post PT → EN com as duas URLs; manter ≤ 3000 chars                                               |
 | `devto requires 1 to 4 tags`                                                                  | Zero ou 5+ tags, ou tag vazia                                                                                           | Bloco `devto.tags` no EN                                            | Deixar 1–4 tags não vazias                                                                                 |
 | `canonical URL returned HTTP <n>` / `unreachable`                                             | Artigo ainda não deployado (ou URL fora do ar)                                                                          | Abrir as duas canonicals no navegador                               | Fazer o deploy (seção 3) e só então distribuir                                                             |
 | `DEV.to: failed (disabled)` / `missing secret: ...`                                           | `DEVTO_API_KEY`, `LINKEDIN_ACCESS_TOKEN` ou `LINKEDIN_PERSON_URN` ausentes                                              | Checar Secrets/Vars do repo (nomes, nunca valores) e logs do passo  | Cadastrar o secret/variável e rodar de novo (nada foi publicado)                                           |

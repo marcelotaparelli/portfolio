@@ -11,26 +11,29 @@ category: IA aplicada · Engenharia
 distribution:
   linkedin:
     text: |
-      Jev 1.13 teve category accuracy de 1.0000 no meu experimento — em um held-out sintético congelado de 70 tickets. Isso é um resultado medido, não uma conclusão sobre produção.
+      🇧🇷 PT-BR
 
-      Comparei três paradigmas na mesma taxonomia: regras determinísticas, Ollama local e um modelo probabilístico tipado via OpenRouter Decisions API.
+      Jev 1.13 acertou todas as categorias no meu benchmark próprio com 70 tickets sintéticos: 100% de category accuracy. Na tupla completa de categoria, prioridade e risco, acertou 94,29%.
 
-      Category accuracy: 0.8286 / 0.9571 / 1.0000
-      Priority accuracy: 0.9000 / 0.9143 / 0.9857
-      Risk accuracy: 0.9571 / 0.9143 / 0.9571
+      A média foi de 569,4 ms e o custo total reportado foi US$ 0,003789618. Mas houve um contraponto importante: uma classificação incorreta de HIGH risk apareceu com confidence 0.86. Confidence alta, sozinha, não prova que a resposta esteja certa.
 
-      O experimento Jev foi uma única execução oficial após o freeze. Ele não entrou na HybridPolicy e não substituiu o Ollama.
+      O experimento foi pequeno e controlado; não demonstra superioridade em produção. No artigo, explico como comparei Jev com regras determinísticas e Ollama e o que esses resultados não permitem concluir.
 
-      Na execução standalone, Jev teve média de 569,4 ms, p95 de 712,2 ms e custo reportado de US$ 0,003789618 para 70 requests. Esses números vêm da chamada via API; não tenho uma medição histórica equivalente de latência standalone ou custo do Ollama.
-
-      Também encontrei um HIGH risk incorreto com confidence 0,86. Confidence alta não prova correção semântica. Com apenas 70 tickets sintéticos, nem os resultados por threshold nem a análise exploratória de calibração definem uma política de produção.
-
-      Artigo completo:
+      Artigo completo em português:
       https://marcelotaparelli.com.br/artigos/jev-1-13-decision-model-benchmark/
 
-      Case e evidências:
-      https://marcelotaparelli.com.br/projetos/ops-triage-ai/
-      https://github.com/marcelotaparelli/ops-triage-ai/blob/4c41e0b/docs/evaluation/jev-1.13-held-out-4c41e0b.md
+      ---
+
+      English version below 🇬🇧
+
+      Jev 1.13 got every category right in my own benchmark of 70 synthetic tickets: 100% category accuracy. It got the full category, priority, and risk tuple right in 94.29% of cases.
+
+      Mean latency was 569.4 ms, and the reported total cost was US$ 0.003789618. One incorrect HIGH risk classification had confidence 0.86. High confidence alone does not prove a prediction is semantically correct.
+
+      This was a small, controlled experiment; it does not demonstrate production superiority. The article explains the comparison with deterministic rules and Ollama, and what the results cannot establish.
+
+      Read the full article in English:
+      https://marcelotaparelli.com.br/en/articles/jev-1-13-decision-model-benchmark/
 
       #Jev #AIEngineering #AppliedAI #LLM
 ---

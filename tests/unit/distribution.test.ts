@@ -43,7 +43,16 @@ publishedAt: 2026-09-12
 category: Engenharia
 distribution:
   linkedin:
-    text: "Olá. Leia em ${PT_CANONICAL}"`;
+    text: |
+      🇧🇷 PT-BR
+
+      Leia: ${PT_CANONICAL}
+
+      ---
+
+      English version below 🇬🇧
+
+      Read: ${EN_CANONICAL}`;
 
 const enFrontmatter = `translationKey: portfolio-decisions
 locale: en
@@ -168,12 +177,27 @@ describe('bilingual pair resolution', () => {
     expect(payload.canonical_url).toBe(EN_CANONICAL);
     expect(payload.canonical_url).not.toContain('/artigos/');
   });
-  test('LinkedIn receives the PT-BR copy with the /artigos/ canonical', async () => {
+  test('LinkedIn receives one bilingual copy with both article canonicals', async () => {
     const pair = await resolveArticlePair(SLUG, pairReader());
     const payload = buildLinkedinPayload(pair.pt, 'urn:li:person:abc123');
-    expect(payload.commentary).toContain('Olá');
+    expect(payload.commentary).toContain('🇧🇷 PT-BR');
     expect(payload.commentary).toContain(PT_CANONICAL);
-    expect(payload.commentary).not.toContain(EN_CANONICAL);
+    expect(payload.commentary).toContain('English version below 🇬🇧');
+    expect(payload.commentary).toContain(EN_CANONICAL);
+  });
+  test('rejects a LinkedIn post missing the EN canonical or English section', async () => {
+    const noEnCanonical = pairReader(
+      ptFrontmatter.replace(EN_CANONICAL, 'missing EN link'),
+    );
+    await expect(resolveArticlePair(SLUG, noEnCanonical)).rejects.toThrow(
+      'EN canonical URL',
+    );
+    const noEnglishSection = pairReader(
+      ptFrontmatter.replace('English version below 🇬🇧', 'More details'),
+    );
+    await expect(resolveArticlePair(SLUG, noEnglishSection)).rejects.toThrow(
+      'bilingual section marker',
+    );
   });
   test('rejects translationKey mismatch between PT and EN', async () => {
     const reader = pairReader(

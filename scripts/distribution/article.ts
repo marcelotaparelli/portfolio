@@ -166,9 +166,8 @@ function resolveOne(
 /**
  * Resolve the PT-BR + EN pair for a slug. Fails closed unless both sides
  * exist, are published, reviewed and dated, share the same translationKey
- * and carry the same slug. The EN side must provide DEV.to tags and the
- * PT side must provide the LinkedIn copy — each validated against its own
- * canonical URL.
+ * and carry the same slug. DEV.to uses EN content; LinkedIn uses one PT-authored
+ * post containing both language sections and both article canonicals.
  */
 export async function resolveArticlePair(
   slug: string,
@@ -198,6 +197,14 @@ export async function resolveArticlePair(
     );
   if (pt.distribution.linkedinText === undefined)
     failClosed(`${ptParsed.path}: missing linkedin text for LinkedIn`);
+  if (!pt.distribution.linkedinText.includes(en.canonicalUrl))
+    failClosed(
+      `${ptParsed.path}: LinkedIn post must contain the EN canonical URL`,
+    );
+  if (!pt.distribution.linkedinText.includes('English version below 🇬🇧'))
+    failClosed(
+      `${ptParsed.path}: LinkedIn post must include the bilingual section marker`,
+    );
   if (en.distribution.devtoTags === undefined)
     failClosed(`${enParsed.path}: missing devto tags for DEV.to`);
   return { slug, translationKey: pt.translationKey, pt, en };

@@ -1,4 +1,4 @@
-// Shared types for Phase 1 content distribution (DEV.to + LinkedIn).
+// Shared types for content distribution (DEV.to + LinkedIn).
 // No secrets are ever stored in these structures.
 
 export const ORIGIN = 'https://marcelotaparelli.com.br';
@@ -20,8 +20,8 @@ export interface ResolvedArticle {
 
 /**
  * Bilingual article pair for distribution.
- * DEV.to publishes exclusively from `en` (canonical /en/articles/…);
- * LinkedIn posts exclusively from `pt` (canonical /artigos/…).
+ * DEV.to publishes the EN article (canonical /en/articles/…). LinkedIn
+ * publishes one PT-authored bilingual copy with both article canonicals.
  * No runtime translation: both versions already exist in the repo.
  */
 export interface ResolvedPair {

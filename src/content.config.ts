@@ -42,9 +42,9 @@ const articles = defineCollection({
     publishedAt: z.coerce.date().optional(),
     updatedAt: z.coerce.date().optional(),
     // Distribution input metadata (DEV.to + LinkedIn).
-    // Convention: the EN file carries devto.tags, the PT-BR file carries
-    // linkedin.text. Remote publication state lives in the ledger on the
-    // `distribution-state` branch, never in frontmatter.
+    // Convention: the EN file carries devto.tags; the PT-BR file carries
+    // one bilingual linkedin.text with PT + EN sections and both canonicals.
+    // Remote publication state lives on `distribution-state`, never here.
     distribution: z
       .object({
         devto: z
@@ -55,8 +55,9 @@ const articles = defineCollection({
           .optional(),
         linkedin: z
           .object({
-            // Versioned post copy, reviewed in PR. Must contain the
-            // canonical URL; LinkedIn allows up to 3000 characters.
+            // One versioned bilingual post, reviewed in PR. The distribution
+            // validator checks both canonicals and the English section marker.
+            // LinkedIn allows up to 3000 characters.
             text: z.string().min(1).max(3000),
           })
           .optional(),

@@ -77,7 +77,7 @@
   the 404/403 information-disclosure trade-off, and the concrete RED →
   ownership fix → GREEN regression-test path now implemented in Salus.
 - Distribution metadata follows the existing convention: PT-BR LinkedIn
-  copy includes the PT canonical (1,407 characters); EN carries DEV.to tags
+  copy is one bilingual post with both canonicals (1,407 characters); EN carries DEV.to tags
   `security`, `api`, `backend`, `typescript`. Distribution dry-run resolved
   both canonicals and payloads without network publication.
 - New MDX files pass Prettier. The release gate, production and preview
@@ -88,6 +88,23 @@
   readers to the complete versions on the portfolio site. The distribution
   workflow still receives the shared article slug; the convention is authored
   in each article's `distribution.linkedin.text` field.
+
+## Distribution audit — one bilingual LinkedIn post (2026-09-23)
+
+- The bilingual LinkedIn convention was already recorded above and practiced
+  in the JWT article metadata. `docs/github-actions.md`, the distribution
+  type comments, workflow comments, and validator still described or allowed
+  a PT-only post; the Jev metadata also had only Portuguese copy.
+- Corrected the Jev metadata to one PT-BR + EN post, with the PT canonical in
+  the first section, `---` + `English version below 🇬🇧`, the EN canonical in
+  the second section, and shared hashtags at the end.
+- The distribution pair validator now fails closed unless that single LinkedIn
+  copy contains both canonicals and the English section marker. `check-release`
+  resolves every published article pair, so future published articles receive
+  the same check. DEV.to remains EN-only; the publication workflow and API
+  mechanism are unchanged.
+- Updated existing LinkedIn frontmatter copy to follow the same two-language
+  convention; article bodies and the DEV.to EN metadata were not changed.
 
 Date: 2026-09-15. All quality gates below were re-verified on this date
 (previous full verification: 2026-09-13).
@@ -206,7 +223,7 @@ History kept below; do not re-invent resolved items:
   payloads, no network, no publish) OK. No real publication, no deploy,
   production untouched.
 
-## Distribution — bilingual correction (DEV.to EN + LinkedIn PT, 2026-09-13)
+## Distribution — initial channel split (DEV.to EN + LinkedIn copy from PT-BR, 2026-09-13)
 
 - Root cause of the bad first run: the pipeline resolved only the PT-BR
   file, so DEV.to received the Portuguese version. Fixed model:
@@ -214,12 +231,13 @@ History kept below; do not re-invent resolved items:
   unless both are published, reviewed, dated, share `translationKey`
   and carry the same slug; EN must provide `devto.tags`, PT must
   provide the LinkedIn copy (each validated against its own canonical).
-- Channel split: DEV.to publishes exclusively from EN (`title`,
+- Original channel split: DEV.to publishes exclusively from EN (`title`,
   `description`, `markdown`, canonical
-  `https://marcelotaparelli.com.br/en/articles/<slug>/`); LinkedIn
-  posts exclusively from PT-BR (custom copy, canonical
-  `https://marcelotaparelli.com.br/artigos/<slug>/`). No runtime
-  translation; single human approval (`workflow_dispatch` + slug) kept.
+  `https://marcelotaparelli.com.br/en/articles/<slug>/`); LinkedIn's custom
+  copy is authored in the PT-BR frontmatter and uses the PT canonical. The
+  later bilingual-copy convention adds the EN section and EN canonical to
+  that same post. No runtime translation; single human approval
+  (`workflow_dispatch` + slug) kept.
 - Frontmatter: `devto.tags` moved PT → EN; PT keeps only
   `linkedin.text`. `src/content.config.ts` schema unchanged (already
   supports both blocks); only the convention comment was clarified.
@@ -384,8 +402,8 @@ project` paragraph (hybrid architecture, frozen held-out, headline
   `Evals:` colon breaks YAML plain scalars.
 - Dry-run (resolve + build both payloads, no network, no publish): pair
   resolves with per-locale canonicals (`/artigos/<slug>/`,
-  `/en/articles/<slug>/`); DEV.to payload EN-only; LinkedIn payload PT
-  copy, `PUBLIC`/`PUBLISHED`. No real publication, no deploy, no push.
+  `/en/articles/<slug>/`); DEV.to payload EN-only; LinkedIn payload is one
+  custom post from PT-BR metadata. No real publication, no deploy, no push.
 - Gates: typecheck 0 errors, lint clean, format clean (normalized the 2
   new files with the repo's own Prettier), `bun test` 37 pass,
   production build 28 pages + `check-artifacts.ts dist` clean, preview
