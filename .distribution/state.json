@@ -54,5 +54,19 @@
       "at": "2026-09-19T21:12:05.368Z",
       "canonicalUrl": "https://marcelotaparelli.com.br/artigos/jwt-valido-nao-significa-acesso-autorizado/"
     }
+  },
+  "jev-1-13-decision-model-benchmark": {
+    "devto": {
+      "id": "4720483",
+      "url": "https://dev.to/marcelotaparelli/jev-113-in-practice-i-tested-a-decision-model-against-rules-and-a-local-llm-3p1c",
+      "at": "2026-09-23T02:33:26.339Z",
+      "canonicalUrl": "https://marcelotaparelli.com.br/en/articles/jev-1-13-decision-model-benchmark/"
+    },
+    "linkedin": {
+      "id": "urn:li:share:7508352802407092224",
+      "url": "urn:li:share:7508352802407092224",
+      "at": "2026-09-23T02:33:27.016Z",
+      "canonicalUrl": "https://marcelotaparelli.com.br/artigos/jev-1-13-decision-model-benchmark/"
+    }
   }
 }
