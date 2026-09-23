@@ -3,7 +3,7 @@ translationKey: ops-triage-ai
 locale: pt-BR
 slug: ops-triage-ai
 title: Ops Triage AI
-description: Sistema de triagem com baseline determinístico, LLM local e política híbrida; benchmark congelado inclui avaliação isolada de modelo probabilístico tipado.
+description: Sistema de triagem com baseline determinístico, LLM local e política híbrida; Jev 1.13, modelo probabilístico tipado, foi avaliado separadamente no mesmo held-out congelado.
 status: published
 reviewed: true
 order: 0
@@ -21,6 +21,8 @@ technologies:
     Docker,
     GitHub Actions,
     Ollama,
+    Jev 1.13,
+    OpenRouter,
   ]
 externalUrl: https://github.com/marcelotaparelli/ops-triage-ai
 contribution: 'Baseline determinístico, Ollama e política híbrida preservada; avaliação separada de Jev 1.13, sem integração ao fluxo da aplicação.'
@@ -78,6 +80,11 @@ A avaliação oficial é um benchmark held-out congelado: 70 tickets sintéticos
 execução única, sem ajuste de regras contra os erros do held-out. Parâmetros
 congelados — commit `f36e8ef8fcc70be09ab5ba9883efc7c34f3591a2`, prompt
 `ollama-triage-v3`, modelo `qwen2.5:7b-instruct-q5_K_S`, timeout de 120000ms.
+
+A tabela oficial abaixo corresponde ao benchmark histórico do baseline
+determinístico, Ollama e HybridPolicy. Uma avaliação posterior e isolada
+adicionou Jev 1.13 como terceiro paradigma no mesmo held-out congelado; Jev
+não foi integrado à `HybridPolicy`.
 
 O harness compara baseline determinístico, LLM standalone e híbrido em
 qualidade, recall de severidade, divergência, fallback, motivos de revisão e
