@@ -3,7 +3,7 @@ translationKey: ops-triage-ai
 locale: en
 slug: ops-triage-ai
 title: Ops Triage AI
-description: Operational triage system combining a deterministic baseline, a local LLM via Ollama, and a hybrid policy with human review, fallback, and an audit trail — evaluated on a frozen 70-ticket held-out benchmark.
+description: Triage system with a deterministic baseline, local LLM, and hybrid policy; frozen benchmark includes a separate typed probabilistic model evaluation.
 status: published
 reviewed: true
 order: 0
@@ -23,7 +23,7 @@ technologies:
     Ollama,
   ]
 externalUrl: https://github.com/marcelotaparelli/ops-triage-ai
-contribution: 'Hybrid system with frozen evaluation, fallback, and human review; API with request limits, redacted logs, and benchmark latency measurements.'
+contribution: 'Deterministic baseline, Ollama, and preserved hybrid policy; separate evaluation of Jev 1.13 without application integration.'
 ---
 
 ## Problem
@@ -141,8 +141,79 @@ Stated directly, what this case does not claim:
 - The adversarial DEV baseline showed 0.5 category accuracy, 0.5 priority
   accuracy, and 0.75 risk accuracy.
 
+## Jev 1.13 experiment
+
+This experiment evaluated a third paradigm against the same taxonomy:
+deterministic rules, a generative LLM, and a typed probabilistic decision
+model. It was an isolated evaluation: Jev was not integrated into
+`HybridPolicy` and did not replace Ollama.
+
+The `TriageClassifier` adapter used Bun native fetch and the OpenRouter
+Decisions API with `typesafe/jev-1.13`; all 73 real responses resolved to
+`typesafe/jev-1.13-20260917`. No dependency was added. Three DEV calls ran
+before the freeze (`1b6d7ff`); commit `4c41e0b` froze the configuration and ran
+one held-out evaluation on the same 70 synthetic labels used in the historical
+comparison.
+
+| Metric                        | Deterministic | Ollama | Jev 1.13 |
+| ----------------------------- | ------------: | -----: | -------: |
+| Category accuracy             |        0.8286 | 0.9571 |   1.0000 |
+| Category macro-F1             |        0.8512 | 0.9550 |   1.0000 |
+| Priority accuracy             |        0.9000 | 0.9143 |   0.9857 |
+| Risk accuracy                 |        0.9571 | 0.9143 |   0.9571 |
+| HIGH/CRITICAL priority recall |        0.7857 | 1.0000 |   1.0000 |
+| HIGH risk recall              |        0.5714 | 0.7143 |   0.8571 |
+
+Standalone Jev got the category/priority/risk tuple exactly right in 66/70
+cases (0.9429). The historical benchmark did not emit this metric for the
+standalone deterministic and Ollama classifiers; the 0.8286 exact tuple
+accuracy above belongs to the historical hybrid path, which has a different
+decision flow.
+
+Across Jev's 70 held-out calls, standalone latency averaged 569.4 ms, with a
+545.5 ms p50, 712.2 ms p95, and 1,142.2 ms maximum. The API reported 90,229
+input tokens and US$ 0.003789618 in cost; there were no API or schema failures.
+The historical Ollama benchmark did not emit standalone latency or cost. Its
+6–7 second latency belongs to the hybrid path and is not a like-for-like
+comparison with this standalone Jev call.
+
+Jev retained probability distributions, continuous confidence, and top-1 /
+top-2 margins. Still, one incorrectly classified HIGH risk had confidence
+0.86: high confidence does not guarantee semantic correctness.
+
+### Selective automation and calibration analysis
+
+The exploratory analysis below requires all three confidence values to meet
+the threshold. These are observed results on the same small dataset, not a
+production threshold choice:
+
+| Threshold | Coverage | Exact accuracy on covered subset |
+| --------: | -------: | -------------------------------: |
+|      0.00 |    70/70 |                           94.29% |
+|      0.50 |    65/70 |                           95.38% |
+|      0.70 |    60/70 |                           96.67% |
+|      0.80 |    54/70 |                             100% |
+|      0.90 |    51/70 |                             100% |
+|      0.95 |    45/70 |                             100% |
+|      0.99 |    37/70 |                             100% |
+
+Exploratory calibration analysis measured Brier scores of 0.0005 for
+category, 0.0386 for priority, and 0.0800 for risk; top-1 ECE was 0.0054,
+0.0329, and 0.0226, respectively. These are descriptive estimates from 70
+synthetic tickets with sparse bins; they do not establish calibration for this
+domain.
+
+On the same frozen synthetic held-out labels, Jev produced the strongest
+measured category and priority results in this experiment, along with typed
+probability distributions and sub-second average standalone latency. The
+small synthetic dataset does not establish production superiority. The
+architectural decision remains benchmark/evaluation only; there was no
+`HybridPolicy` integration.
+
 ## Evidence
 
 - Repository: <a href="https://github.com/marcelotaparelli/ops-triage-ai" target="_blank" rel="noopener noreferrer">ops-triage-ai on GitHub</a>
 - Official held-out report: <a href="https://github.com/marcelotaparelli/ops-triage-ai/blob/main/docs/evaluation/official-held-out-f36e8ef.md" target="_blank" rel="noopener noreferrer">official-held-out-f36e8ef.md</a>
 - Machine-readable artifact: <a href="https://github.com/marcelotaparelli/ops-triage-ai/blob/main/artifacts/official-held-out-f36e8ef.json" target="_blank" rel="noopener noreferrer">official-held-out-f36e8ef.json</a>
+- Jev 1.13 experiment report: <a href="https://github.com/marcelotaparelli/ops-triage-ai/blob/main/docs/evaluation/jev-1.13-held-out-4c41e0b.md" target="_blank" rel="noopener noreferrer">jev-1.13-held-out-4c41e0b.md</a>
+- Jev held-out artifact: <a href="https://github.com/marcelotaparelli/ops-triage-ai/blob/main/artifacts/jev-1.13-held-out-4c41e0b.json" target="_blank" rel="noopener noreferrer">jev-1.13-held-out-4c41e0b.json</a>
