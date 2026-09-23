@@ -1,0 +1,173 @@
+<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#061321"><title>Resilient Transaction API — Marcelo Taparelli</title><meta name="description" content="API transacional com idempotência e resiliência a falhas, validada em lab AWS temporário e benchmark reproduzível em Docker local."><link rel="canonical" href="https://marcelotaparelli.com.br/projetos/resilient-transaction-api/"><link rel="alternate" hreflang="pt-BR" href="https://marcelotaparelli.com.br/projetos/resilient-transaction-api/"><link rel="alternate" hreflang="en" href="https://marcelotaparelli.com.br/en/projects/resilient-transaction-api/"><link rel="alternate" hreflang="x-default" href="https://marcelotaparelli.com.br/projetos/resilient-transaction-api/"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="preload" href="/fonts/inter-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin><meta property="og:type" content="website"><meta property="og:site_name" content="Marcelo Taparelli"><meta property="og:title" content="Resilient Transaction API — Marcelo Taparelli"><meta property="og:description" content="API transacional com idempotência e resiliência a falhas, validada em lab AWS temporário e benchmark reproduzível em Docker local."><meta property="og:url" content="https://marcelotaparelli.com.br/projetos/resilient-transaction-api/"><meta property="og:locale" content="pt_BR"><meta property="og:locale:alternate" content="en_US"><meta property="og:image" content="https://marcelotaparelli.com.br/og/pt-br.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="Marcelo Taparelli — From real problems to intelligent products."><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Resilient Transaction API — Marcelo Taparelli"><meta name="twitter:description" content="API transacional com idempotência e resiliência a falhas, validada em lab AWS temporário e benchmark reproduzível em Docker local."><meta name="twitter:image" content="https://marcelotaparelli.com.br/og/pt-br.png"><meta name="twitter:image:alt" content="Marcelo Taparelli — From real problems to intelligent products."><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Person","@id":"https://marcelotaparelli.com.br/#person","name":"Marcelo Taparelli","url":"https://marcelotaparelli.com.br","jobTitle":"Software Engineer","sameAs":["https://www.linkedin.com/in/marcelo-taparelli/","https://github.com/marcelotaparelli"]},{"@type":"WebSite","@id":"https://marcelotaparelli.com.br/#website","url":"https://marcelotaparelli.com.br","name":"Marcelo Taparelli","inLanguage":["pt-BR","en"]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Projetos","item":"https://marcelotaparelli.com.br/projetos/"},{"@type":"ListItem","position":2,"name":"Resilient Transaction API","item":"https://marcelotaparelli.com.br/projetos/resilient-transaction-api/"}]}]}</script><link rel="stylesheet" href="/_astro/BaseLayout.B294Op8F.css"></head><body><a class="skip-link" href="#main">Pular para o conteúdo</a><header class="site-header"><div class="container header-inner"><a class="brand" href="/" aria-label="Marcelo Taparelli"><svg width="30" height="30" viewBox="0 0 40 40" fill="none" aria-hidden="true"><path d="M5 30V10l10 12 10-12v20M25 10h12M31 10v20" stroke="currentColor" stroke-width="2" stroke-linejoin="round"></path></svg><span>Marcelo Taparelli<span class="brand-dot">.</span></span></a><nav class="desktop-nav" aria-label="Navegação principal"><a href="/projetos/" aria-current="page">Projetos</a><a href="/sobre/">Sobre</a><a href="/artigos/">Artigos</a><a href="/contato/">Contato</a></nav><div class="header-actions"><nav class="language-switch" aria-label="Selecionar idioma"><a href="/projetos/resilient-transaction-api/" lang="pt-BR" hreflang="pt-BR" aria-current="true" aria-label="Português">PT</a><span aria-hidden="true">/</span><a href="/en/projects/resilient-transaction-api/" lang="en" hreflang="en" aria-label="English">EN</a></nav><details class="mobile-menu"><summary aria-label="Menu"><span class="menu-lines" aria-hidden="true"></span><span class="sr-only">Menu</span></summary><nav aria-label="Navegação principal"><a href="/projetos/" aria-current="page">Projetos</a><a href="/sobre/">Sobre</a><a href="/artigos/">Artigos</a><a href="/contato/">Contato</a></nav></details></div></div></header><script type="module">var e=document.querySelector(`.mobile-menu`),t=e?.querySelector(`summary`);document.addEventListener(`keydown`,n=>{n.key===`Escape`&&e?.open&&(e.open=!1,t?.focus())}),document.addEventListener(`click`,t=>{e?.open&&t.target instanceof Node&&!e.contains(t.target)&&(e.open=!1)});</script><main id="main" tabindex="-1"><div class="container"><nav class="breadcrumb" aria-label="Navegação estrutural"><a href="/projetos/">Projetos</a><span aria-hidden="true">/</span><span aria-current="page">Resilient Transaction API</span></nav><header class="page-intro case-intro"><p class="eyebrow">Backend · Sistemas distribuídos</p><h1>Resilient Transaction API</h1><p class="section-description">API transacional com idempotência e resiliência a falhas, validada em lab AWS temporário e benchmark reproduzível em Docker local.</p><a class="text-link mt-5" href="https://github.com/marcelotaparelli/resilient-transaction-api" target="_blank" rel="noopener noreferrer" aria-label="Visitar site: Resilient Transaction API — abre em nova aba">Visitar site<svg class="arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 18 18 6M6 6h12v12"></path></svg></a></header><dl class="case-metadata"><div><dt>Minha contribuição</dt><dd>Desenho e implementação do sistema</dd></div><div><dt>Contexto</dt><dd>Projeto público autoral — código aberto</dd></div><div><dt>Tecnologias confirmadas</dt><dd>Bun · TypeScript · PostgreSQL · Redis · Docker · Terraform</dd></div></dl><div class="editorial-grid"><aside class="editorial-sidebar"><p class="eyebrow">Neste artigo</p><nav aria-label="Neste artigo"><a href="#problema">Problema</a><a href="#arquitetura-e-decisões">Arquitetura e decisões</a><a href="#benchmark-local">Benchmark local</a><a href="#aws-validation-lab-temporário">AWS validation lab temporário</a><a href="#validação-local-e-limites">Validação local e limites</a><a href="#evidências">Evidências</a></nav></aside><article class="prose"><h2 id="problema">Problema</h2>
+<p>Operações transacionais precisam lidar com concorrência, respostas externas
+ambíguas e dependências que podem falhar. Este projeto explora essas
+propriedades em uma API de pagamentos, com código, testes e medições públicos;
+não representa um sistema financeiro em produção.</p>
+<h2 id="arquitetura-e-decisões">Arquitetura e decisões</h2>
+<p>O fluxo principal é <strong>HTTP → autenticação service-to-service → rate limiting
+→ validação → claim de idempotência → resiliência do provider → persistência
+→ resposta</strong>.</p>
+<ul>
+<li><strong>PostgreSQL é a fonte de verdade.</strong> A <code>Idempotency-Key</code> é reivindicada
+atomicamente no banco. Os resultados distinguem claim novo, replay concluído,
+conflito de fingerprint e operação em processamento. A transação de banco
+não fica aberta durante a chamada externa ao provider.</li>
+<li><strong>Redis é degradável.</strong> É usado para cache-aside e rate limiting distribuído;
+não é fonte de verdade. Durante indisponibilidade, leituras continuam pelo
+PostgreSQL, com custo de timeout e menor proteção de rate limiting.</li>
+<li><strong>O provider pode falhar.</strong> Há timeout, retry limitado, exponential backoff,
+jitter e circuit breaker, com classificação de falhas definitivas,
+transitórias e ambíguas. Repetir pode aumentar latência e custo; uma falha
+ambígua não prova que a operação externa deixou de acontecer.</li>
+<li><strong>Operação observável.</strong> A API registra <code>X-Request-Id</code>, logs JSON redigidos,
+métricas Prometheus em <code>/metrics</code>, liveness e readiness. O encerramento
+trata SIGTERM e drena requests em andamento.</li>
+</ul>
+<p>O stack local usa PostgreSQL, Redis, migração e fake provider via Compose. A
+imagem Docker é multi-stage, executa Bun como PID 1 e usuário não-root, com
+filesystem read-only, capabilities removidas e <code>no-new-privileges</code>.</p>
+<h2 id="benchmark-local">Benchmark local</h2>
+<p>Baseline executada em containers na mesma máquina Linux x86_64, com 4 vCPUs e
+aproximadamente 3,8 GiB de RAM; Bun 1.4.2, PostgreSQL 15.19, Redis 7.2.16,
+Docker e fake provider. Cada cenário principal teve três execuções de 300
+requests, concorrência 25, após aquecimento. São medições locais, não uma
+previsão de throughput de produção ou AWS.</p>
+<table>
+<thead>
+<tr>
+<th>Cenário</th>
+<th style="text-align:right">p50</th>
+<th style="text-align:right">p95</th>
+<th style="text-align:right">p99</th>
+<th style="text-align:right">Throughput</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GET cache hit</td>
+<td style="text-align:right">3.065 ms</td>
+<td style="text-align:right">4.818 ms</td>
+<td style="text-align:right">5.833 ms</td>
+<td style="text-align:right">7,524.7 req/s</td>
+</tr>
+<tr>
+<td>GET cache miss</td>
+<td style="text-align:right">7.301 ms</td>
+<td style="text-align:right">10.210 ms</td>
+<td style="text-align:right">11.706 ms</td>
+<td style="text-align:right">3,289.3 req/s</td>
+</tr>
+<tr>
+<td>GET replay persistente</td>
+<td style="text-align:right">6.712 ms</td>
+<td style="text-align:right">9.696 ms</td>
+<td style="text-align:right">11.513 ms</td>
+<td style="text-align:right">3,502.0 req/s</td>
+</tr>
+<tr>
+<td>POST novo</td>
+<td style="text-align:right">20.871 ms</td>
+<td style="text-align:right">31.805 ms</td>
+<td style="text-align:right">35.610 ms</td>
+<td style="text-align:right">1,129.9 req/s</td>
+</tr>
+</tbody>
+</table>
+<p>Ensaios controlados complementares: provider com 100 ms artificiais teve p50
+109.281 ms e p95 149.119 ms; retry <code>503 → success</code> concluiu em 626.263 ms,
+com um retry registrado. Com 20 POSTs simultâneos usando a mesma key, houve
+uma criação, quatro replays concluídos e 15 respostas de operação em
+processamento. Com Redis indisponível, os requests observados retornaram 200;
+três runs tiveram p50 entre 192.934 ms e 753.890 ms, uma variação que impede
+resumir o fallback em uma única latência típica. O teste de rate limit observou
+429 com <code>Retry-After</code> ao exceder o limite configurado.</p>
+<h2 id="aws-validation-lab-temporário">AWS validation lab temporário</h2>
+<p>Em <code>us-east-1</code>, Terraform provisionou 35 recursos para um lab temporário real.
+A arquitetura exercitada foi <strong>HTTPS/ACM → ALB → ECS/Fargate → Bun API → RDS
+PostgreSQL privado / ElastiCache Redis privado</strong>, com Secrets Manager,
+CloudWatch Logs, ECR e IAM como serviços de apoio. A API e o fake provider
+determinístico rodaram como containers da mesma task; uma task Fargate one-off
+executou as migrations.</p>
+<p>Para reduzir o custo do lab, as tasks ficaram em public subnets com public IP,
+mas aceitaram tráfego inbound somente do ALB. RDS e Redis permaneceram
+privados. Essa foi uma escolha temporária de laboratório, não a topologia
+preferida para produção: essa mantém as tasks ECS em private subnets com egress
+deliberado por NAT Gateway e/ou VPC endpoints.</p>
+<table>
+<thead>
+<tr>
+<th>Verificação no lab AWS</th>
+<th>Evidência observada</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Target do ALB e <code>/health/ready</code></td>
+<td><code>healthy</code>; HTTP 200 <code>ready</code></td>
+</tr>
+<tr>
+<td>POST autenticado e replay com a mesma <code>Idempotency-Key</code></td>
+<td>HTTP 201; depois HTTP 200 com a mesma transação</td>
+</tr>
+<tr>
+<td>Cache-aside</td>
+<td><code>cache_miss_total 1</code>; <code>cache_hit_total 1</code></td>
+</tr>
+<tr>
+<td>Rate limiter</td>
+<td>5 respostas HTTP 200; a 6ª recebeu HTTP 429</td>
+</tr>
+<tr>
+<td>CloudWatch Logs</td>
+<td>Logs estruturados, request IDs e <code>RATE_LIMIT_EXCEEDED</code></td>
+</tr>
+<tr>
+<td>Serviço ECS ao final do smoke test</td>
+<td>desired 1, running 1, pending 0, failed 0</td>
+</tr>
+</tbody>
+</table>
+<p>O deploy também revelou dois ajustes necessários: o RDS recusou backup
+retention de 7 dias no ambiente usado, então foi configurado para 1 dia; e o
+PostgreSQL no RDS exigiu TLS, então a <code>DATABASE_URL</code> recebeu <code>sslmode=require</code>.</p>
+<p>O ciclo foi fechado após os testes: ECR esvaziado, <code>terraform destroy</code> removeu
+os 35 recursos e o Terraform state ficou vazio. A auditoria final não encontrou
+ECS, RDS, ElastiCache, ALB, ECR ou CloudWatch Logs; o CNAME público foi removido.
+O ALB e todos os demais recursos Terraform do lab foram destruídos. O
+certificado público ACM foi mantido intencionalmente para possível reutilização;
+os secrets ficaram agendados para exclusão.</p>
+<p>Este foi um lab de validação temporário e não representa um ambiente de
+produção. O serviço usou <code>desired=1</code>: não foi demonstrada alta disponibilidade nem
+compartilhamento do rate limiter entre múltiplas réplicas.</p>
+<h2 id="validação-local-e-limites">Validação local e limites</h2>
+<p>O relatório de validação containerizada local registra 164 testes, 662
+assertions, zero falhas — incluindo 20 integrações PostgreSQL e 11 Redis — e
+um shutdown real via SIGTERM durante request: a request terminou, o processo
+saiu sem SIGKILL e o encerramento levou cerca de 2,31 s.</p>
+<ul>
+<li>O benchmark é local, específico ao hardware descrito, executado com fake
+provider e cliente/servidor no mesmo host; não representa produção, AWS ou
+múltiplas réplicas. O lab AWS não foi usado para medir benchmark.</li>
+<li>Não há garantia exactly-once. O resultado externo ainda depende de o
+provider respeitar a mesma chave de idempotência.</li>
+<li>Redis fail-open mantém parte do serviço disponível, mas reduz a proteção de
+rate limiting durante outage; timeouts podem elevar bastante a latência.</li>
+<li>O circuit breaker é local ao processo, não coordenado entre réplicas.</li>
+<li>O fake provider determinístico do lab não valida a integração com um
+provedor de pagamentos externo.</li>
+<li>O lab de uma task não demonstra alta disponibilidade, comportamento com
+múltiplas réplicas ou rate limiting compartilhado entre elas.</li>
+<li>A topologia temporária usou tasks em subnets públicas. Ela não valida a
+topologia production-preferred com tasks ECS privadas.</li>
+</ul>
+<h2 id="evidências">Evidências</h2>
+<ul>
+<li>Repositório: <a href="https://github.com/marcelotaparelli/resilient-transaction-api" target="_blank" rel="noopener noreferrer">resilient-transaction-api no GitHub</a></li>
+<li>Relatório do AWS lab: <a href="https://github.com/marcelotaparelli/resilient-transaction-api/blob/aa92697ef9b40882b365498131252de03aee9db8/docs/validation/aws-lab-real.md" target="_blank" rel="noopener noreferrer">aws-lab-real.md</a></li>
+<li>Artifacts sanitizados do AWS lab: <a href="https://github.com/marcelotaparelli/resilient-transaction-api/tree/aa92697ef9b40882b365498131252de03aee9db8/artifacts/aws-lab" target="_blank" rel="noopener noreferrer">artifacts/aws-lab</a></li>
+<li>ADRs: <a href="https://github.com/marcelotaparelli/resilient-transaction-api/tree/main/docs/adr" target="_blank" rel="noopener noreferrer">decisões de arquitetura</a></li>
+<li>Validação containerizada: <a href="https://github.com/marcelotaparelli/resilient-transaction-api/blob/main/docs/validation/phase-7v-progress.md" target="_blank" rel="noopener noreferrer">phase-7v-progress.md</a></li>
+<li>Relatório do benchmark: <a href="https://github.com/marcelotaparelli/resilient-transaction-api/blob/main/docs/performance/phase-8-baseline.md" target="_blank" rel="noopener noreferrer">phase-8-baseline.md</a></li>
+<li>Artefatos JSONL do benchmark Docker local: <a href="https://github.com/marcelotaparelli/resilient-transaction-api/tree/main/artifacts/benchmarks" target="_blank" rel="noopener noreferrer">artifacts/benchmarks</a></li>
+</ul><a class="text-link" href="/projetos/"><svg class="arrow arrow--left" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12h15m-6-6 6 6-6 6"></path></svg>Voltar aos projetos</a></article></div></div><section class="contact-section" aria-labelledby="contact-title"><div class="container contact-inner"><p class="eyebrow"><span class="status-dot" aria-hidden="true"></span>VAMOS CONVERSAR</p><h2 id="contact-title" class="contact-title preserve-lines">Bons produtos começam
+com uma boa conversa.</h2><p class="section-description">Oportunidades profissionais, parcerias ou uma conversa sobre software, engenharia e IA aplicada.</p><a class="email-link" href="mailto:contato@marcelotaparelli.com.br">contato@marcelotaparelli.com.br<svg class="arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 18 18 6M6 6h12v12"></path></svg></a><a class="text-link" href="https://www.linkedin.com/in/marcelo-taparelli/" target="_blank" rel="noopener noreferrer">Conectar no LinkedIn<svg class="arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 18 18 6M6 6h12v12"></path></svg></a></div></section></main><footer class="site-footer"><div class="container footer-top"><div><a class="brand" href="/"><svg width="30" height="30" viewBox="0 0 40 40" fill="none" aria-hidden="true"><path d="M5 30V10l10 12 10-12v20M25 10h12M31 10v20" stroke="currentColor" stroke-width="2" stroke-linejoin="round"></path></svg><span>Marcelo Taparelli<span class="brand-dot">.</span></span></a><p>Problema primeiro. Tecnologia depois.</p></div><nav class="footer-links" aria-label="Redes profissionais e currículo"><a href="https://github.com/marcelotaparelli" target="_blank" rel="noopener noreferrer">GitHub</a><a href="https://www.linkedin.com/in/marcelo-taparelli/" target="_blank" rel="noopener noreferrer">LinkedIn</a><a href="mailto:contato@marcelotaparelli.com.br">Email</a><a class="text-link" href="/cv/marcelo-taparelli-cv-pt-br.pdf" download>Baixar currículo<span class="file-label">PDF</span><svg class="arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 18 18 6M6 6h12v12"></path></svg></a></nav></div><div class="container footer-bottom"><span>© 2026 Marcelo Taparelli</span><span lang="en">Software Engineering · Applied AI · Product</span></div></footer></body></html>
