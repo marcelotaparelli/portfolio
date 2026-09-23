@@ -1,0 +1,105 @@
+---
+translationKey: jev-1-13-decision-model-benchmark
+locale: pt-BR
+slug: jev-1-13-decision-model-benchmark
+title: 'Jev 1.13 na prática: testei um modelo de decisão contra regras e um LLM local'
+description: Um held-out sintético congelado comparou regras determinísticas, Ollama e Jev 1.13. Veja métricas, latência, custo e os limites do experimento.
+status: published
+reviewed: true
+publishedAt: 2026-09-23
+category: IA aplicada · Engenharia
+distribution:
+  linkedin:
+    text: |
+      Jev 1.13 teve category accuracy de 1.0000 no meu experimento — em um held-out sintético congelado de 70 tickets. Isso é um resultado medido, não uma conclusão sobre produção.
+
+      Comparei três paradigmas na mesma taxonomia: regras determinísticas, Ollama local e um modelo probabilístico tipado via OpenRouter Decisions API.
+
+      Category accuracy: 0.8286 / 0.9571 / 1.0000
+      Priority accuracy: 0.9000 / 0.9143 / 0.9857
+      Risk accuracy: 0.9571 / 0.9143 / 0.9571
+
+      O experimento Jev foi uma única execução oficial após o freeze. Ele não entrou na HybridPolicy e não substituiu o Ollama.
+
+      Na execução standalone, Jev teve média de 569,4 ms, p95 de 712,2 ms e custo reportado de US$ 0,003789618 para 70 requests. Esses números vêm da chamada via API; não tenho uma medição histórica equivalente de latência standalone ou custo do Ollama.
+
+      Também encontrei um HIGH risk incorreto com confidence 0,86. Confidence alta não prova correção semântica. Com apenas 70 tickets sintéticos, nem os resultados por threshold nem a análise exploratória de calibração definem uma política de produção.
+
+      Artigo completo:
+      https://marcelotaparelli.com.br/artigos/jev-1-13-decision-model-benchmark/
+
+      Case e evidências:
+      https://marcelotaparelli.com.br/projetos/ops-triage-ai/
+      https://github.com/marcelotaparelli/ops-triage-ai/blob/4c41e0b/docs/evaluation/jev-1.13-held-out-4c41e0b.md
+
+      #Jev #AIEngineering #AppliedAI #LLM
+---
+
+Jev 1.13 acertou todas as classificações de categoria no meu held-out: **1,0000 de category accuracy**. O mesmo experimento registrou 0,9857 em priority accuracy e 0,9571 em risk accuracy. Isso descreve um resultado em 70 tickets sintéticos; não prova que Jev seja superior em produção.
+
+Resolvi testar Jev porque já tinha duas referências para comparar no `ops-triage-ai`: um baseline de regras determinísticas e um classificador com Ollama local. A pergunta era se um terceiro paradigma — um modelo probabilístico tipado — produziria resultados diferentes na mesma taxonomia.
+
+## O que muda em relação a um chat LLM
+
+Não usei Jev como uma conversa livre nem pedi uma resposta em prosa para interpretar depois. O adapter isolado enviou decisões pela OpenRouter Decisions API usando `typesafe/jev-1.13`, com respostas tipadas e distribuições de probabilidade. As 73 respostas da API durante o experimento resolveram para `typesafe/jev-1.13-20260917`.
+
+O adapter implementa a interface `TriageClassifier`, mas ficou separado do classificador Ollama e da `HybridPolicy`. Usei Bun native fetch, sem adicionar dependências. Jev não foi integrado ao fluxo da aplicação e não substituiu o modelo local.
+
+## Como congelei o experimento
+
+Usei a mesma taxonomia e os mesmos 70 labels sintéticos do benchmark held-out histórico. As chamadas de desenvolvimento ocorreram antes do freeze. No commit <a href="https://github.com/marcelotaparelli/ops-triage-ai/tree/4c41e0b" target="_blank" rel="noopener noreferrer">`4c41e0b`</a>, congelei configuração e avaliação; depois rodei uma única execução oficial no held-out.
+
+Essa separação importa: o conjunto final não serviu para ajustar o modelo e depois medir o ajuste no mesmo conjunto. Ainda é uma amostra pequena e sintética, mas o protocolo deixa claro o que foi congelado e qual execução produziu os números.
+
+## Resultados
+
+| Métrica                       | Determinístico | Ollama | Jev 1.13 |
+| ----------------------------- | -------------: | -----: | -------: |
+| Category accuracy             |         0.8286 | 0.9571 |   1.0000 |
+| Category macro-F1             |         0.8512 | 0.9550 |   1.0000 |
+| Priority accuracy             |         0.9000 | 0.9143 |   0.9857 |
+| Risk accuracy                 |         0.9571 | 0.9143 |   0.9571 |
+| HIGH/CRITICAL priority recall |         0.7857 | 1.0000 |   1.0000 |
+| HIGH risk recall              |         0.5714 | 0.7143 |   0.8571 |
+
+Jev acertou a tupla completa de categoria, prioridade e risco em **66 de 70 casos (0,9429)**. O benchmark histórico não emitiu exact tuple standalone para determinístico ou Ollama. Por isso, não comparo os 66/70 a métricas por campo nem à exact tuple do caminho híbrido: são medidas diferentes.
+
+## Custo e latência medidos
+
+Nas 70 chamadas standalone de Jev, a latência média foi **569,4 ms**, com p50 de **545,5 ms**, p95 de **712,2 ms** e máximo de **1.142,2 ms**. O relatório registrou **90.229 tokens de entrada**, custo total de **US$ 0,003789618** e zero falhas de API ou schema.
+
+Esse custo é o valor reportado para essa execução via OpenRouter. O benchmark histórico do Ollama não emitiu custo nem latência standalone. Os 6–7 segundos publicados para o Ollama são do caminho híbrido completo; não são uma comparação equivalente com a chamada Jev standalone.
+
+## Confidence não é correção semântica
+
+Jev preservou distribuições de probabilidade, confidence contínua e margens top-1/top-2. Isso dá mais informação para avaliar uma decisão, mas não garante que a decisão esteja certa: uma classificação incorreta de risco HIGH teve **confidence 0,86**.
+
+No dataset observado, a análise exploratória de calibração reportou Brier de 0,0005 para categoria, 0,0386 para prioridade e 0,0800 para risco; o ECE top-1 foi 0,0054, 0,0329 e 0,0226, respectivamente. São estatísticas sobre 70 tickets sintéticos, com poucos exemplos por faixa. Elas não demonstram que as probabilidades estejam calibradas para tickets reais.
+
+## Automação seletiva: um sinal exploratório
+
+Ao exigir que as confidence values das três decisões alcançassem um limiar de 0,80, **54 de 70 tickets** permaneceram cobertos e todos os cobertos tiveram a tupla observada correta. Com 0,90, foram **51 de 70**, também com 100% de exact accuracy observada.
+
+Isso não define um threshold de produção. O denominador é pequeno, os exemplos são sintéticos e o resultado não demonstra calibração nem desempenho fora desse conjunto. É uma hipótese para testar com dados representativos e critérios de revisão definidos separadamente.
+
+## O que este benchmark não prova
+
+- Não estima desempenho em produção ou em tickets reais.
+- Uma execução oficial não mede variação entre execuções.
+- 70 exemplos sintéticos não representam toda a distribuição do domínio.
+- O resultado não estabelece superioridade geral de Jev sobre Ollama ou regras.
+- As métricas exploratórias de calibração não validam confidence para decisões reais.
+- Não comparei custo ou latência standalone do Ollama, pois o benchmark histórico não os emitiu.
+
+## O que faria arquiteturalmente
+
+Manteria as decisões atuais: o baseline determinístico e o Ollama permanecem na avaliação e na política híbrida existente; Jev continua como benchmark/evaluation only. Antes de qualquer integração, eu ampliaria e diversificaria os dados rotulados, repetiria a avaliação congelada para medir variância e definiria como revisão humana e erros de severidade entram nos critérios de aceitação.
+
+O resultado mais útil não é “Jev venceu”. É que um terceiro paradigma produziu sinais mensuráveis diferentes, com uma execução reproduzível e limitações explícitas — material para orientar a próxima avaliação, não para justificar uma troca em produção.
+
+## Evidências
+
+- [Case Ops Triage AI](/projetos/ops-triage-ai/)
+- Repositório: <a href="https://github.com/marcelotaparelli/ops-triage-ai" target="_blank" rel="noopener noreferrer">ops-triage-ai no GitHub</a>
+- Relatório held-out Jev 1.13 no commit de freeze: <a href="https://github.com/marcelotaparelli/ops-triage-ai/blob/4c41e0b/docs/evaluation/jev-1.13-held-out-4c41e0b.md" target="_blank" rel="noopener noreferrer">jev-1.13-held-out-4c41e0b.md</a>
+- Artifact JSON da execução: <a href="https://github.com/marcelotaparelli/ops-triage-ai/blob/4c41e0b/artifacts/jev-1.13-held-out-4c41e0b.json" target="_blank" rel="noopener noreferrer">jev-1.13-held-out-4c41e0b.json</a>

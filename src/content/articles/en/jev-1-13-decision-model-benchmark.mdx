@@ -1,0 +1,87 @@
+---
+translationKey: jev-1-13-decision-model-benchmark
+locale: en
+slug: jev-1-13-decision-model-benchmark
+title: 'Jev 1.13 in Practice: I Tested a Decision Model Against Rules and a Local LLM'
+description: A frozen synthetic held-out set compared deterministic rules, Ollama, and Jev 1.13. See the metrics, latency, cost, and limits of the experiment.
+status: published
+reviewed: true
+publishedAt: 2026-09-23
+category: Applied AI · Engineering
+distribution:
+  devto:
+    tags:
+      - ai
+      - llm
+      - machinelearning
+      - programming
+---
+
+Jev 1.13 got every category classification right in my held-out set: **1.0000 category accuracy**. The same experiment measured 0.9857 priority accuracy and 0.9571 risk accuracy. Those are results on 70 synthetic tickets; they do not prove that Jev is superior in production.
+
+I decided to test Jev because I already had two reference points in `ops-triage-ai`: a deterministic rules baseline and a classifier using local Ollama. The question was whether a third paradigm — a typed probabilistic decision model — would produce different results on the same taxonomy.
+
+## What changes compared with a chat LLM
+
+I did not use Jev as a free-form conversation and then interpret prose afterward. A separate adapter sent decisions through the OpenRouter Decisions API using `typesafe/jev-1.13`, with typed responses and probability distributions. All 73 API responses during the experiment resolved to `typesafe/jev-1.13-20260917`.
+
+The adapter implements the `TriageClassifier` interface, but remained separate from the Ollama classifier and `HybridPolicy`. I used Bun native fetch and added no dependencies. Jev was not integrated into the application flow and did not replace the local model.
+
+## How I froze the experiment
+
+I used the same taxonomy and the same 70 synthetic labels from the historical held-out benchmark. Development calls happened before the freeze. In commit <a href="https://github.com/marcelotaparelli/ops-triage-ai/tree/4c41e0b" target="_blank" rel="noopener noreferrer">`4c41e0b`</a>, I froze the configuration and evaluation, then ran the held-out set once for the official result.
+
+That separation matters: the final set was not used to tune the model and then measure that tuning on the same set. It is still a small synthetic sample, but the protocol makes clear what was frozen and which run produced the numbers.
+
+## Results
+
+| Metric                        | Deterministic | Ollama | Jev 1.13 |
+| ----------------------------- | ------------: | -----: | -------: |
+| Category accuracy             |        0.8286 | 0.9571 |   1.0000 |
+| Category macro-F1             |        0.8512 | 0.9550 |   1.0000 |
+| Priority accuracy             |        0.9000 | 0.9143 |   0.9857 |
+| Risk accuracy                 |        0.9571 | 0.9143 |   0.9571 |
+| HIGH/CRITICAL priority recall |        0.7857 | 1.0000 |   1.0000 |
+| HIGH risk recall              |        0.5714 | 0.7143 |   0.8571 |
+
+Jev got the full category, priority, and risk tuple right in **66 of 70 cases (0.9429)**. The historical benchmark did not emit standalone exact-tuple accuracy for the deterministic classifier or Ollama. I therefore do not compare 66/70 with per-field metrics or the hybrid path's exact tuple: they measure different things.
+
+## Measured cost and latency
+
+Across Jev's 70 standalone calls, mean latency was **569.4 ms**, with p50 at **545.5 ms**, p95 at **712.2 ms**, and a maximum of **1,142.2 ms**. The report recorded **90,229 input tokens**, a total reported cost of **US$ 0.003789618**, and zero API or schema failures.
+
+That cost is the reported amount for this OpenRouter run. The historical Ollama benchmark did not emit cost or standalone latency. Its published 6–7 seconds describe the full hybrid path; that is not an equivalent comparison with a standalone Jev call.
+
+## Confidence is not semantic correctness
+
+Jev preserved probability distributions, continuous confidence, and top-1/top-2 margins. That gives more information for evaluating a decision, but it does not guarantee the decision is right: one incorrect HIGH risk classification had **0.86 confidence**.
+
+For this observed dataset, exploratory calibration analysis reported Brier scores of 0.0005 for category, 0.0386 for priority, and 0.0800 for risk; top-1 ECE was 0.0054, 0.0329, and 0.0226, respectively. These are statistics over 70 synthetic tickets, with few examples in each range. They do not show that probabilities are calibrated for real tickets.
+
+## Selective automation: an exploratory signal
+
+When requiring all three confidence values to reach a threshold of 0.80, **54 of 70 tickets** remained covered, and all covered cases had the observed tuple correct. At 0.90, **51 of 70** remained, also with 100% observed exact accuracy.
+
+This does not define a production threshold. The denominator is small, the examples are synthetic, and the result does not establish calibration or performance beyond this set. It is a hypothesis to test with representative data and separately defined review criteria.
+
+## What this benchmark does not prove
+
+- It does not estimate performance in production or on real tickets.
+- One official run does not measure run-to-run variance.
+- 70 synthetic examples do not represent the full domain distribution.
+- The result does not establish that Jev is generally superior to Ollama or rules.
+- Exploratory calibration metrics do not validate confidence for real decisions.
+- I did not compare Ollama standalone cost or latency because the historical benchmark did not emit them.
+
+## What I would do architecturally
+
+I would keep the current decisions: the deterministic baseline and Ollama remain in the existing evaluation and hybrid policy; Jev stays benchmark/evaluation only. Before any integration, I would expand and diversify the labeled data, repeat the frozen evaluation to measure variance, and define how human review and severity errors factor into acceptance criteria.
+
+The useful result is not “Jev won.” A third paradigm produced different measurable signals in a reproducible run with explicit limits — material for guiding the next evaluation, not for justifying a production replacement.
+
+## Evidence
+
+- [Ops Triage AI case](/en/projects/ops-triage-ai/)
+- Repository: <a href="https://github.com/marcelotaparelli/ops-triage-ai" target="_blank" rel="noopener noreferrer">ops-triage-ai on GitHub</a>
+- Jev 1.13 held-out report at the freeze commit: <a href="https://github.com/marcelotaparelli/ops-triage-ai/blob/4c41e0b/docs/evaluation/jev-1.13-held-out-4c41e0b.md" target="_blank" rel="noopener noreferrer">jev-1.13-held-out-4c41e0b.md</a>
+- Run JSON artifact: <a href="https://github.com/marcelotaparelli/ops-triage-ai/blob/4c41e0b/artifacts/jev-1.13-held-out-4c41e0b.json" target="_blank" rel="noopener noreferrer">jev-1.13-held-out-4c41e0b.json</a>
