@@ -45,7 +45,7 @@ const pt = {
     eyebrow: '01 / TRABALHOS SELECIONADOS',
     title: 'Problemas reais.\nTrabalho concreto.',
     description:
-      'Software em produção, automação de processos e a contribuição por trás de cada entrega.',
+      'Experiência com software em produção, automação e projetos autorais com evidências e limites explícitos.',
   },
   thinking: {
     eyebrow: '02 / COMO TOMO DECISÕES',
@@ -93,7 +93,7 @@ const pt = {
     eyebrow: 'PROJETOS',
     title: 'Do contexto\nà contribuição.',
     description:
-      'Uma seleção de trabalhos em desenvolvimento web e automação. Cada case delimita minha atuação e o que pode ser compartilhado.',
+      'Uma seleção de sistemas, aplicações web e automações. Cada case delimita minha contribuição e apresenta as evidências disponíveis.',
   },
   articles: {
     eyebrow: 'ARTIGOS',
@@ -107,7 +107,7 @@ const pt = {
     title: 'Software, produto\ne o problema humano.',
     intro:
       'Sou Marcelo Taparelli, engenheiro de software. Minha trajetória combina experiência prática em desenvolvimento de software e produto com formação em Análise e Desenvolvimento de Sistemas, concluída em 2026, complementada por estudos em Engenharia de Software pela Alura e aprofundamento atual em Engenharia de IA Aplicada.',
-    body: 'Atuo com aplicações web, automação e manutenção de sistemas. Considero segurança parte do desenho do software: explicito limites de acesso, valido entradas, protejo segredos e testo regras críticas conforme o contexto de cada projeto. Para desempenho e confiabilidade, prefiro limites de recursos, acesso a dados previsível e latência medida a otimizações sem evidência. Hoje aprofundo essa base em Engenharia de IA Aplicada e incorporo agentes de IA ao fluxo de engenharia para apoiar planejamento, implementação, debugging, testes e validação, com revisão humana e critérios explícitos de qualidade.',
+    body: 'Atuo com backend, APIs, aplicações web, automação e evolução de sistemas. Considero segurança parte do desenho: explicito limites de acesso, valido entradas, protejo segredos e testo regras críticas. Para confiabilidade e performance, uso limites de recursos, acesso a dados previsível e latência medida. Também uso AI coding agents para apoiar planejamento, implementação, debugging, testes e validação, sempre com revisão humana e quality gates.',
     journey: 'Uma trajetória de conexões',
     journeyText:
       'Antes e ao longo do trabalho com software, vendas, negociação e ensino de inglês ampliaram meu repertório de comunicação. Na atuação como Product Owner, trabalhei com briefing, requisitos, priorização e o ciclo de entrega de websites.',
@@ -115,7 +115,7 @@ const pt = {
     capabilities: 'Competências em contexto',
     learning: 'Aprofundamento atual',
     learningText:
-      'Engenharia de IA Aplicada: entender quando a IA é necessária, como avaliar sua qualidade e como lidar com custo, latência e falhas. Hoje aprofundo essa frente por meio de estudo, experimentação e construção prática, avaliando quando a IA realmente agrega valor ao produto. O case Ops Triage AI aplica isso na prática: triagem operacional com LLM local, baseline determinístico e política híbrida com human review e audit trail, avaliado em benchmark held-out congelado.',
+      'Meu aprofundamento está na interseção entre engenharia de software confiável e IA aplicada mensurável. No Ops Triage AI, trabalho com baseline determinístico, Ollama, HybridPolicy, revisão humana e trilha de auditoria; Jev 1.13 foi avaliado depois, isoladamente, no mesmo benchmark held-out congelado e não entrou na HybridPolicy. Na Resilient Transaction API, exploro idempotência concorrente, PostgreSQL como fonte de verdade, degradação graciosa quando Redis fica indisponível, resiliência do provider e operação observável. Um laboratório temporário de validação na AWS, fora de produção, exercitou o ciclo com Terraform, migrations, testes funcionais e auditoria após a destruição dos recursos.',
     complementary: 'Formação complementar — Alura',
     complementaryItems: [
       'Engenharia de Software',
@@ -187,7 +187,7 @@ const en: Translations = {
     eyebrow: '01 / SELECTED WORK',
     title: 'Real problems.\nTangible work.',
     description:
-      'Software in production, process automation, and the contribution behind each delivery.',
+      'Experience with software in production, automation, and authored projects with explicit evidence and limitations.',
   },
   thinking: {
     eyebrow: '02 / HOW I MAKE DECISIONS',
@@ -233,7 +233,7 @@ const en: Translations = {
     eyebrow: 'PROJECTS',
     title: 'From context\nto contribution.',
     description:
-      'Selected work in web development and automation. Each case explains my role and what can be shared.',
+      'A selection of systems, web applications, and automation. Each case defines my contribution and presents the available evidence.',
   },
   articles: {
     eyebrow: 'ARTICLES',
@@ -247,7 +247,7 @@ const en: Translations = {
     title: 'Software, product,\nand the human problem.',
     intro:
       'I’m Marcelo Taparelli, a software engineer. My background combines hands-on experience in software development and product with a completed degree in Systems Analysis and Development, complemented by Software Engineering studies at Alura and my current focus on Applied AI Engineering.',
-    body: 'I work on web applications, automation, and system maintenance. I treat security as part of software design: I make access boundaries explicit, validate inputs, protect secrets, and test critical rules in the context of each project. For performance and reliability, I favor resource limits, predictable data access, and measured latency over optimization without evidence. I’m deepening this foundation through Applied AI Engineering and use AI coding agents to support planning, implementation, debugging, testing, and validation, with human review and explicit quality gates.',
+    body: 'I work across backend systems, APIs, web applications, automation, and system evolution. I treat security as part of software design: I make access boundaries explicit, validate inputs, protect secrets, and test critical rules. For reliability and performance, I use resource limits, predictable data access, and measured latency. I also use AI coding agents for planning, implementation, debugging, testing, and validation, with human review and quality gates.',
     journey: 'A path of connections',
     journeyText:
       'Before and alongside software, sales, negotiation, and teaching English broadened my communication skills. As a Product Owner, I worked on briefs, requirements, prioritization, and the website delivery lifecycle.',
@@ -255,7 +255,7 @@ const en: Translations = {
     capabilities: 'Capabilities in context',
     learning: 'Current focus',
     learningText:
-      'Applied AI Engineering: understanding when AI is needed, how to evaluate its quality, and how to handle cost, latency, and failures. Today, I deepen this area through study, experimentation, and practical building, evaluating when AI genuinely adds value to a product. The completed Ops Triage AI case applies this in practice: operational triage with a local LLM, a deterministic baseline, and a hybrid policy with human review and an audit trail, evaluated on a frozen held-out benchmark.',
+      'My current focus sits at the intersection of reliable software engineering and measurable applied AI. In Ops Triage AI, I work with a deterministic baseline, Ollama, HybridPolicy, human review, and an audit trail; Jev 1.13 was later evaluated separately on the same frozen held-out set and was not added to HybridPolicy. In Resilient Transaction API, I explore concurrent idempotency, PostgreSQL as source of truth, graceful degradation when Redis is unavailable, provider resilience, and observable operations. A temporary non-production AWS validation lab exercised the Terraform, migrations, functional tests, and post-destroy resource audit lifecycle.',
     complementary: 'Additional training — Alura',
     complementaryItems: [
       'Software Engineering',

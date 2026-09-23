@@ -26,12 +26,11 @@
 
       <h2>Resumo profissional</h2>
       <p>
-        Engenheiro de Software com experiência em backend, aplicações web, APIs,
-        automações e sistemas em produção. Construo software confiável, testável
-        e seguro, considerando observabilidade e performance nas decisões de
-        engenharia. Atualmente aprofundo minha atuação em Engenharia de IA
-        Aplicada com sistemas de LLM, avaliação mensurável e controles
-        orientados à produção.
+        Engenheiro de Software com experiência em backend, APIs, aplicações web,
+        automação e sistemas em produção. Desenvolvo software confiável,
+        testável e seguro, com atenção a observabilidade e performance.
+        Aprofundo Engenharia de IA Aplicada por meio de sistemas avaliados e
+        controles explícitos.
       </p>
 
       <h2>Experiência profissional</h2>
@@ -99,8 +98,11 @@
           produção
         </p>
         <p>
-          <strong>Dados e infraestrutura:</strong> SQL/PostgreSQL, Docker,
-          Git/GitHub Actions e fundamentos de AWS Cloud
+          <strong>Dados e infraestrutura:</strong> SQL/PostgreSQL, Redis,
+          Docker, Terraform; AWS: experiência prática em laboratório temporário
+          validado (não produção), com VPC/subnets, ECS/Fargate, ALB/ACM, RDS,
+          ElastiCache, ECR, Secrets Manager, IAM e CloudWatch; migrations,
+          troubleshooting, validação, destroy e auditoria
         </p>
         <p>
           <strong>Segurança e confiabilidade:</strong> autenticação, autorização
@@ -109,26 +111,25 @@
         </p>
         <p>
           <strong>IA aplicada (em aprofundamento):</strong> integração de LLMs,
-          structured outputs, baselines determinísticos, evals, benchmarks
-          held-out, políticas híbridas, revisão humana e fallbacks; Python,
-          PyTorch, fundamentos de ML/DL e AI coding agents com revisão humana
+          structured outputs, baselines determinísticos, evals e frozen held-out
+          benchmarks; modelos probabilísticos tipados, análise exploratória de
+          confidence/calibration, automação seletiva, políticas híbridas,
+          revisão humana e fallbacks; AI coding agents com revisão humana,
+          Python, PyTorch e fundamentos de ML/DL
         </p>
         <p>
-          <strong>Projeto público:</strong> ops-triage-ai — Triagem com baseline
-          determinístico, LLM local, política híbrida, revisão humana, fallback
-          e audit trail. API com limites e logs redigidos; benchmark sintético
-          congelado de 70 tickets: categoria 82,9%→95,7%, recall HIGH/CRITICAL
-          78,6%→100%, baseline superior em risk accuracy, p95 7078,6ms.
+          <strong>Projeto público:</strong> Ops Triage AI — Baseline
+          determinístico, Ollama, HybridPolicy, human review e audit trail. Jev
+          1.13 foi avaliado separadamente (evaluation-only) no mesmo held-out
+          sintético congelado de 70 tickets: 100% category accuracy, 94,29%
+          exact tuple, média de 569 ms e custo total de US$ 0,0038; não
+          demonstra superioridade em produção.
         </p>
         <p>
-          <strong>Projeto público:</strong> Salus — API TypeScript desenvolvida
-          com TDD, JWT, isolamento por usuário, autorização por ownership,
-          validação, paginação limitada, PostgreSQL/Prisma e 64 testes.
-        </p>
-        <p>
-          <strong>Projeto público:</strong> Portfólio bilíngue em
-          Bun/Astro/TypeScript/MDX com CI e quality gates de acessibilidade,
-          SEO, performance e integridade editorial; distribuição automatizada.
+          <strong>Projeto público:</strong> Resilient Transaction API — Bun/TS,
+          idempotência concorrente, PostgreSQL como fonte de verdade, Redis,
+          retries e circuit breaker; Terraform e validação em AWS temporária,
+          com migrations, deploy, testes e auditoria após destroy.
         </p>
       </div>
 

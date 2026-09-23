@@ -15,8 +15,8 @@ export const skills = [
     },
     description: {
       'pt-BR':
-        'Agentic Software Development, AI coding agents, integração de LLMs com avaliação, sistemas híbridos com human-in-the-loop, audit trail e quality gates automatizados.',
-      en: 'Agentic Software Development, AI coding agents, LLM integration with evaluation, hybrid systems with human-in-the-loop, audit trails, and automated quality gates.',
+        'Integração de LLMs, structured outputs, baselines determinísticos, evals e benchmarks held-out congelados; políticas híbridas, human-in-the-loop e audit trail; modelos de decisão probabilísticos tipados, análise exploratória de confidence/calibration, automação seletiva e fallbacks. AI coding agents com revisão humana e quality gates.',
+      en: 'LLM integration, structured outputs, deterministic baselines, evals, and frozen held-out benchmarks; hybrid policies, human-in-the-loop, and audit trails; typed probabilistic decision models, exploratory confidence/calibration analysis, selective automation, and fallbacks. AI coding agents with human review and quality gates.',
     },
     tools: null,
   },
@@ -27,8 +27,8 @@ export const skills = [
     },
     description: {
       'pt-BR':
-        'SQL/PostgreSQL, Docker, Git/GitLab/GitHub e fundamentos de AWS Cloud. Autenticação, gestão de segredos e validação; estudo de autorização por objeto. No Ops Triage AI: limites de requisição e concorrência, logs redigidos, métricas, health/readiness e shutdown gracioso.',
-      en: 'SQL/PostgreSQL, Docker, Git/GitLab/GitHub, and AWS Cloud fundamentals. Authentication, secret management, and validation; object-level authorization is a current study area. Ops Triage AI implements request and concurrency limits, redacted logs, metrics, health/readiness, and graceful shutdown.',
+        'SQL/PostgreSQL, Redis, Docker, Terraform e Git. Experiência prática em laboratório temporário de validação na AWS, fora de produção: VPC/subnets, ECS/Fargate, ALB, RDS, ElastiCache, ECR, Secrets Manager, IAM e CloudWatch; migrations, troubleshooting, observabilidade, validação e ciclo operacional. Autenticação e gestão de segredos.',
+      en: 'SQL/PostgreSQL, Redis, Docker, Terraform, and Git. Hands-on experience in a validated temporary non-production AWS lab with VPC/subnets, ECS/Fargate, ALB, RDS, ElastiCache, ECR, Secrets Manager, IAM, and CloudWatch; migrations, troubleshooting, observability, validation, and operational lifecycle. Authentication and secret management.',
     },
     tools: null,
   },

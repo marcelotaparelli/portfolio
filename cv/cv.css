@@ -49,7 +49,7 @@ body {
   color: #1a1a1a;
   font-family: 'CV Inter', 'Helvetica Neue', Arial, sans-serif;
   font-size: 9.5pt;
-  line-height: 1.38;
+  line-height: 1.35;
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
 }
@@ -97,16 +97,16 @@ h2 {
   text-transform: uppercase;
   border-bottom: 0.75pt solid #8a8a8a;
   padding-bottom: 1.5pt;
-  margin: 7pt 0 3pt;
+  margin: 5pt 0 2pt;
 }
 
 p {
-  margin: 0 0 3pt;
+  margin: 0 0 2pt;
 }
 
 .job {
   font-weight: 700;
-  margin: 5pt 0 1pt;
+  margin: 4pt 0 1pt;
 }
 
 ul {
@@ -116,7 +116,7 @@ ul {
 }
 
 ul li {
-  margin: 0 0 1.5pt;
+  margin: 0 0 1pt;
   padding-left: 10pt;
   position: relative;
 }
