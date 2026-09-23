@@ -3,7 +3,7 @@ translationKey: resilient-transaction-api
 locale: en
 slug: resilient-transaction-api
 title: Resilient Transaction API
-description: A transactional API for studying idempotency, concurrency, and provider failure resilience, with a reproducible benchmark on a local containerized stack.
+description: Transactional API with idempotency and failure resilience, validated in a temporary AWS lab and a reproducible local Docker benchmark.
 status: published
 reviewed: true
 order: 1
@@ -12,7 +12,7 @@ role: System design and implementation
 context: Authored open-source project
 technologies: [Bun, TypeScript, PostgreSQL, Redis, Docker, Terraform]
 externalUrl: https://github.com/marcelotaparelli/resilient-transaction-api
-contribution: 'Transactional API with an idempotency claim in PostgreSQL, explicit provider resilience, and local measurements published with context and limitations.'
+contribution: 'End-to-end IaC, temporary deployment, troubleshooting, functional validation, operational evidence, destroy, and resource audit.'
 ---
 
 ## Problem
@@ -73,32 +73,75 @@ runs had p50 values between 192.934 ms and 753.890 ms, a spread that does not
 support summarizing fallback with one typical latency. The rate-limit test
 observed 429 with `Retry-After` after exceeding the configured limit.
 
-## Validation and limitations
+## Temporary AWS validation lab
 
-The container validation report records 164 tests, 662 assertions, zero
+Terraform provisioned 35 resources for a real temporary lab in `us-east-1`.
+The exercised architecture was **HTTPS/ACM → ALB → ECS/Fargate → Bun API →
+private RDS PostgreSQL / private ElastiCache Redis**, with Secrets Manager,
+CloudWatch Logs, ECR, and IAM as supporting services. The API and deterministic
+fake provider ran as containers in the same task; a one-off Fargate task ran
+the migrations.
+
+To reduce lab cost, the tasks ran in public subnets with public IPs, but
+accepted inbound traffic only from the ALB. RDS and Redis remained private.
+This was a temporary lab choice, not the production-preferred topology: that
+keeps ECS tasks in private subnets with deliberate NAT Gateway and/or VPC
+endpoint egress.
+
+| AWS lab check                                                 | Observed evidence                                       |
+| ------------------------------------------------------------- | ------------------------------------------------------- |
+| ALB target and `/health/ready`                                | `healthy`; HTTP 200 `ready`                             |
+| Authenticated POST and replay with the same `Idempotency-Key` | HTTP 201; then HTTP 200 with the same transaction       |
+| Cache-aside                                                   | `cache_miss_total 1`; `cache_hit_total 1`               |
+| Rate limiter                                                  | 5 HTTP 200 responses; the 6th received HTTP 429         |
+| CloudWatch Logs                                               | Structured logs, request IDs, and `RATE_LIMIT_EXCEEDED` |
+| ECS service after the smoke test                              | desired 1, running 1, pending 0, failed 0               |
+
+Deployment surfaced two required adjustments: RDS rejected a seven-day backup
+retention period in the account used, so it was set to one day; and PostgreSQL
+on RDS required TLS, so `sslmode=require` was added to `DATABASE_URL`.
+
+The cycle was closed after testing: ECR was emptied, `terraform destroy`
+removed all 35 resources, and Terraform state was empty. The final audit found
+no ECS, RDS, ElastiCache, ALB, ECR, or CloudWatch Logs resources; the public
+CNAME was removed. The ALB and all other Terraform lab resources were
+destroyed. The public ACM certificate was intentionally retained for possible
+reuse; the secrets were scheduled for deletion.
+
+This was a temporary validation lab and does not represent a production
+environment. The service ran with `desired=1`: high availability and rate-limiter sharing across
+multiple replicas were not demonstrated.
+
+## Local validation and limitations
+
+The local container validation report records 164 tests, 662 assertions, zero
 failures — including 20 PostgreSQL and 11 Redis integration tests — and a real
 SIGTERM shutdown during a request: the request completed, the process exited
-without SIGKILL, and shutdown took about 2.31 s. The same report ends with a
-“Still pending” list that repeats those items; these are therefore described
-as recorded runs, not as general certification that the phase is complete.
+without SIGKILL, and shutdown took about 2.31 s.
 
 - The benchmark is local, specific to the hardware described, uses a fake
   provider, and runs client and server on the same host; it does not represent
-  production, AWS, or multiple replicas.
+  production, AWS, or multiple replicas. The AWS lab was not used for
+  benchmarking.
 - There is no exactly-once guarantee. The external outcome still depends on
   the provider honoring the same idempotency key.
 - Redis fail-open preserves part of service availability but reduces rate
   limiting protection during an outage; timeouts can significantly increase
   latency.
 - The circuit breaker is process-local and is not coordinated across replicas.
-- The Terraform directory describes a target architecture and has not been
-  applied. The AWS lab is in progress; this case makes no AWS deployment
-  claim.
+- The lab's deterministic fake provider does not validate integration with
+  an external payment provider.
+- A single-task lab does not demonstrate high availability, multi-replica
+  behavior, or shared rate limiting between replicas.
+- The temporary setup used tasks in public subnets. It does not validate the
+  production-preferred topology with private ECS tasks.
 
 ## Evidence
 
 - Repository: <a href="https://github.com/marcelotaparelli/resilient-transaction-api" target="_blank" rel="noopener noreferrer">resilient-transaction-api on GitHub</a>
+- AWS lab report: <a href="https://github.com/marcelotaparelli/resilient-transaction-api/blob/aa92697ef9b40882b365498131252de03aee9db8/docs/validation/aws-lab-real.md" target="_blank" rel="noopener noreferrer">aws-lab-real.md</a>
+- Sanitized AWS lab artifacts: <a href="https://github.com/marcelotaparelli/resilient-transaction-api/tree/aa92697ef9b40882b365498131252de03aee9db8/artifacts/aws-lab" target="_blank" rel="noopener noreferrer">artifacts/aws-lab</a>
 - ADRs: <a href="https://github.com/marcelotaparelli/resilient-transaction-api/tree/main/docs/adr" target="_blank" rel="noopener noreferrer">architecture decisions</a>
 - Container validation: <a href="https://github.com/marcelotaparelli/resilient-transaction-api/blob/main/docs/validation/phase-7v-progress.md" target="_blank" rel="noopener noreferrer">phase-7v-progress.md</a>
 - Benchmark report: <a href="https://github.com/marcelotaparelli/resilient-transaction-api/blob/main/docs/performance/phase-8-baseline.md" target="_blank" rel="noopener noreferrer">phase-8-baseline.md</a>
-- Machine-readable benchmark artifacts: <a href="https://github.com/marcelotaparelli/resilient-transaction-api/tree/main/artifacts/benchmarks" target="_blank" rel="noopener noreferrer">artifacts/benchmarks</a>
+- Machine-readable local Docker benchmark artifacts: <a href="https://github.com/marcelotaparelli/resilient-transaction-api/tree/main/artifacts/benchmarks" target="_blank" rel="noopener noreferrer">artifacts/benchmarks</a>
