@@ -1,6 +1,6 @@
 export const skills = [
   {
-    title: { 'pt-BR': 'Engenharia', en: 'Engineering' },
+    title: { 'pt-BR': 'Engenharia de Software', en: 'Software Engineering' },
     description: {
       'pt-BR':
         'TypeScript, Node.js, APIs REST, arquitetura de software, Clean Architecture, princípios de DDD, SOLID, Clean Code, TDD, fundamentos de microsserviços e troubleshooting em produção. CI/CD com GitHub Actions, testes unitários, de integração e E2E, quality gates automatizados e entrega baseada em artefatos. Decisões de performance orientadas por limites explícitos e medição.',
@@ -10,8 +10,8 @@ export const skills = [
   },
   {
     title: {
-      'pt-BR': 'Engenharia assistida por IA',
-      en: 'AI-assisted software engineering',
+      'pt-BR': 'Engenharia de IA',
+      en: 'AI Engineering',
     },
     description: {
       'pt-BR':

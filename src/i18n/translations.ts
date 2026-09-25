@@ -115,7 +115,7 @@ const pt = {
     capabilities: 'Competências em contexto',
     learning: 'Aprofundamento atual',
     learningText:
-      'Meu aprofundamento está na interseção entre engenharia de software confiável e IA aplicada mensurável. No Ops Triage AI, trabalho com baseline determinístico, Ollama, HybridPolicy, revisão humana e trilha de auditoria; Jev 1.13 foi avaliado depois, isoladamente, no mesmo benchmark held-out congelado e não entrou na HybridPolicy. Na Resilient Transaction API, exploro idempotência concorrente, PostgreSQL como fonte de verdade, degradação graciosa quando Redis fica indisponível, resiliência do provider e operação observável. Um laboratório temporário de validação na AWS, fora de produção, exercitou o ciclo com Terraform, migrations, testes funcionais e auditoria após a destruição dos recursos.',
+      'Meu aprofundamento está na interseção entre a Engenharia de Software performática, segura e confiável e a Engenharia de IA aplicada e mensurável. No Ops Triage AI, trabalho com baseline determinístico, Ollama, HybridPolicy, revisão humana e trilha de auditoria; Jev 1.13 foi avaliado depois, isoladamente, no mesmo benchmark held-out congelado e não entrou na HybridPolicy. Na Resilient Transaction API, exploro idempotência concorrente, PostgreSQL como fonte de verdade, degradação graciosa quando Redis fica indisponível, resiliência do provider e operação observável. Um laboratório temporário de validação na AWS, fora de produção, exercitou o ciclo com Terraform, migrations, testes funcionais e auditoria após a destruição dos recursos.',
     complementary: 'Formação complementar — Alura',
     complementaryItems: [
       'Engenharia de Software',
@@ -255,7 +255,7 @@ const en: Translations = {
     capabilities: 'Capabilities in context',
     learning: 'Current focus',
     learningText:
-      'My current focus sits at the intersection of reliable software engineering and measurable applied AI. In Ops Triage AI, I work with a deterministic baseline, Ollama, HybridPolicy, human review, and an audit trail; Jev 1.13 was later evaluated separately on the same frozen held-out set and was not added to HybridPolicy. In Resilient Transaction API, I explore concurrent idempotency, PostgreSQL as source of truth, graceful degradation when Redis is unavailable, provider resilience, and observable operations. A temporary non-production AWS validation lab exercised the Terraform, migrations, functional tests, and post-destroy resource audit lifecycle.',
+      'My current focus sits at the intersection of performant, secure, and reliable Software Engineering and applied, measurable AI Engineering. In Ops Triage AI, I work with a deterministic baseline, Ollama, HybridPolicy, human review, and an audit trail; Jev 1.13 was later evaluated separately on the same frozen held-out set and was not added to HybridPolicy. In Resilient Transaction API, I explore concurrent idempotency, PostgreSQL as source of truth, graceful degradation when Redis is unavailable, provider resilience, and observable operations. A temporary non-production AWS validation lab exercised the Terraform, migrations, functional tests, and post-destroy resource audit lifecycle.',
     complementary: 'Additional training — Alura',
     complementaryItems: [
       'Software Engineering',
