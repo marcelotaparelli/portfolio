@@ -1,5 +1,43 @@
 # Implementation status
 
+## Laya vs Jev article — bilingual draft (2026-10-02)
+
+- Created the PT-BR/EN pair `laya-vs-jev-zero-shot-fine-tuning` as
+  `status: draft`, `reviewed: false`, without a publication date, pending
+  human editorial review. The narrative covers structured decision models,
+  zero-shot versus adaptation, training infrastructure, calibration,
+  generalization, serving context, and the operational cost of control.
+- Inspected public Ops Triage AI read-only at
+  `e8c75f0ff75aafcd24403f860e1ad7d4450392f5`. Both Laya reports, protocols,
+  Freeze 2, training/selection metadata, held-out artifacts, and historical
+  Jev evidence agree on the aggregates used. No model run or metric
+  recalculation was performed. The README still summarizes only zero-shot;
+  the articles disclose that adaptation evidence is in the final report and
+  artifacts. The mapping audit retained parsed outputs, not untouched native
+  responses; both articles preserve that limitation.
+- Verified Jev's 2026-09-15 announcement and the official Hugging Face
+  initial-release commit for Laya dated 2026-09-18. This is a comparison of
+  public records, not a claim that Laya was developed in three days. The
+  benchmark uses the general English checkpoint at revision
+  `55cf4c4ebb4ebe31b2550e8bdf3bd21b99753851` and `laya==0.3.23`.
+- Distribution inputs: one bilingual LinkedIn post in PT-BR frontmatter,
+  1,970 characters with both canonicals; EN DEV.to tags `ai`,
+  `machinelearning`, `opensource`, `mlops`, with the EN canonical derived
+  by the existing builder. Local metadata/payload inspection made no network
+  publication calls. Workflow, schema, tests, and validators are unchanged.
+- Verified gates: format/format check and lint clean; typecheck has
+  0 errors, 0 warnings, 18 existing hints; 38 unit tests and 13 E2E pass.
+  Preview build/validator: 36 pages/documents. Production build/validator:
+  34 pages/documents, with both new draft routes and sitemap entries absent.
+  Additional browser inspection of each new article at 320px and 1440px
+  found no page overflow or WCAG-tagged axe violations; each has one H1,
+  18 section headings, seven tables, and preview noindex metadata.
+- `check:release` fails only on the two new drafts awaiting editorial
+  approval and their unset publication dates (four messages). This is an
+  intentional release boundary, not a validator weakened for this task.
+  Editorial evidence and review notes are in
+  `docs/editorial/laya-vs-jev-review.md`. No push, deploy, or distribution.
+
 ## Positioning review — software, AI, security, reliability (2026-09-19)
 
 - Audited Home/About copy, skills, all published project and article topics,
