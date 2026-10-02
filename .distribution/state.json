@@ -68,5 +68,19 @@
       "at": "2026-09-23T02:33:27.016Z",
       "canonicalUrl": "https://marcelotaparelli.com.br/artigos/jev-1-13-decision-model-benchmark/"
     }
+  },
+  "laya-vs-jev-zero-shot-fine-tuning": {
+    "devto": {
+      "id": "4789416",
+      "url": "https://dev.to/marcelotaparelli/laya-vs-jev-in-practice-zero-shot-fine-tuning-and-the-real-cost-of-an-open-source-decision-model-40j9",
+      "at": "2026-10-02T23:43:01.671Z",
+      "canonicalUrl": "https://marcelotaparelli.com.br/en/articles/laya-vs-jev-zero-shot-fine-tuning/"
+    },
+    "linkedin": {
+      "id": "urn:li:share:7511933795592396800",
+      "url": "urn:li:share:7511933795592396800",
+      "at": "2026-10-02T23:43:02.526Z",
+      "canonicalUrl": "https://marcelotaparelli.com.br/artigos/laya-vs-jev-zero-shot-fine-tuning/"
+    }
   }
 }
