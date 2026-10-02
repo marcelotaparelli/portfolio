@@ -285,15 +285,59 @@ category: Engenharia`,
       'invalid slug',
     );
   });
-  test('checkPublic fails closed on non-200 and network errors', async () => {
-    const { fn } = mockFetch(() => new Response('x', { status: 404 }));
-    await expect(checkPublic(PT_CANONICAL, fn)).rejects.toThrow('HTTP 404');
+  test('checkPublic rejects HTTP errors without retrying', async () => {
+    for (const status of [403, 404, 500]) {
+      const request = mockFetch(() => new Response('x', { status }));
+      await expect(checkPublic(PT_CANONICAL, request.fn)).rejects.toThrow(
+        `HTTP ${status} (${PT_CANONICAL})`,
+      );
+      expect(request.calls).toHaveLength(1);
+    }
+  });
+  test('checkPublic fails closed after repeated connection failures', async () => {
+    const pauses: number[] = [];
     const down = mockFetch(() => {
-      throw new Error('boom');
+      throw Object.assign(new Error('Unable to connect'), {
+        code: 'ECONNREFUSED',
+      });
     });
-    await expect(checkPublic(EN_CANONICAL, down.fn)).rejects.toThrow(
-      'unreachable',
+    await expect(
+      checkPublic(EN_CANONICAL, down.fn, async (ms) => {
+        pauses.push(ms);
+      }),
+    ).rejects.toThrow(
+      `canonical URL unreachable (${EN_CANONICAL}; attempt 3/3; ECONNREFUSED): Unable to connect`,
     );
+    expect(down.calls).toHaveLength(3);
+    expect(pauses).toEqual([1000, 1000]);
+  });
+  test('checkPublic recovers from a transient connection failure', async () => {
+    let attempts = 0;
+    const request = mockFetch(() => {
+      if (++attempts === 1) throw new Error('Connection reset');
+      return new Response('x', { status: 200 });
+    });
+    await expect(
+      checkPublic(EN_CANONICAL, request.fn, async () => {}),
+    ).resolves.toBeUndefined();
+    expect(request.calls).toHaveLength(2);
+    for (const call of request.calls) {
+      expect(call.init?.signal).toBeInstanceOf(AbortSignal);
+      expect(call.init?.redirect).toBe('follow');
+    }
+  });
+  test('checkPublic still rejects HTTP errors after a connection retry', async () => {
+    let attempts = 0;
+    const request = mockFetch(() => {
+      if (++attempts === 1) throw new Error('Connection reset');
+      return new Response('x', { status: 403 });
+    });
+    await expect(
+      checkPublic(EN_CANONICAL, request.fn, async () => {}),
+    ).rejects.toThrow('HTTP 403');
+    expect(request.calls).toHaveLength(2);
+  });
+  test('checkPublic accepts HTTP 200', async () => {
     const ok = mockFetch(() => new Response('x', { status: 200 }));
     await expect(checkPublic(EN_CANONICAL, ok.fn)).resolves.toBeUndefined();
   });

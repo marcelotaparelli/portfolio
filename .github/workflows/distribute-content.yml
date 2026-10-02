@@ -67,6 +67,26 @@ jobs:
             --slug "${{ inputs.article_slug }}" \
             --ledger "${{ steps.ledger.outputs.path }}" | tee /tmp/distribution-summary.txt
 
+      - name: Diagnose website access after failure
+        if: failure() && steps.distribute.outcome == 'failure'
+        env:
+          ARTICLE_SLUG: ${{ inputs.article_slug }}
+        run: |
+          set -euo pipefail
+          # Resolve validated public URLs without loading publication credentials.
+          bun -e 'import { resolveArticlePair } from "./scripts/distribution/article"; const pair = await resolveArticlePair(process.env.ARTICLE_SLUG ?? ""); console.log(pair.pt.canonicalUrl); console.log(pair.en.canonicalUrl);' > /tmp/distribution-canonicals.txt
+          while IFS= read -r article_url; do
+            for ip_family in 4 6; do
+              echo "Public GET diagnostic: IPv${ip_family} ${article_url}"
+              curl "-${ip_family}" --silent --show-error --location \
+                --proto '=https' --proto-redir '=https' --max-redirs 5 \
+                --connect-timeout 10 --max-time 15 --output /dev/null \
+                --write-out 'HTTP %{http_code}; remote %{remote_ip}; time %{time_total}s\n' \
+                "$article_url" || true
+            done
+          done < /tmp/distribution-canonicals.txt
+          # Diagnostics never override the failed publication gate.
+
       - name: Publish ledger to distribution-state branch
         if: always()
         env:

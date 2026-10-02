@@ -39,4 +39,6 @@ Variable execution state belongs in `docs/implementation-status.md`, not here.
 - Never weaken tests or validators.
 - Do not add dependencies without demonstrated need.
 - Do not push automatically unless explicitly authorized.
+- Agent-created commits must use `marcelotaparelli <contato@marcelotaparelli.com.br>`
+  as both author and committer.
 - Update status and documentation only with verified facts.

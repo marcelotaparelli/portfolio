@@ -303,6 +303,17 @@ DEV.to (`absolutizeMarkdown`).
 
 `distribute.ts` resolve o par primeiro e depois faz GET nas duas
 canonicals públicas (`checkPublic` — qualquer status ≠ 200 falha).
+Cada GET tem timeout de 15 segundos. Apenas falhas de conexão/timeout
+recebem até três tentativas, com um segundo entre elas; respostas HTTP
+como 403 e 404 falham imediatamente. O erro inclui URL e, quando disponível,
+código da falha. Isso não altera a exigência de HTTP 200 nas duas URLs.
+
+Se o passo de distribuição falhar, `Diagnose website access after failure`
+faz GETs adicionais via `curl`, separando IPv4 e IPv6, com tempos limitados.
+Os logs mostram status HTTP, IP remoto e duração, sem usar credenciais de
+publicação. Esses diagnósticos nunca liberam publicação nem substituem o
+gate; servem para investigar diferenças entre o runner e o navegador.
+
 Se a resolução OU a checagem pública falhar, a saída é exatamente:
 
 ```text
@@ -418,7 +429,7 @@ Derivado das validações reais (`article.ts`, `devto.ts`,
 
 | Sintoma                                                                                       | Causa provável                                                                                                          | Como verificar                                                      | Correção                                                                                                   |
 | --------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
-| `DEV.to: failed (article not distributable)` + `LinkedIn: failed (article not distributable)` | `resolveArticlePair` lançou; o motivo real está na linha `Website: failed (...)`                                        | Ler a linha `Website:` do resumo do run                             | Corrigir o frontmatter apontado e republicar o conteúdo (seções 5–6)                                       |
+| `DEV.to: failed (article not distributable)` + `LinkedIn: failed (article not distributable)` | Resolução do par ou GET público falhou; o motivo real está na linha `Website: failed (...)`                             | Ler a linha `Website:` do resumo do run                             | Corrigir o motivo indicado em Website: metadata ou acesso público; não remover o gate                      |
 | `missing linkedin text for LinkedIn`                                                          | PT-BR sem `distribution.linkedin.text`                                                                                  | Abrir o MDX PT e conferir o bloco `distribution:`                   | Adicionar post bilíngue com as duas canonicals, marcador inglês e ≤ 3000 chars                             |
 | `missing devto tags for DEV.to`                                                               | EN sem `distribution.devto.tags`                                                                                        | Abrir o MDX EN e conferir o bloco `distribution:`                   | Adicionar 1–4 tags                                                                                         |
 | `translationKey mismatch`                                                                     | PT e EN com `translationKey` diferentes                                                                                 | Comparar os dois frontmatters                                       | Igualar as keys (a identidade do par é `translationKey` + `locale`)                                        |
@@ -426,7 +437,7 @@ Derivado das validações reais (`article.ts`, `devto.ts`,
 | `status is not published` / `not reviewed` / `missing publishedAt`                            | Artigo em draft, não revisado ou sem data                                                                               | Frontmatter dos dois lados                                          | Completar revisão/data; publicar via deploy antes de distribuir                                            |
 | `invalid LinkedIn copy`                                                                       | Falta canonical EN/seção inglesa ou excede 3000 chars                                                                   | Conferir canonicals, marcador EN e tamanho                          | Adicionar post PT → EN com as duas URLs; manter ≤ 3000 chars                                               |
 | `devto requires 1 to 4 tags`                                                                  | Zero ou 5+ tags, ou tag vazia                                                                                           | Bloco `devto.tags` no EN                                            | Deixar 1–4 tags não vazias                                                                                 |
-| `canonical URL returned HTTP <n>` / `unreachable`                                             | Artigo ainda não deployado (ou URL fora do ar)                                                                          | Abrir as duas canonicals no navegador                               | Fazer o deploy (seção 3) e só então distribuir                                                             |
+| `canonical URL returned HTTP <n>` / `unreachable`                                             | 404: possível falta de deploy; 403: recusa HTTP; conexão: DNS, rota ou TLS a investigar                                 | Conferir as duas URLs e os diagnósticos IPv4/IPv6 no runner         | Corrigir deploy ou acesso do runner conforme o diagnóstico; manter HTTP 200 obrigatório                    |
 | `DEV.to: failed (disabled)` / `missing secret: ...`                                           | `DEVTO_API_KEY`, `LINKEDIN_ACCESS_TOKEN` ou `LINKEDIN_PERSON_URN` ausentes                                              | Checar Secrets/Vars do repo (nomes, nunca valores) e logs do passo  | Cadastrar o secret/variável e rodar de novo (nada foi publicado)                                           |
 | `DEV.to rejected the API key (401/403)`                                                       | Chave inválida/expirada                                                                                                 | Rotacionar a chave no DEV.to                                        | Atualizar `DEVTO_API_KEY`; rodar de novo (lookup por canonical evita duplicata)                            |
 | `DEV.to rejected the payload (422)`                                                           | Payload recusado (ex. tag inválida)                                                                                     | Conferir tags/título/descrição do lado EN                           | Corrigir o frontmatter EN, fazer deploy se o corpo mudou, rodar de novo                                    |

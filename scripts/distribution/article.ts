@@ -212,20 +212,44 @@ export async function resolveArticlePair(
 
 /**
  * Confirm the article is publicly reachable at its canonical URL.
- * Read-only GET; fails closed on any non-200 response.
+ * Read-only GET; fails closed on any non-200 response. Connection failures
+ * get three bounded attempts; HTTP responses are never retried or accepted
+ * as a substitute for a public 200.
  */
 export async function checkPublic(
   canonicalUrl: string,
   fetchFn: typeof fetch = fetch,
+  pause: (ms: number) => Promise<void> = (ms) => Bun.sleep(ms),
 ): Promise<void> {
-  let response: Response;
-  try {
-    response = await fetchFn(canonicalUrl, { redirect: 'follow' });
-  } catch (error) {
-    failClosed(
-      `canonical URL unreachable: ${error instanceof Error ? error.message : String(error)}`,
-    );
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    let response: Response;
+    try {
+      response = await fetchFn(canonicalUrl, {
+        redirect: 'follow',
+        signal: AbortSignal.timeout(15000),
+      });
+    } catch (error) {
+      if (attempt < 3) {
+        await pause(1000);
+        continue;
+      }
+      const message = error instanceof Error ? error.message : String(error);
+      const code =
+        typeof error === 'object' && error !== null && 'code' in error
+          ? String(error.code)
+          : error instanceof Error
+            ? error.name
+            : 'unknown';
+      failClosed(
+        `canonical URL unreachable (${canonicalUrl}; attempt ${attempt}/3; ${code}): ${message}`,
+      );
+    }
+    // No body is needed for this status check; release the connection.
+    await response.body?.cancel().catch(() => undefined);
+    if (response.status !== 200)
+      failClosed(
+        `canonical URL returned HTTP ${response.status} (${canonicalUrl})`,
+      );
+    return;
   }
-  if (response!.status !== 200)
-    failClosed(`canonical URL returned HTTP ${response!.status}`);
 }

@@ -1,5 +1,49 @@
 # Implementation status
 
+## Commit identity correction (2026-10-02)
+
+- At the author's request, configured repository-local Git identity as
+  `marcelotaparelli <contato@marcelotaparelli.com.br>` and recorded the same
+  author/committer requirement for future agent-created commits in AGENTS.md.
+- Audited all locally available branches: four session commits had Codex
+  identity; 47 earlier main commits already used the author's contact email.
+  The 25 GitHub Actions bot commits belong to deploy/distribution histories.
+  Preserved those automation records and remote-tracking refs.
+- Recreated the four divergent commits on local main with the requested
+  author and committer. Verified identical trees for each old/new pair;
+  preserved dates, messages, and all staged distribution-fix changes.
+  A pre-rewrite bundle and hash mapping were saved outside the repository
+  under /tmp. No push or remote-history change performed.
+
+## Distribution website-access investigation (2026-10-02)
+
+- Read GitHub Actions run `37076736260` and the preceding failed run
+  `37076292661`. Both used the expected published article pair; the latest
+  checked out `6c62635`. The latest website check failed after about 134
+  seconds with a connection error; the preceding check received HTTP 403
+  almost immediately. Neither reached the channel publication calls or
+  changed the ledger. The runner used Ubuntu 24.04, so the Ubuntu 26
+  migration notice does not explain these failures.
+- Added a 15-second timeout to each canonical GET and up to three attempts
+  for connection errors only, with one-second pauses. HTTP errors still fail
+  immediately; both canonical pages must return HTTP 200. Final connection
+  errors now include the URL, attempt count, and error code/name. Publication
+  POSTs are unchanged and are not retried by this change.
+- Added read-only, bounded IPv4/IPv6 curl diagnostics after a failed
+  distribution step. They do not use publication credentials or override
+  the website gate. Updated troubleshooting documentation to distinguish
+  metadata failures, HTTP refusal, and connection failures.
+- The revised public check returned HTTP 200 for both Laya article URLs
+  from this environment. This does not establish the runner's failure cause;
+  DNS, routing, TLS, and hosting refusal remain unconfirmed. Runner diagnostics
+  require the local workflow change to be pushed and a subsequent run by the
+  author. No workflow rerun, push, deployment, or distribution performed here.
+- Local checks passed: format/format check, typecheck (0 errors, 0 warnings,
+  20 hints), lint, 42 unit tests, release checker, preview and production
+  builds (36 pages each), both artifact validators, 13 E2E tests, and Git
+  whitespace validation. Workflow YAML parsed, the diagnostic shell passed
+  `bash -n`, and its article resolver produced the correct PT/EN public URLs.
+
 ## About copy refinement (2026-10-02)
 
 - At the author's request, removed the institution name from the PT/EN
