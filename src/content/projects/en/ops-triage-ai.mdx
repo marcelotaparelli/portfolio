@@ -3,7 +3,7 @@ translationKey: ops-triage-ai
 locale: en
 slug: ops-triage-ai
 title: Ops Triage AI
-description: Operational triage system with a deterministic baseline, local LLM, and hybrid policy; Jev 1.13, a typed probabilistic model, was evaluated separately on the same frozen held-out set.
+description: Auditable triage with a deterministic baseline, Ollama, and hybrid policy; separate Jev and Laya evaluations, including domain adaptation, outside the runtime.
 status: published
 reviewed: true
 order: 0
@@ -23,9 +23,13 @@ technologies:
     Ollama,
     Jev 1.13,
     OpenRouter,
+    Python,
+    PyTorch,
+    Laya,
+    CUDA,
   ]
 externalUrl: https://github.com/marcelotaparelli/ops-triage-ai
-contribution: 'Deterministic baseline, Ollama, and preserved hybrid policy; separate evaluation of Jev 1.13 without application integration.'
+contribution: 'System implementation, frozen evaluation, and Laya adaptation with PyTorch/CUDA and validation-based selection; Jev and Laya remain evaluation-only.'
 ---
 
 ## Problem
@@ -84,7 +88,8 @@ parameters — commit `f36e8ef8fcc70be09ab5ba9883efc7c34f3591a2`, prompt
 The official results table below belongs to the historical deterministic,
 Ollama, and `HybridPolicy` benchmark. A later, isolated evaluation added Jev
 1.13 as a third paradigm on the same frozen held-out set; Jev was not
-integrated into `HybridPolicy`.
+integrated into `HybridPolicy`. Laya was evaluated afterward, first zero-shot
+and then with domain adaptation, also outside the runtime.
 
 The harness compares the deterministic baseline, the standalone LLM, and the
 hybrid on quality, severity recall, disagreement, fallback, review reasons,
@@ -129,9 +134,9 @@ disagreement, and confidence signals.
   vocabulary, which justifies combining with the LLM instead of a straight
   swap.
 
-## Limitations
+## Limits of the historical hybrid benchmark
 
-Stated directly, what this case does not claim:
+Limits of this historical evaluation:
 
 - Synthetic English-only dataset with 70 examples.
 - A single local model evaluated.
@@ -216,6 +221,120 @@ probability distributions and sub-second average standalone latency. The
 small synthetic dataset does not establish production superiority. The
 architectural decision remains benchmark/evaluation only; there was no
 `HybridPolicy` integration.
+
+## Laya: from zero-shot to domain adaptation
+
+After Jev, I evaluated the general `convaiinnovations/laya` checkpoint, a
+non-autoregressive decision model with code and open weights under Apache 2.0.
+I used `laya==0.3.23` and the protocol’s frozen revision, retaining the same
+held-out set. This base checkpoint differs from `laya-typed-decisions`, which
+has already been specialized on other workflows.
+
+Zero-shot, Laya got **8/70 tuples right (11.43%)**. The clearest pattern was
+**40/40 expected LOW priorities predicted as MEDIUM**. Auditing options,
+indices, mapping, normalization, and parsed outputs found no integration bug
+that invalidated the behavior. The next hypothesis was that the general model
+needed adaptation to our taxonomy and domain.
+
+### Adaptation protocol
+
+I separated **1,120 TRAIN tickets** for changing weights and **280 VALIDATION
+tickets** for checkpoint selection. The 70 HELD-OUT tickets stayed outside
+data generation, training, validation, selection, tuning, thresholds, and
+calibration. TRAIN and VALIDATION are synthetic too, sharing scenario families
+with distinct wording.
+
+Fine-tuning started from the same base model. VALIDATION selected epoch 4 by
+highest exact-tuple accuracy, using predeclared tie-breakers. **Freeze 2** fixed
+data, weights, code, and configuration before the single official adapted
+evaluation. The sequence is baseline → Ollama → HybridPolicy → separate Jev
+evaluation → Laya zero-shot → adaptation → selection → Freeze 2 → adapted held-out.
+
+### Training infrastructure
+
+The inference host, with four vCPUs and roughly 4 GB RAM, was unsuitable for
+this training. I used a temporary RunPod GPU: **NVIDIA RTX A5000, 24 GB VRAM**,
+Python 3.11, PyTorch 2.5.1, and CUDA 12.1. Training ran for four epochs with
+mixed precision (FP16 autocast / FP32 master weights), gradient accumulation,
+and gradient checkpointing to manage memory.
+
+In the first run, the scheduler advanced even when `GradScaler` skipped an
+optimizer update. I preserved the artifacts, rejected the run on methodological
+validity, and corrected the coordination before repeating training and opening
+the adapted held-out evaluation. The official run recorded **420 attempts,
+413 applied updates, seven skips, and 413 scheduler steps**. It was not chosen
+for more favorable accuracy.
+
+The `.safetensors` checkpoint was retained locally outside the Pod; SHA-256,
+size, selection, and configuration are documented in public artifacts. Adapted
+weights were not published. This cycle supplies my first hands-on evidence in
+**ML Systems / AI Infrastructure**, bounded to training, checkpoints, and
+experimental evaluation.
+
+Final evaluation ran on CPU without the GPU, averaging **1,619 ms** per ticket,
+versus 1,414 ms zero-shot. Jev had recorded 569 ms over API/network in a
+different context. Local inference did not automatically mean lower latency
+on this CPU; the serving paths do not support a like-for-like speed comparison.
+
+Measured GPU tasks totaled 1,523.51 seconds. At the recorded rate of roughly
+US$ 0.28/hour including disk, **US$ 0.1185 estimates those tasks**, excluding
+setup and idle time; it is not the Pod’s total bill. Laya incurred US$ 0 in
+external per-token/request charges, while infrastructure and operations remained
+our responsibility. The report does not document teardown: the Pod had not
+been destroyed when evaluation was completed.
+
+### Results and severity regression
+
+Accuracy by field and exact tuple, on the same held-out set:
+
+| Metric      | Zero-shot | Adapted |
+| ----------- | --------: | ------: |
+| Category    |    84.29% |  97.14% |
+| Priority    |    31.43% |  94.29% |
+| Risk        |    62.86% |  92.86% |
+| Exact tuple |    11.43% |  85.71% |
+
+Correct tuples rose from **8/70 to 60/70**, and LOW → MEDIUM errors fell from
+**40/40 to 0/40**. HIGH risk recall rose from **57.14% to 100%** (4/7 → 7/7),
+but HIGH/CRITICAL priority recall regressed from **92.86% to 85.71%**
+(13/14 → 12/14). Aggregate improvement did not eliminate severity errors.
+
+Jev had reached **66/70 correct tuples (94.29%) without any of our TRAIN
+examples**; adapted Laya received 1,120. The comparison is asymmetric: Jev
+showed strong out-of-the-box generalization on this benchmark, while Laya
+showed the control open weights offer for adapting behavior to a domain.
+
+### Confidence and generalization limits
+
+Adapted Laya’s confidence stayed close to 1, yet **10/70 tuples were still
+wrong**. Thresholds through 0.90 retained every ticket; 0.95 and 0.99 removed
+only one, leaving exact-tuple accuracy below 90%. High confidence did not
+become a reliable estimate of correctness, and its semantics differ from
+Jev’s reported confidence.
+
+Exact-tuple accuracy was **100% on TRAIN → 92.50% on VALIDATION → 85.71% on
+HELD-OUT**. Strong fit and saturated confidence are signs consistent with
+memorization and overconfidence; this small sample does not establish how
+severe the effect is.
+
+These evaluations use English, a single domain, and synthetic data, with one
+official run per protocol and no validation on real traffic. **Jev and Laya
+remain evaluation-only, outside HybridPolicy and the runtime.** The experiment
+exercised evaluation and adaptation, without deploying an adapted production
+service.
+
+The [Jev article](/en/articles/jev-1-13-decision-model-benchmark/) covers the
+initial evaluation; [Laya vs Jev](/en/articles/laya-vs-jev-zero-shot-fine-tuning/)
+explains the protocols, calibration, and cost of control. The
+
+<a
+  href="https://github.com/marcelotaparelli/ops-triage-ai/blob/e8c75f0ff75aafcd24403f860e1ad7d4450392f5/docs/evaluation/laya-domain-adaptation-final-report.md"
+  target="_blank"
+  rel="noopener noreferrer"
+>
+  final adaptation report
+</a>
+collects the metrics and links the artifacts for auditing.
 
 ## Evidence
 

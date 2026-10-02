@@ -1,6 +1,6 @@
 # Marcelo Taparelli — Professional Portfolio
 
-Professional engineering portfolio focused on Software Engineering, Applied AI Engineering and Product.
+Professional engineering portfolio focused on Software Engineering, AI Engineering and Product.
 
 Built around a simple principle:
 
@@ -101,7 +101,7 @@ dist/
 
 **Marcelo Taparelli**
 
-Software Engineer · Applied AI Engineering
+Software Engineer · AI Engineering
 
 - Portfolio: https://marcelotaparelli.com.br
 - LinkedIn: https://www.linkedin.com/in/marcelo-taparelli/

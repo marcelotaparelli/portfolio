@@ -25,8 +25,8 @@ const articles = await articlesFor(locale);
   page="home"
   title={
     locale === 'en'
-      ? 'Marcelo Taparelli — Software Engineer & Applied AI'
-      : 'Marcelo Taparelli — Engenheiro de Software e IA Aplicada'
+      ? 'Marcelo Taparelli — Software Engineer | AI Engineering'
+      : 'Marcelo Taparelli — Software Engineer | Engenharia de IA'
   }
   description={text.hero.intro}
   equivalent={pathFor('home', otherLocale(locale))}
@@ -79,7 +79,8 @@ const articles = await articlesFor(locale);
     </div>
     <div class="hero-bottom">
       <p lang="en">
-        Software Engineering <span>·</span> Applied AI <span>·</span> Product
+        Software Engineering <span>·</span> AI Engineering <span>·</span>{' '}
+        Product
       </p>
       <a href="#selected-work" aria-label={text.hero.work}>
         <span aria-hidden="true">↓</span>

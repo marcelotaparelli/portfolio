@@ -3,7 +3,7 @@ translationKey: ops-triage-ai
 locale: pt-BR
 slug: ops-triage-ai
 title: Ops Triage AI
-description: Sistema de triagem com baseline determinístico, LLM local e política híbrida; Jev 1.13, modelo probabilístico tipado, foi avaliado separadamente no mesmo held-out congelado.
+description: Triagem auditável com baseline determinístico, Ollama e política híbrida; avaliações separadas de Jev e Laya, incluindo domain adaptation, fora do runtime.
 status: published
 reviewed: true
 order: 0
@@ -23,9 +23,13 @@ technologies:
     Ollama,
     Jev 1.13,
     OpenRouter,
+    Python,
+    PyTorch,
+    Laya,
+    CUDA,
   ]
 externalUrl: https://github.com/marcelotaparelli/ops-triage-ai
-contribution: 'Baseline determinístico, Ollama e política híbrida preservada; avaliação separada de Jev 1.13, sem integração ao fluxo da aplicação.'
+contribution: 'Implementação do sistema, avaliação congelada e adaptação do Laya com PyTorch/CUDA e seleção por validation; Jev e Laya permanecem evaluation-only.'
 ---
 
 ## Problema
@@ -84,7 +88,8 @@ congelados — commit `f36e8ef8fcc70be09ab5ba9883efc7c34f3591a2`, prompt
 A tabela oficial abaixo corresponde ao benchmark histórico do baseline
 determinístico, Ollama e HybridPolicy. Uma avaliação posterior e isolada
 adicionou Jev 1.13 como terceiro paradigma no mesmo held-out congelado; Jev
-não foi integrado à `HybridPolicy`.
+não foi integrado à `HybridPolicy`. Laya foi avaliado depois, primeiro zero-shot
+e depois com domain adaptation, também fora do runtime.
 
 O harness compara baseline determinístico, LLM standalone e híbrido em
 qualidade, recall de severidade, divergência, fallback, motivos de revisão e
@@ -130,9 +135,9 @@ confiança.
   evidência de que regras explícitas são frágeis fora do vocabulário
   conhecido, o que justifica a combinação com o LLM em vez da troca pura.
 
-## Limitações
+## Limites do benchmark híbrido histórico
 
-De forma direta, o que este case não alega:
+Limites desta avaliação histórica:
 
 - Dataset sintético, em inglês, com 70 exemplos.
 - Apenas um modelo local avaliado.
@@ -214,6 +219,119 @@ medidos em categoria e prioridade neste experimento, além de distribuições
 tipadas e latência standalone abaixo de um segundo na média. O dataset pequeno
 e sintético não estabelece superioridade em produção. A decisão arquitetural
 permanece benchmark/evaluation only; não houve integração à `HybridPolicy`.
+
+## Laya: de zero-shot a domain adaptation
+
+Depois de Jev, avaliei o checkpoint geral `convaiinnovations/laya`, um decision
+model não-autoregressivo com código e pesos abertos sob Apache 2.0. Usei
+`laya==0.3.23` e a revision congelada no protocolo, mantendo o mesmo held-out.
+Esse checkpoint base é distinto de `laya-typed-decisions`, já especializado em
+outros workflows.
+
+Zero-shot, Laya acertou **8/70 tuples (11,43%)**. O padrão mais claro foi
+**40/40 prioridades LOW previstas como MEDIUM**. A auditoria das opções,
+índices, mapping, normalização e outputs parseados não encontrou bug de
+integração que invalidasse esse comportamento. A hipótese seguinte foi que o
+modelo geral precisava de adaptação à nossa taxonomia e domínio.
+
+### Protocolo de adaptação
+
+Separei **1.120 tickets TRAIN** para alterar os pesos e **280 VALIDATION**
+para selecionar o checkpoint. Os 70 tickets HELD-OUT permaneceram fora da
+geração de dados, training, validation, seleção, tuning, thresholds e
+calibration. TRAIN e VALIDATION também são sintéticos; compartilham famílias
+de cenários, embora tenham textos distintos.
+
+O fine-tuning partiu do mesmo modelo base. A seleção por VALIDATION escolheu a
+época 4 pela maior exact tuple, com desempates predefinidos. O **Freeze 2**
+fixou dados, pesos, código e configuração antes da única avaliação oficial
+adaptada. O histórico segue: baseline → Ollama → HybridPolicy → Jev isolado
+→ Laya zero-shot → adaptação → seleção → Freeze 2 → held-out adaptado.
+
+### Infraestrutura do treinamento
+
+O host de inferência, com quatro vCPUs e cerca de 4 GB de RAM, não era adequado
+para esse treinamento. Usei uma GPU temporária na RunPod: **NVIDIA RTX A5000,
+24 GB de VRAM**, Python 3.11, PyTorch 2.5.1 e CUDA 12.1. Foram quatro epochs
+com mixed precision (FP16 autocast / FP32 master), gradient accumulation e
+gradient checkpointing para controlar memória.
+
+Na primeira execução, o scheduler avançava mesmo quando o `GradScaler` pulava
+um optimizer update. Preservei os artifacts, rejeitei a execução por validade
+metodológica e corrigi a coordenação antes de repetir o treino e abrir o
+held-out adaptado. A execução oficial registrou **420 tentativas, 413 updates
+aplicados, sete skips e 413 scheduler steps**. Sua escolha não dependeu de uma
+accuracy mais favorável.
+
+O checkpoint `.safetensors` foi preservado localmente fora do Pod; SHA-256,
+tamanho, seleção e configuração estão nos artifacts públicos. Os pesos
+adaptados não foram publicados. Esse ciclo fornece minha primeira evidência
+prática em **ML Systems / AI Infrastructure**, delimitada a treinamento,
+checkpoints e avaliação experimental.
+
+A avaliação final rodou em CPU, sem a GPU: média de **1.619 ms** por ticket,
+contra 1.414 ms no zero-shot. Jev havia registrado 569 ms via API/rede em outro
+contexto. Local não significou automaticamente menor latência nessa CPU;
+os caminhos não permitem uma comparação equivalente de velocidade.
+
+As tarefas GPU medidas somaram 1.523,51 segundos. À taxa registrada de
+aproximadamente US$ 0,28/h com disco, **US$ 0,1185 é uma estimativa dessas
+tarefas**, excluindo setup e tempo ocioso, e não a cobrança total do Pod.
+Laya teve US$ 0 de cobrança externa por token/request, com infraestrutura e
+operação ainda sob nossa responsabilidade. O relatório não registra teardown:
+o Pod não havia sido destruído ao finalizar a avaliação.
+
+### Resultado e regressão de severidade
+
+Acurácia por campo e da tupla, no mesmo held-out:
+
+| Métrica     | Zero-shot | Adaptado |
+| ----------- | --------: | -------: |
+| Categoria   |    84,29% |   97,14% |
+| Prioridade  |    31,43% |   94,29% |
+| Risco       |    62,86% |   92,86% |
+| Exact tuple |    11,43% |   85,71% |
+
+As tuples corretas passaram de **8/70 para 60/70**, e LOW → MEDIUM caiu de
+**40/40 para 0/40**. O recall de risco HIGH subiu de **57,14% para 100%**
+(4/7 → 7/7), mas o de prioridade HIGH/CRITICAL regrediu de **92,86% para
+85,71%** (13/14 → 12/14). A melhora agregada não eliminou os erros de severidade.
+
+Jev havia acertado **66/70 tuples (94,29%) sem receber nossos exemplos TRAIN**;
+Laya adaptado recebeu 1.120. A comparação é assimétrica: Jev mostrou forte
+generalização out-of-the-box neste benchmark, enquanto Laya mostrou o controle
+oferecido pelos pesos abertos para adaptar o comportamento ao domínio.
+
+### Confidence e limites de generalização
+
+A confidence do Laya adaptado ficou próxima de 1, mas **10/70 tuples ainda
+estavam erradas**. Thresholds até 0,90 mantiveram todos os tickets; 0,95 e
+0,99 removeram apenas um, com exact tuple ainda abaixo de 90%. Confidence
+alta não se tornou uma estimativa confiável de correção, e sua semântica
+não é idêntica à confidence reportada por Jev.
+
+Exact tuple foi **100% em TRAIN → 92,50% em VALIDATION → 85,71% no HELD-OUT**.
+O fit forte e a confidence saturada são sinais compatíveis com memorização e
+overconfidence; a amostra pequena não determina a gravidade desse efeito.
+
+As avaliações usam inglês, um domínio específico e dados sintéticos, com
+uma execução oficial por protocolo e nenhuma validação em tráfego real.
+**Jev e Laya continuam evaluation-only, fora da HybridPolicy e do runtime.**
+O experimento exercitou avaliação e adaptação, sem deployment de um serviço
+adaptado em produção.
+
+O [artigo sobre Jev](/artigos/jev-1-13-decision-model-benchmark/) detalha a
+avaliação inicial; [Laya vs Jev](/artigos/laya-vs-jev-zero-shot-fine-tuning/)
+explica os protocolos, calibration e o custo do controle. O
+
+<a
+  href="https://github.com/marcelotaparelli/ops-triage-ai/blob/e8c75f0ff75aafcd24403f860e1ad7d4450392f5/docs/evaluation/laya-domain-adaptation-final-report.md"
+  target="_blank"
+  rel="noopener noreferrer"
+>
+  relatório final de adaptação
+</a>
+reúne as métricas e aponta os artifacts para auditoria.
 
 ## Evidências
 

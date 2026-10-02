@@ -1,5 +1,51 @@
 # Implementation status
 
+## AI Engineering positioning and Laya case evidence (2026-10-02)
+
+- Audited the local CV sources/CSS, Home/About, skills, metadata/OG copy,
+  Ops Triage cases, full Laya/Jev articles, content schema, publication model,
+  CV generation, release/artifact validators, and existing gates. Updated
+  current professional positioning to `Software Engineer | Engenharia de IA`
+  and `Software Engineer | AI Engineering`, preserving Software Engineering
+  as the professional base. Technical Applied AI categories and dated status
+  history remain intact; only the author-positioning sentence changed in the
+  historical portfolio architecture article.
+- Added the author-confirmed ongoing postgraduate program in AI Engineering
+  at Cruzeiro do Sul to both About introductions and both CVs, ahead of ADS
+  completed in 2026. No campus, modality, dates, or specialist title invented.
+  Existing professional experience and the temporary AWS evidence were
+  preserved. Home copy stays concise and contains no training tools or school.
+- Rechecked Ops Triage public main read-only at
+  `e8c75f0ff75aafcd24403f860e1ad7d4450392f5`: final/zero-shot/Jev reports,
+  Freeze 2, held-out, training, selection, checkpoint metadata, README, and
+  mapping audit. No metrics recalculated and no benchmark executed. The case
+  now follows zero-shot -> adaptation -> validation selection -> Freeze 2 ->
+  final evaluation; it retains the asymmetric TRAIN exposure, severity-recall
+  regression, saturated confidence with ten incorrect tuples, measured-task
+  cost scope, and evaluation-only/runtime boundary. Added Python, PyTorch,
+  Laya, and CUDA to the technologies; first practical ML Systems / AI
+  Infrastructure evidence is bounded to experimental work. Public evidence
+  explicitly says the Pod was not destroyed; no teardown experience claimed.
+- Regenerated both PDFs with the unchanged CV stylesheet and 9.5pt body font:
+  exactly one A4 page each, 5.1px bottom headroom per locale, no visual clipping.
+  Updated and regenerated both OG images. Reviewed About and Ops Triage in
+  both languages on desktop/mobile; shortened new table labels for legibility.
+  Browser review at 1440/390/320px across Home/About/case: 18 configurations,
+  HTTP 200, no page overflow or WCAG-tagged axe violations. Six unique public
+  case-source links returned HTTP 200; local links passed artifact validation.
+- All final gates pass: format, format check, typecheck (0 errors, 0 warnings,
+  18 existing hints), lint, 38 unit tests, CV generation, release checker,
+  preview build/validator (36 pages/documents), 13 E2E, production
+  build/validator (36 pages/documents), and Git whitespace check. `dist/`
+  holds the production build with both published Laya article routes.
+- Full institutional audit, final PT/EN texts, case metadata, source caveats,
+  and screenshot references: `docs/editorial/positioning-laya-review.md`.
+  Screenshots/visual checks are local ignored artifacts under
+  `reports/positioning-review/`. No schema, workflow, validator, test,
+  dependency, distribution, or Ops Triage source changes. One local commit
+  records this update; its hash/status are provided in the delivery report.
+  No push, deployment, or external distribution.
+
 ## Laya vs Jev — final editorial release (2026-10-02)
 
 - Completed the full PT-BR/EN article-body review requested by the user and

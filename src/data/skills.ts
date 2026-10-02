@@ -15,8 +15,8 @@ export const skills = [
     },
     description: {
       'pt-BR':
-        'Integração de LLMs, structured outputs, baselines determinísticos, evals e benchmarks held-out congelados; políticas híbridas, human-in-the-loop e audit trail; modelos de decisão probabilísticos tipados, análise exploratória de confidence/calibration, automação seletiva e fallbacks. AI coding agents com revisão humana e quality gates.',
-      en: 'LLM integration, structured outputs, deterministic baselines, evals, and frozen held-out benchmarks; hybrid policies, human-in-the-loop, and audit trails; typed probabilistic decision models, exploratory confidence/calibration analysis, selective automation, and fallbacks. AI coding agents with human review and quality gates.',
+        'Integração de LLMs e modelos de decisão probabilísticos tipados, structured outputs, baselines determinísticos, evals e held-outs congelados. Domain adaptation/fine-tuning com Python/PyTorch, seleção de checkpoints por validation e análise de confidence/calibration. Prática inicial em ML Systems: treinamento GPU/CUDA, mixed precision e lifecycle de checkpoints; políticas híbridas, HITL e fallbacks.',
+      en: 'LLM and typed probabilistic decision-model integration, structured outputs, deterministic baselines, evals, and frozen held-outs. Domain adaptation/fine-tuning with Python/PyTorch, validation-based checkpoint selection, and confidence/calibration analysis. Initial hands-on ML Systems work: GPU/CUDA training, mixed precision, and checkpoint lifecycle; hybrid policies, HITL, and fallbacks.',
     },
     tools: null,
   },

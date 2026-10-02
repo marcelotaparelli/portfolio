@@ -36,7 +36,7 @@ const pt = {
       fourth: 'INTELIGENTES',
     },
     intro:
-      'Transformo problemas reais em software confiável, seguro e eficiente. Estou aprofundando essa base em Engenharia de IA Aplicada para construir sistemas inteligentes com comportamento mensurável e foco em produção.',
+      'Transformo problemas reais em software confiável, seguro e eficiente. Estou aprofundando essa base em Engenharia de IA para construir sistemas inteligentes com comportamento mensurável e foco em produção.',
     work: 'Ver projetos',
     contact: 'Vamos conversar',
     caption: 'Engenharia com perspectiva de produto.',
@@ -85,7 +85,7 @@ const pt = {
     eyebrow: 'VAMOS CONVERSAR',
     title: 'Bons produtos começam\ncom uma boa conversa.',
     description:
-      'Oportunidades profissionais, parcerias ou uma conversa sobre software, engenharia e IA aplicada.',
+      'Oportunidades profissionais, parcerias ou uma conversa sobre software e Engenharia de IA.',
     email: 'Escreva para mim',
     linkedin: 'Conectar no LinkedIn',
   },
@@ -106,7 +106,7 @@ const pt = {
     eyebrow: 'SOBRE',
     title: 'Software, produto\ne o problema humano.',
     intro:
-      'Sou Marcelo Taparelli, engenheiro de software. Minha trajetória combina experiência prática em desenvolvimento de software e produto com formação em Análise e Desenvolvimento de Sistemas, concluída em 2026, complementada por estudos em Engenharia de Software pela Alura e aprofundamento atual em Engenharia de IA Aplicada.',
+      'Sou Marcelo Taparelli, engenheiro de software. Minha trajetória combina experiência prática em desenvolvimento de software e produto com formação em Análise e Desenvolvimento de Sistemas, concluída em 2026, e uma Pós-graduação em Engenharia de IA em andamento na Cruzeiro do Sul.',
     body: 'Atuo com backend, APIs, aplicações web, automação e evolução de sistemas. Considero segurança parte do desenho: explicito limites de acesso, valido entradas, protejo segredos e testo regras críticas. Para confiabilidade e performance, uso limites de recursos, acesso a dados previsível e latência medida. Também uso AI coding agents para apoiar planejamento, implementação, debugging, testes e validação, sempre com revisão humana e quality gates.',
     journey: 'Uma trajetória de conexões',
     journeyText:
@@ -115,7 +115,7 @@ const pt = {
     capabilities: 'Competências em contexto',
     learning: 'Aprofundamento atual',
     learningText:
-      'Meu aprofundamento está na interseção entre a Engenharia de Software performática, segura e confiável e a Engenharia de IA aplicada e mensurável. No Ops Triage AI, trabalho com baseline determinístico, Ollama, HybridPolicy, revisão humana e trilha de auditoria; Jev 1.13 foi avaliado depois, isoladamente, no mesmo benchmark held-out congelado e não entrou na HybridPolicy. Na Resilient Transaction API, exploro idempotência concorrente, PostgreSQL como fonte de verdade, degradação graciosa quando Redis fica indisponível, resiliência do provider e operação observável. Um laboratório temporário de validação na AWS, fora de produção, exercitou o ciclo com Terraform, migrations, testes funcionais e auditoria após a destruição dos recursos.',
+      'Aprofundo Engenharia de IA a partir da minha base em Engenharia de Software. No Ops Triage AI, construí a triagem com baseline determinístico, Ollama e HybridPolicy, revisão humana e auditoria. Depois avaliei Jev e Laya separadamente, sem integrá-los à política híbrida. Adaptei Laya com PyTorch, TRAIN/VALIDATION separados, GPU/CUDA e seleção de checkpoint antes do held-out congelado. Esse ciclo de avaliação e adaptação abriu minha primeira experiência prática em ML Systems / AI Infrastructure. Na Resilient Transaction API, trabalho idempotência, resiliência e operação observável; um laboratório temporário na AWS, fora de produção, exercitou Terraform, migrations, testes funcionais e auditoria após a destruição dos recursos.',
     complementary: 'Formação complementar — Alura',
     complementaryItems: [
       'Engenharia de Software',
@@ -178,7 +178,7 @@ const en: Translations = {
       fourth: 'PRODUCTS',
     },
     intro:
-      'I turn real problems into reliable, secure, and efficient software. I’m deepening that foundation in Applied AI Engineering to build intelligent systems with measurable behavior and a production focus.',
+      'I turn real problems into reliable, secure, and efficient software. I’m deepening that foundation in AI Engineering to build intelligent systems with measurable behavior and a production focus.',
     work: 'View projects',
     contact: 'Let’s talk',
     caption: 'Engineering with a product perspective.',
@@ -225,7 +225,7 @@ const en: Translations = {
     eyebrow: 'LET’S TALK',
     title: 'Good products start\nwith a good conversation.',
     description:
-      'Professional opportunities, partnerships, or a conversation about software, engineering, and applied AI.',
+      'Professional opportunities, partnerships, or a conversation about software and AI Engineering.',
     email: 'Send me an email',
     linkedin: 'Connect on LinkedIn',
   },
@@ -246,7 +246,7 @@ const en: Translations = {
     eyebrow: 'ABOUT',
     title: 'Software, product,\nand the human problem.',
     intro:
-      'I’m Marcelo Taparelli, a software engineer. My background combines hands-on experience in software development and product with a completed degree in Systems Analysis and Development, complemented by Software Engineering studies at Alura and my current focus on Applied AI Engineering.',
+      'I’m Marcelo Taparelli, a software engineer. My background combines hands-on software development and product experience with a degree in Systems Analysis and Development, completed in 2026, and an ongoing postgraduate program in AI Engineering at Cruzeiro do Sul.',
     body: 'I work across backend systems, APIs, web applications, automation, and system evolution. I treat security as part of software design: I make access boundaries explicit, validate inputs, protect secrets, and test critical rules. For reliability and performance, I use resource limits, predictable data access, and measured latency. I also use AI coding agents for planning, implementation, debugging, testing, and validation, with human review and quality gates.',
     journey: 'A path of connections',
     journeyText:
@@ -255,7 +255,7 @@ const en: Translations = {
     capabilities: 'Capabilities in context',
     learning: 'Current focus',
     learningText:
-      'My current focus sits at the intersection of performant, secure, and reliable Software Engineering and applied, measurable AI Engineering. In Ops Triage AI, I work with a deterministic baseline, Ollama, HybridPolicy, human review, and an audit trail; Jev 1.13 was later evaluated separately on the same frozen held-out set and was not added to HybridPolicy. In Resilient Transaction API, I explore concurrent idempotency, PostgreSQL as source of truth, graceful degradation when Redis is unavailable, provider resilience, and observable operations. A temporary non-production AWS validation lab exercised the Terraform, migrations, functional tests, and post-destroy resource audit lifecycle.',
+      'I’m deepening my AI Engineering practice from a Software Engineering foundation. In Ops Triage AI, I built a deterministic baseline, Ollama integration, and HybridPolicy with human review and auditing. I later evaluated Jev and Laya separately, without adding either to the hybrid policy. I adapted Laya with PyTorch, separate TRAIN/VALIDATION sets, GPU/CUDA training, and checkpoint selection before the frozen held-out evaluation. This evaluation and adaptation cycle gave me my first hands-on experience in ML Systems / AI Infrastructure. In Resilient Transaction API, I work on idempotency, resilience, and observable operations; a temporary non-production AWS lab exercised Terraform, migrations, functional tests, and post-destroy resource auditing.',
     complementary: 'Additional training — Alura',
     complementaryItems: [
       'Software Engineering',
