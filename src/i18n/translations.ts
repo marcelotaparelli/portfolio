@@ -106,7 +106,7 @@ const pt = {
     eyebrow: 'SOBRE',
     title: 'Software, produto\ne o problema humano.',
     intro:
-      'Sou Marcelo Taparelli, engenheiro de software. Minha trajetória combina experiência prática em desenvolvimento de software e produto com formação em Análise e Desenvolvimento de Sistemas, concluída em 2026, e uma Pós-graduação em Engenharia de IA em andamento na Cruzeiro do Sul.',
+      'Sou Marcelo Taparelli, engenheiro de software. Minha trajetória combina experiência prática em desenvolvimento de software e produto com formação em Análise e Desenvolvimento de Sistemas, concluída em 2026, e uma Pós-graduação em Engenharia de IA em andamento.',
     body: 'Atuo com backend, APIs, aplicações web, automação e evolução de sistemas. Considero segurança parte do desenho: explicito limites de acesso, valido entradas, protejo segredos e testo regras críticas. Para confiabilidade e performance, uso limites de recursos, acesso a dados previsível e latência medida. Também uso AI coding agents para apoiar planejamento, implementação, debugging, testes e validação, sempre com revisão humana e quality gates.',
     journey: 'Uma trajetória de conexões',
     journeyText:
@@ -246,7 +246,7 @@ const en: Translations = {
     eyebrow: 'ABOUT',
     title: 'Software, product,\nand the human problem.',
     intro:
-      'I’m Marcelo Taparelli, a software engineer. My background combines hands-on software development and product experience with a degree in Systems Analysis and Development, completed in 2026, and an ongoing postgraduate program in AI Engineering at Cruzeiro do Sul.',
+      'I’m Marcelo Taparelli, a software engineer. My background combines hands-on software development and product experience with a degree in Systems Analysis and Development, completed in 2026, and an ongoing postgraduate program in AI Engineering.',
     body: 'I work across backend systems, APIs, web applications, automation, and system evolution. I treat security as part of software design: I make access boundaries explicit, validate inputs, protect secrets, and test critical rules. For reliability and performance, I use resource limits, predictable data access, and measured latency. I also use AI coding agents for planning, implementation, debugging, testing, and validation, with human review and quality gates.',
     journey: 'A path of connections',
     journeyText:

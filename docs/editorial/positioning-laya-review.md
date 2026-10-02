@@ -67,11 +67,11 @@ LLM and typed probabilistic decision-model integration, structured outputs, dete
 
 ### Introdução PT-BR
 
-Sou Marcelo Taparelli, engenheiro de software. Minha trajetória combina experiência prática em desenvolvimento de software e produto com formação em Análise e Desenvolvimento de Sistemas, concluída em 2026, e uma Pós-graduação em Engenharia de IA em andamento na Cruzeiro do Sul.
+Sou Marcelo Taparelli, engenheiro de software. Minha trajetória combina experiência prática em desenvolvimento de software e produto com formação em Análise e Desenvolvimento de Sistemas, concluída em 2026, e uma Pós-graduação em Engenharia de IA em andamento.
 
 ### Introdução EN
 
-I’m Marcelo Taparelli, a software engineer. My background combines hands-on software development and product experience with a degree in Systems Analysis and Development, completed in 2026, and an ongoing postgraduate program in AI Engineering at Cruzeiro do Sul.
+I’m Marcelo Taparelli, a software engineer. My background combines hands-on software development and product experience with a degree in Systems Analysis and Development, completed in 2026, and an ongoing postgraduate program in AI Engineering.
 
 ### Corpo PT-BR (preservado)
 

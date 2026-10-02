@@ -1,5 +1,12 @@
 # Implementation status
 
+## About copy refinement (2026-10-02)
+
+- At the author's request, removed the institution name from the PT/EN
+  About introductions and their derived description metadata. The ongoing
+  postgraduate program remains visible; CV education entries are unchanged.
+  Updated the final-text editorial record to match the revised introductions.
+
 ## AI Engineering positioning and Laya case evidence (2026-10-02)
 
 - Audited the local CV sources/CSS, Home/About, skills, metadata/OG copy,
