@@ -1,9 +1,11 @@
 # Laya vs Jev — editorial evidence and release review
 
-Prepared on 2026-10-02. Both articles are drafts (`reviewed: false`) pending
-human editorial review, as required by `AGENTS.md`. No publication date is
-asserted before approval. No push, deployment, distribution API call, model
-execution, or modification to Ops Triage AI is part of this change.
+Prepared and editorially finalized on 2026-10-02. The user explicitly
+authorized marking the pair publishable after a complete factual and editorial
+review. Both articles now have `status: published`, `reviewed: true`, and
+`publishedAt: 2026-10-02`. This enables the production artifact locally; no
+push, deployment, distribution API call, model execution, or modification to
+Ops Triage AI was performed.
 
 ## Deliverables
 
@@ -19,7 +21,7 @@ execution, or modification to Ops Triage AI is part of this change.
   `mlops`. The existing payload builder derives title, description, and body
   from EN, and canonical
   `https://marcelotaparelli.com.br/en/articles/laya-vs-jev-zero-shot-fine-tuning/`.
-- Existing distribution workflow remains manual and blocked for drafts.
+- Existing distribution workflow remains manual; it was not invoked.
 
 The narrative asks what changes when a hosted model that works well zero-shot
 is compared with open weights that can be adapted. It explains the interface,
@@ -134,29 +136,61 @@ those externally retained weights. Memorization/overconfidence is an
 interpretation of perfect TRAIN fit and split differences, not a diagnosis of
 severe overfitting.
 
-## Validation and release state
+## Final editorial review
 
-| Gate                                            | Result                                                                                     |
-| ----------------------------------------------- | ------------------------------------------------------------------------------------------ |
-| `bun run format` / `bun run format:check`       | Passed; existing files unchanged by formatting.                                            |
-| `bun run typecheck`                             | 0 errors, 0 warnings, 18 existing hints.                                                   |
-| `bun run lint`                                  | Passed.                                                                                    |
-| `bun run test`                                  | 38 passed, 0 failed.                                                                       |
-| `bun run build:preview`                         | 36 pages.                                                                                  |
-| `bun scripts/check-artifacts.ts dist --preview` | 36 HTML documents validated.                                                               |
-| `bun run test:e2e`                              | 13 passed.                                                                                 |
-| `bun run build`                                 | 34 pages; new drafts excluded.                                                             |
-| `bun scripts/check-artifacts.ts dist`           | 34 HTML documents validated.                                                               |
-| `bun run check:release`                         | Exit 1: only the new pair awaits editorial approval and publication dates (four messages). |
+Both complete article bodies and the bilingual LinkedIn copy were read and
+reviewed. Repetition and defensive report-style sentences were shortened,
+and the infrastructure explanation retains the RTX A5000, mixed precision,
+GradScaler/scheduler correction, preserved first run, and corrected update
+accounting without expanding into a training tutorial.
 
-Both new article routes were also inspected in Chromium at 320px and 1440px:
-no page overflow, no WCAG-tagged axe violations, correct locale and preview
-noindex, one H1, 18 section headings, seven tables per article. Production
-inspection confirmed neither new route nor its sitemap entry exists.
+The temporal hook now explicitly compares the Jev announcement and the
+initial release record used for Laya. The official Hub commits API confirms
+`00c37c405e3c3ad73ee070227614c89cda06b99e` at
+`2026-09-18T05:13:12.000Z`; the wording measures public records, not development
+time. This precision also appears in the LinkedIn hook.
 
-The LinkedIn input is 1,970 characters. Its canonical/length validator and
-the existing DEV.to payload builder were exercised locally without network
-publication. No full distribution execution was attempted for a draft.
+The comparison table names the TRAIN exposure in both column headers. Its
+interpretation now emphasizes strong Jev out-of-the-box generalization and
+Laya's adaptation control, replacing the comparative phrase “generalized
+better.” The 11.43% → 85.71% trajectory and Jev's 94.29% without our TRAIN
+tickets are repeated immediately beside that table so it cannot be read as a
+matched-training contest. Classification, confidence, coverage, latency, and
+cost values are unchanged. No independent calibration claim was introduced.
+
+All 22 unique public source URLs and four already-published internal targets
+returned HTTP 200. Six GitHub artifact pages initially returned transient 503
+and returned 200 on retry; their raw files at the same pinned commit also
+returned 200. All linked snapshot paths are publicly available. The two new
+article canonicals are prepared for the eventual deployment, not claimed to
+have been deployed by this task.
+
+## Final validation and release state
+
+| Gate                                            | Result                                          |
+| ----------------------------------------------- | ----------------------------------------------- |
+| `bun run format` / `bun run format:check`       | Passed; existing files unchanged by formatting. |
+| `bun run typecheck`                             | 0 errors, 0 warnings, 18 existing hints.        |
+| `bun run lint`                                  | Passed.                                         |
+| `bun run test`                                  | 38 passed, 0 failed.                            |
+| `bun run build:preview`                         | 36 pages.                                       |
+| `bun scripts/check-artifacts.ts dist --preview` | 36 HTML documents validated.                    |
+| `bun run test:e2e`                              | 13 passed.                                      |
+| `bun run build`                                 | 36 pages; both new article routes included.     |
+| `bun scripts/check-artifacts.ts dist`           | 36 HTML documents validated.                    |
+| `bun run check:release`                         | Passed, exit 0.                                 |
+
+The final production article routes were inspected in Chromium at 320px and
+1440px: no page overflow and no WCAG-tagged axe violations. Production
+inspection confirmed both routes and sitemap entries, indexable metadata,
+and the same editorial date. Preview artifact validation still enforces
+noindex. Each article retains 18 section headings and seven tables.
+
+The revised LinkedIn input is 2,077 characters, with PT-BR, the separator and
+English section marker, EN, both canonicals, and shared hashtags. The existing
+pair resolver and DEV.to/LinkedIn payload builders were exercised locally
+without network publication. DEV.to uses the EN body and canonical with the
+same four tags. No distribution CLI or workflow was invoked.
 
 The environment initially lacked Git and Bun. Bun 1.4.2, Git, and Chromium
 were installed as tooling; `bun install --frozen-lockfile` used the existing
@@ -165,8 +199,7 @@ escalated execution after sandbox EPERM failures. The first extra axe
 inspection needed an explicit browser context and was corrected; the
 four successful article/viewport inspections above followed that correction.
 
-The release validator remains unchanged. Human review and a publication
-date precede release; the existing manual distribution flow applies after
-deployment. This task prepares material without publishing. Final whitespace
-and working-tree checks are recorded in the delivery report after the local
-commit.
+The release validator remains unchanged and is now green. Deployment and
+external distribution remain explicitly unauthorized by the user for this
+task. Final whitespace and working-tree checks are recorded in the delivery
+report after the local commit.

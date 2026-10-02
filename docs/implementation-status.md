@@ -1,5 +1,36 @@
 # Implementation status
 
+## Laya vs Jev — final editorial release (2026-10-02)
+
+- Completed the full PT-BR/EN article-body review requested by the user and
+  marked both files `status: published`, `reviewed: true`, with shared
+  `publishedAt: 2026-10-02`. The user explicitly authorized local release
+  after factual review, while prohibiting push and external distribution.
+- Shortened repeated/defensive passages and training implementation detail.
+  The hook compares public records dated 15 and 18 September, not development
+  duration. The official Hub API reconfirmed the initial-release commit date.
+  The comparison table names each model's TRAIN exposure, and the conclusion
+  emphasizes strong Jev zero-shot generalization and open-source adaptation
+  control. All classification, confidence, coverage, latency, and cost values
+  are preserved, including the measured-task scope of US$ 0.1185.
+- Verified all 22 unique source links and four published internal targets by
+  read-only GET: HTTP 200, including six GitHub artifact pages after transient
+  503 retries. The same raw snapshot files are public. No material factual
+  issue was found; the source/audit limitations remain explicit.
+- Revised the single bilingual LinkedIn copy (2,077 characters); EN DEV.to
+  tags and canonical remain unchanged. The existing pair resolver and both
+  payload builders passed local validation without network publication.
+- Re-ran format and format check, typecheck (0 errors, 0 warnings, 18 existing
+  hints), lint, 38 unit tests, 13 E2E, preview build/validator (36 documents),
+  production build/validator (36 documents), and release checker (exit 0).
+  Both new production routes and sitemap entries exist, are indexable, and
+  carry the same editorial date. Browser inspection of both final articles at
+  320px and 1440px found no page overflow or WCAG-tagged axe violations.
+- No schema, workflow, validator, test, dependency, or Ops Triage source
+  changes. No push, deployment, or external distribution. `dist/` holds the
+  production build. Final Git whitespace and status checks accompany the
+  local release commit in the delivery report.
+
 ## Laya vs Jev article — bilingual draft (2026-10-02)
 
 - Created the PT-BR/EN pair `laya-vs-jev-zero-shot-fine-tuning` as

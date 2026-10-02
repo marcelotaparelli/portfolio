@@ -4,19 +4,20 @@ locale: pt-BR
 slug: laya-vs-jev-zero-shot-fine-tuning
 title: 'Laya vs Jev na prática: zero-shot, fine-tuning e o custo real de um decision model open-source'
 description: No mesmo held-out, Laya passou de 8/70 para 60/70 tuples corretas após adaptação. Um experimento sobre decisões estruturadas, confidence e o custo do controle.
-status: draft
-reviewed: false
+status: published
+reviewed: true
+publishedAt: 2026-10-02
 category: IA aplicada · ML Systems
 distribution:
   linkedin:
     text: |
       🇧🇷 PT-BR
 
-      Jev foi anunciado em 15 de setembro. O histórico oficial do Laya no Hugging Face registra sua primeira release em 18 de setembro. Em IA, até o benchmark da semana passada pode precisar de uma continuação.
+      Jev foi anunciado em 15/09/2026. O histórico oficial do Laya no Hugging Face tem um registro inicial de release de 18/09/2026. São três dias entre registros públicos. Em IA, até o benchmark da semana passada pode precisar de uma continuação.
 
       No mesmo held-out de 70 tickets sintéticos, Laya foi de 11,43% de exact tuple zero-shot para 85,71% depois de domain adaptation. Jev tinha atingido 94,29% sem treinamento específico no nosso domínio. Laya recebeu 1.120 tickets TRAIN: a comparação é assimétrica.
 
-      A adaptação mudou 40/40 prioridades LOW previstas como MEDIUM para 0/40. Mas a confidence quase saturou e ainda houve dez tuples erradas. Na CPU avaliada, local também não significou menor latência.
+      As prioridades LOW previstas como MEDIUM caíram de 40/40 para 0/40 após adaptação. Mas a confidence quase saturou e ainda houve dez tuples erradas. Na CPU avaliada, local também não significou menor latência.
 
       O maior benefício do open source aqui foi controle para adaptar o modelo — junto com dataset, GPU, checkpoints, calibração e operação. Ambos continuam evaluation-only.
 
@@ -27,7 +28,7 @@ distribution:
 
       English version below 🇬🇧
 
-      Jev was announced on September 15. Laya's official Hugging Face history records its initial release on September 18. In AI, even last week's benchmark can need a follow-up.
+      Jev was announced on September 15, 2026. Laya's official Hugging Face history has an initial release record dated September 18, 2026. Those public records are three days apart. In AI, even last week's benchmark can need a follow-up.
 
       On the same held-out set of 70 synthetic tickets, Laya went from 11.43% exact-tuple accuracy zero-shot to 85.71% after domain adaptation. Jev had reached 94.29% without domain-specific training. Laya received 1,120 TRAIN tickets, making this an asymmetric comparison.
 
@@ -41,9 +42,9 @@ distribution:
       #Jev #Laya #AIEngineering #MLOps
 ---
 
-A TypeSafe anunciou Jev em **15 de setembro de 2026**, apresentando seu primeiro “System One Model”. No histórico oficial do Laya no Hugging Face, o commit identificado como primeira release é de **18 de setembro**. São registros separados por três dias; isso não significa que Laya tenha sido construído nesse intervalo. Fontes: <a href="https://typesafe.ai/blog/introducing-system-one-models-and-jev" target="_blank" rel="noopener noreferrer">anúncio da TypeSafe</a> e <a href="https://huggingface.co/convaiinnovations/laya/commit/00c37c405e3c3ad73ee070227614c89cda06b99e" target="_blank" rel="noopener noreferrer">commit de primeira release do Laya</a>.
+A TypeSafe anunciou Jev em **15 de setembro de 2026**, apresentando seu primeiro “System One Model”. No histórico oficial do Laya no Hugging Face, o commit marcado como “Initial release” é de **18 de setembro de 2026**. **Três dias separam esses registros públicos** — um intervalo entre anúncio e registro de release, não uma medida do tempo de desenvolvimento. Fontes: <a href="https://typesafe.ai/blog/introducing-system-one-models-and-jev" target="_blank" rel="noopener noreferrer">anúncio da TypeSafe</a> e <a href="https://huggingface.co/convaiinnovations/laya/commit/00c37c405e3c3ad73ee070227614c89cda06b99e" target="_blank" rel="noopener noreferrer">registro inicial de release do Laya</a>.
 
-Essa velocidade teve uma consequência concreta no meu projeto: depois de [avaliar Jev 1.13](/artigos/jev-1-13-decision-model-benchmark/), já havia uma alternativa de pesos abertos que valia investigar. A competência mais durável passou a ser conseguir avaliar uma abordagem nova rapidamente e medir se ela melhora o sistema.
+Quando concluí a [avaliação de Jev 1.13](/artigos/jev-1-13-decision-model-benchmark/), Laya já era uma alternativa de pesos abertos que valia investigar. Aprender uma ferramenta era apenas o primeiro passo: o trabalho mais durável foi conseguir avaliar uma abordagem nova com método e medir se ela melhora o sistema.
 
 No mesmo held-out do [Ops Triage AI](/projetos/ops-triage-ai/), Laya saiu de **8/70 tuples corretas zero-shot para 60/70 após domain adaptation**. Jev havia acertado 66/70 sem treinamento específico no domínio. A pergunta interessante é o que muda quando podemos alterar os pesos de um modelo — e qual responsabilidade vem com esse controle.
 
@@ -82,7 +83,7 @@ voz → transcrição em tempo real → adaptação/correção de contexto
     → decision model → seleção de assets/ações → UI
 ```
 
-Sem uma URL verificável dessa demonstração no contexto do projeto, trato esses detalhes como relato da demo observada, sem valor de benchmark. Não são requisitos universais de Jev.
+Esse é um relato da demonstração observada, sem URL verificável no contexto do projeto nem valor de benchmark.
 
 Jev não precisa gerar o site. Um modelo de fala pode transcrever, outra camada normalizar o contexto e um decision model escolher entre ações permitidas. Modelos de fala, LLMs e modelos de decisão podem coexistir em papéis diferentes; o código continua responsável por executar e validar as ações.
 
@@ -99,7 +100,7 @@ Dividimos a investigação em duas perguntas:
 
 Jev não foi executado novamente. Usamos seu resultado histórico congelado, via OpenRouter, com `typesafe/jev-1.13`, resolvido para `typesafe/jev-1.13-20260917`.
 
-O experimento B é **assimétrico**: Jev recebeu zero exemplos de treinamento específicos do domínio; Laya recebeu 1.120 tickets TRAIN. A taxonomia é a mesma, mas os prompts e os caminhos de inferência também não são idênticos. As perguntas de Laya foram ajustadas ao seu orçamento de tokens antes do freeze e mantidas entre A e B. Esses resultados não oferecem um vencedor metodologicamente simples.
+O experimento B é **assimétrico**: Jev recebeu zero exemplos de treinamento específicos do domínio; Laya recebeu 1.120 tickets TRAIN. A taxonomia é a mesma, mas os prompts e os caminhos de inferência também diferem. As perguntas de Laya foram ajustadas ao seu orçamento de tokens antes do freeze e mantidas entre A e B. Estamos avaliando generalização sem adaptação e capacidade de especialização, com exposições distintas ao domínio.
 
 ## Experimento A: Laya zero-shot
 
@@ -114,15 +115,13 @@ No checkpoint geral, zero-shot, nesta taxonomia e neste held-out, o resultado fo
 
 O padrão mais evidente foi **40/40 prioridades LOW previstas como MEDIUM**. Antes de atribuir isso ao modelo, a auditoria examinou opções, ordem, índices, mapping, serialização e normalização. Não encontrou bug de integração que invalidasse o resultado: as probabilidades arquivadas apontavam MEDIUM como top-1, coerente com a escolha publicada.
 
-Há um limite de auditabilidade: o journal preservou outputs **parseados**, com escolhas e probabilidades copiadas, e não a resposta nativa bruta byte a byte. Não alego uma auditoria de raw outputs que o repositório não permite. O comportamento observado veio das previsões zero-shot; não foi uma conversão LOW → MEDIUM feita pelo adapter.
-
-“Laya tem 11% de accuracy” seria uma generalização incorreta. Esse é o exact tuple deste checkpoint, protocolo e conjunto, não uma medida universal do modelo.
+A auditoria usou outputs **parseados**, com escolhas e probabilidades copiadas; a resposta nativa bruta não foi preservada byte a byte. Esse material permite conferir o mapping: MEDIUM já era a escolha do modelo, sem conversão LOW → MEDIUM no adapter.
 
 ## Por que isso não contradiz o benchmark publicado
 
 O material que motivou a investigação mostrava resultados melhores. O <a href="https://huggingface.co/convaiinnovations/laya-typed-decisions" target="_blank" rel="noopener noreferrer">model card de laya-typed-decisions</a> explica a diferença: esse checkpoint foi fine-tuned nos workflows do benchmark correspondente. O card separa o checkpoint especializado do base e avisa que os números de Jev foram publicados por terceiros, sem medição no mesmo run.
 
-São outro dataset, outro protocolo e outro checkpoint; suas métricas por decisão não são nosso exact tuple por ticket. Não reproduzo esses números como ranking contra o Ops Triage. A distinção entre base e especializado levou à segunda pergunta: a baixa qualidade zero-shot era uma limitação estrutural ou falta de adaptação ao domínio?
+As métricas publicadas pertencem a outro dataset, protocolo e checkpoint, e medem decisões individuais em vez da nossa tupla por ticket. Essa distinção levou à segunda pergunta: a baixa qualidade zero-shot era uma limitação estrutural ou falta de adaptação ao domínio?
 
 ## Experimento B: separar aprendizado de avaliação
 
@@ -134,7 +133,7 @@ VALIDATION — 280 tickets → seleciona checkpoint
 HELD-OUT — os mesmos 70 tickets → avaliação final depois do freeze
 ```
 
-O held-out não participou de geração do dataset, training, validation, checkpoint selection, thresholds, calibration ou hyperparameter tuning. Isso não apaga o conhecimento agregado do experimento A: era uma continuação sobre um benchmark já conhecido, com isolamento operacional do arquivo e dos erros na criação dos dados.
+O held-out ficou fora da geração do dataset, training, validation, checkpoint selection, thresholds, calibration e hyperparameter tuning. Era uma continuação sobre um benchmark cujo resultado agregado já conhecíamos; o arquivo e seus erros ficaram isolados da criação dos novos dados.
 
 VALIDATION compartilha famílias de cenários com TRAIN, embora os textos sejam distintos. É útil para selecionar um checkpoint, mas não representa uma população real independente.
 
@@ -146,7 +145,7 @@ Selecionamos o checkpoint pela maior exact tuple em VALIDATION; os desempates pr
 
 O host local tinha quatro vCPUs, cerca de 4 GB de RAM e nenhuma GPU. Um fine-tuning completo nesse ambiente não era razoável. Usamos uma **GPU temporária NVIDIA RTX A5000, 24 GB de VRAM**, Python 3.11 e PyTorch 2.5.1 com CUDA 12.1.
 
-Foram quatro epochs com mixed precision — autocast fp16 e pesos mestre fp32 — e gradient accumulation. Microbatches de quatro decisões, acumulados por oito passos, davam um batch efetivo de 32 decisões. VALIDATION, não o held-out, selecionou o checkpoint.
+Foram quatro epochs com mixed precision — autocast fp16 e pesos mestre fp32 — e gradient accumulation para controlar o uso de memória.
 
 Essa execução trouxe uma evidência concreta da minha direção em **ML Systems / AI Infrastructure**: além de treinar, precisei verificar se a contabilidade do treinamento correspondia ao que realmente acontecia.
 
@@ -165,22 +164,22 @@ No mesmo held-out:
 | Risk accuracy     | 62,86% — 44/70 |     92,86% — 65/70 |
 | Exact tuple       |  11,43% — 8/70 | **85,71% — 60/70** |
 
-O padrão LOW → MEDIUM caiu de **40/40 para 0/40**. Isso é evidência forte de que a adaptação mudou o comportamento nesse domínio. Os números são os do <a href="https://github.com/marcelotaparelli/ops-triage-ai/blob/e8c75f0ff75aafcd24403f860e1ad7d4450392f5/docs/evaluation/laya-domain-adaptation-final-report.md" target="_blank" rel="noopener noreferrer">relatório final público</a>, sem nova execução ou recálculo de métricas.
+O padrão LOW → MEDIUM caiu de **40/40 para 0/40**. A adaptação mudou de forma clara o comportamento nesse domínio, como registra o <a href="https://github.com/marcelotaparelli/ops-triage-ai/blob/e8c75f0ff75aafcd24403f860e1ad7d4450392f5/docs/evaluation/laya-domain-adaptation-final-report.md" target="_blank" rel="noopener noreferrer">relatório final público</a>.
 
 O fine-tuning não resolveu tudo. Restaram duas categorias, quatro prioridades e cinco riscos incorretos, com sobreposição entre campos: **dez tuples erradas**. O recall de prioridade HIGH/CRITICAL caiu de 13/14 no zero-shot para 12/14 no adaptado. Melhorar a média não garante melhorar cada erro de severidade.
 
 ## Jev e Laya adaptado: interpretar a assimetria
 
-| Métrica                       | Jev 1.13 histórico |  Laya adaptado |
-| ----------------------------- | -----------------: | -------------: |
-| Category accuracy             |               100% |         97,14% |
-| Priority accuracy             |             98,57% |         94,29% |
-| Risk accuracy                 |             95,71% |         92,86% |
-| HIGH/CRITICAL priority recall |       100% — 14/14 | 85,71% — 12/14 |
-| HIGH risk recall              |       85,71% — 6/7 |     100% — 7/7 |
-| Exact tuple                   |     94,29% — 66/70 | 85,71% — 60/70 |
+| Métrica                       | Jev 1.13 — sem nossos TRAIN | Laya adaptado — 1.120 TRAIN |
+| ----------------------------- | --------------------------: | --------------------------: |
+| Category accuracy             |                        100% |                      97,14% |
+| Priority accuracy             |                      98,57% |                      94,29% |
+| Risk accuracy                 |                      95,71% |                      92,86% |
+| HIGH/CRITICAL priority recall |                100% — 14/14 |              85,71% — 12/14 |
+| HIGH risk recall              |                85,71% — 6/7 |                  100% — 7/7 |
+| Exact tuple                   |              94,29% — 66/70 |              85,71% — 60/70 |
 
-**Jev generalizou melhor out-of-the-box neste held-out. Laya reduziu dramaticamente seu gap quando recebeu dados específicos do domínio.** O recall de risco HIGH favoreceu Laya adaptado, mas são apenas sete exemplos. Isso não demonstra superioridade geral nem justifica substituir um modelo pelo outro.
+**Jev mostrou forte generalização out-of-the-box neste benchmark. Laya mostrou quanto controle open source oferece quando podemos adaptar o modelo ao domínio.** Os 94,29% de Jev vieram sem os nossos tickets TRAIN; Laya passou de 11,43% zero-shot para 85,71% com essa adaptação. O recall de risco HIGH foi maior no Laya adaptado, mas o denominador é de apenas sete exemplos.
 
 ## Confidence continuou sendo um problema
 
@@ -196,7 +195,7 @@ Mesmo assim, dez das 70 tuples estavam erradas. Brier e ECE descrevem este peque
 
 O gate exploratório exigia que as três `answer_confidence` alcançassem o threshold. De 0 até **0,90**, manteve 70/70 tickets e exact tuple de 85,71%. Em **0,95 e 0,99**, manteve 69/70 e exact tuple de **86,96%**. Quase não filtrou erros. Nenhum threshold foi escolhido ou ajustado com esses resultados.
 
-Isso retoma o [contraponto do artigo de Jev](/artigos/jev-1-13-decision-model-benchmark/): confidence alta não significa automaticamente probabilidade confiável de estar correto. Jev reporta sua própria confidence; Laya distingue `answer_confidence` de uma confidence baseada em entropia. Não comparo seus valores como se tivessem a mesma semântica.
+Isso retoma o [contraponto do artigo de Jev](/artigos/jev-1-13-decision-model-benchmark/): confidence alta não significa automaticamente probabilidade confiável de estar correto. Jev reporta sua própria confidence; Laya distingue `answer_confidence` de uma confidence baseada em entropia. Essas semânticas distintas impedem comparar diretamente os valores.
 
 ## O gap entre aprendizado e generalização
 
@@ -208,7 +207,7 @@ Isso retoma o [contraponto do artigo de Jev](/artigos/jev-1-13-decision-model-be
 
 A sequência **100% → 92,50% → 85,71%**, loss de TRAIN registrada como zero na última época e confidence saturada mostram ajuste muito forte aos dados de treinamento. Como VALIDATION ainda compartilha famílias de cenários com TRAIN, a queda no held-out merece atenção.
 
-Minha interpretação é que há sinais compatíveis com memorização e overconfidence. Os fatos observados são o fit perfeito e as diferenças entre splits; esse experimento pequeno não permite diagnosticar automaticamente “overfitting grave” nem estimar o gap em produção.
+Interpreto o fit perfeito e as diferenças entre splits como sinais compatíveis com memorização e overconfidence. A amostra é pequena para determinar a gravidade desse efeito ou estimar o gap em produção.
 
 ## Local não significou automaticamente mais rápido
 
@@ -220,7 +219,7 @@ Minha interpretação é que há sinais compatíveis com memorização e overcon
 
 Os timings de Laya incluem tokenização, inferência das três perguntas, parsing e validação; a média por request não inclui load do modelo. O held-out adaptado rodou em CPU, **não na A5000 de treinamento**.
 
-As infraestruturas e datas são diferentes. Não deduzo uma razão universal de velocidade. O que observamos é que, nessa CPU específica, self-hosted Laya não foi automaticamente mais rápido que chamar Jev remotamente. A latência histórica do caminho híbrido com Ollama também não é latência standalone comparável.
+Nessa CPU específica, self-hosted Laya não foi automaticamente mais rápido que chamar Jev remotamente. Como as infraestruturas e datas diferem, esses timings descrevem os caminhos observados. A latência histórica do caminho híbrido com Ollama também mede outro percurso, além da inferência standalone.
 
 ## Open-source não significa custo zero
 
@@ -265,7 +264,7 @@ Antes de integrar, versionaria pesos e configuração junto aos dados e ao códi
 
 ## Evidências e reprodutibilidade
 
-Os números vêm dos relatórios e artifacts públicos do <a href="https://github.com/marcelotaparelli/ops-triage-ai" target="_blank" rel="noopener noreferrer">Ops Triage AI</a>, consultados no commit `e8c75f0`. Os links abaixo fixam esse snapshot. O README nesse commit ainda resume apenas o zero-shot; a evidência de domain adaptation está no relatório final e nos artifacts. Não modifiquei o experimento para este artigo.
+Os números vêm dos relatórios e artifacts públicos do <a href="https://github.com/marcelotaparelli/ops-triage-ai" target="_blank" rel="noopener noreferrer">Ops Triage AI</a>, consultados no commit `e8c75f0`. Os links abaixo fixam esse snapshot. O README nesse commit ainda resume apenas o zero-shot; a evidência de domain adaptation está no relatório final e nos artifacts.
 
 - Zero-shot: <a href="https://github.com/marcelotaparelli/ops-triage-ai/blob/e8c75f0ff75aafcd24403f860e1ad7d4450392f5/docs/evaluation/laya-held-out-a9725ea.md" target="_blank" rel="noopener noreferrer">relatório A</a> e <a href="https://github.com/marcelotaparelli/ops-triage-ai/blob/e8c75f0ff75aafcd24403f860e1ad7d4450392f5/artifacts/laya-held-out.json" target="_blank" rel="noopener noreferrer">resultado JSON</a>.
 - Adaptação: <a href="https://github.com/marcelotaparelli/ops-triage-ai/blob/e8c75f0ff75aafcd24403f860e1ad7d4450392f5/docs/evaluation/laya-domain-adaptation-protocol.md" target="_blank" rel="noopener noreferrer">protocolo</a> e <a href="https://github.com/marcelotaparelli/ops-triage-ai/blob/e8c75f0ff75aafcd24403f860e1ad7d4450392f5/artifacts/laya-adapt-freeze.json" target="_blank" rel="noopener noreferrer">Freeze 2</a>.
