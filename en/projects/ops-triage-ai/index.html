@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#061321"><title>Ops Triage AI — Marcelo Taparelli</title><meta name="description" content="Operational triage system with a deterministic baseline, local LLM, and hybrid policy; Jev 1.13, a typed probabilistic model, was evaluated separately on the same frozen held-out set."><link rel="canonical" href="https://marcelotaparelli.com.br/en/projects/ops-triage-ai/"><link rel="alternate" hreflang="en" href="https://marcelotaparelli.com.br/en/projects/ops-triage-ai/"><link rel="alternate" hreflang="pt-BR" href="https://marcelotaparelli.com.br/projetos/ops-triage-ai/"><link rel="alternate" hreflang="x-default" href="https://marcelotaparelli.com.br/projetos/ops-triage-ai/"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="preload" href="/fonts/inter-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin><meta property="og:type" content="website"><meta property="og:site_name" content="Marcelo Taparelli"><meta property="og:title" content="Ops Triage AI — Marcelo Taparelli"><meta property="og:description" content="Operational triage system with a deterministic baseline, local LLM, and hybrid policy; Jev 1.13, a typed probabilistic model, was evaluated separately on the same frozen held-out set."><meta property="og:url" content="https://marcelotaparelli.com.br/en/projects/ops-triage-ai/"><meta property="og:locale" content="en_US"><meta property="og:locale:alternate" content="pt_BR"><meta property="og:image" content="https://marcelotaparelli.com.br/og/en.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="Marcelo Taparelli — From real problems to intelligent products."><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Ops Triage AI — Marcelo Taparelli"><meta name="twitter:description" content="Operational triage system with a deterministic baseline, local LLM, and hybrid policy; Jev 1.13, a typed probabilistic model, was evaluated separately on the same frozen held-out set."><meta name="twitter:image" content="https://marcelotaparelli.com.br/og/en.png"><meta name="twitter:image:alt" content="Marcelo Taparelli — From real problems to intelligent products."><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Person","@id":"https://marcelotaparelli.com.br/#person","name":"Marcelo Taparelli","url":"https://marcelotaparelli.com.br","jobTitle":"Software Engineer","sameAs":["https://www.linkedin.com/in/marcelo-taparelli/","https://github.com/marcelotaparelli"]},{"@type":"WebSite","@id":"https://marcelotaparelli.com.br/#website","url":"https://marcelotaparelli.com.br","name":"Marcelo Taparelli","inLanguage":["pt-BR","en"]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Projects","item":"https://marcelotaparelli.com.br/en/projects/"},{"@type":"ListItem","position":2,"name":"Ops Triage AI","item":"https://marcelotaparelli.com.br/en/projects/ops-triage-ai/"}]}]}</script><link rel="stylesheet" href="/_astro/BaseLayout.D1MGyZ-W.css"></head><body><a class="skip-link" href="#main">Skip to content</a><header class="site-header"><div class="container header-inner"><a class="brand" href="/en/" aria-label="Marcelo Taparelli"><svg width="30" height="30" viewBox="0 0 40 40" fill="none" aria-hidden="true"><path d="M5 30V10l10 12 10-12v20M25 10h12M31 10v20" stroke="currentColor" stroke-width="2" stroke-linejoin="round"></path></svg><span>Marcelo Taparelli<span class="brand-dot">.</span></span></a><nav class="desktop-nav" aria-label="Main navigation"><a href="/en/projects/" aria-current="page">Projects</a><a href="/en/about/">About</a><a href="/en/articles/">Articles</a><a href="/en/contact/">Contact</a></nav><div class="header-actions"><nav class="language-switch" aria-label="Select language"><a href="/projetos/ops-triage-ai/" lang="pt-BR" hreflang="pt-BR" aria-label="Português">PT</a><span aria-hidden="true">/</span><a href="/en/projects/ops-triage-ai/" lang="en" hreflang="en" aria-current="true" aria-label="English">EN</a></nav><details class="mobile-menu"><summary aria-label="Menu"><span class="menu-lines" aria-hidden="true"></span><span class="sr-only">Menu</span></summary><nav aria-label="Main navigation"><a href="/en/projects/" aria-current="page">Projects</a><a href="/en/about/">About</a><a href="/en/articles/">Articles</a><a href="/en/contact/">Contact</a></nav></details></div></div></header><script type="module">var e=document.querySelector(`.mobile-menu`),t=e?.querySelector(`summary`);document.addEventListener(`keydown`,n=>{n.key===`Escape`&&e?.open&&(e.open=!1,t?.focus())}),document.addEventListener(`click`,t=>{e?.open&&t.target instanceof Node&&!e.contains(t.target)&&(e.open=!1)});</script><main id="main" tabindex="-1"><div class="container"><nav class="breadcrumb" aria-label="Breadcrumb"><a href="/en/projects/">Projects</a><span aria-hidden="true">/</span><span aria-current="page">Ops Triage AI</span></nav><header class="page-intro case-intro"><p class="eyebrow">Applied AI · Systems</p><h1>Ops Triage AI</h1><p class="section-description">Operational triage system with a deterministic baseline, local LLM, and hybrid policy; Jev 1.13, a typed probabilistic model, was evaluated separately on the same frozen held-out set.</p><a class="text-link mt-5" href="https://github.com/marcelotaparelli/ops-triage-ai" target="_blank" rel="noopener noreferrer" aria-label="Visit website: Ops Triage AI — opens in a new tab">Visit website<svg class="arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 18 18 6M6 6h12v12"></path></svg></a></header><dl class="case-metadata"><div><dt>My contribution</dt><dd>System design and implementation</dd></div><div><dt>Context</dt><dd>Authored open-source project</dd></div><div><dt>Confirmed technologies</dt><dd>Bun · TypeScript · PostgreSQL · Prisma · Vitest · Zod · Docker · GitHub Actions · Ollama · Jev 1.13 · OpenRouter</dd></div></dl><div class="editorial-grid"><aside class="editorial-sidebar"><p class="eyebrow">In this article</p><nav aria-label="In this article"><a href="#problem">Problem</a><a href="#architecture">Architecture</a><a href="#engineering-decisions">Engineering decisions</a><a href="#evaluation">Evaluation</a><a href="#official-results">Official results</a><a href="#trade-offs">Trade-offs</a><a href="#limitations">Limitations</a><a href="#jev-113-experiment">Jev 1.13 experiment</a><a href="#evidence">Evidence</a></nav></aside><article class="prose"><h2 id="problem">Problem</h2>
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#061321"><title>Ops Triage AI — Marcelo Taparelli</title><meta name="description" content="Auditable triage with a deterministic baseline, Ollama, and hybrid policy; separate Jev and Laya evaluations, including domain adaptation, outside the runtime."><link rel="canonical" href="https://marcelotaparelli.com.br/en/projects/ops-triage-ai/"><link rel="alternate" hreflang="en" href="https://marcelotaparelli.com.br/en/projects/ops-triage-ai/"><link rel="alternate" hreflang="pt-BR" href="https://marcelotaparelli.com.br/projetos/ops-triage-ai/"><link rel="alternate" hreflang="x-default" href="https://marcelotaparelli.com.br/projetos/ops-triage-ai/"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="preload" href="/fonts/inter-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin><meta property="og:type" content="website"><meta property="og:site_name" content="Marcelo Taparelli"><meta property="og:title" content="Ops Triage AI — Marcelo Taparelli"><meta property="og:description" content="Auditable triage with a deterministic baseline, Ollama, and hybrid policy; separate Jev and Laya evaluations, including domain adaptation, outside the runtime."><meta property="og:url" content="https://marcelotaparelli.com.br/en/projects/ops-triage-ai/"><meta property="og:locale" content="en_US"><meta property="og:locale:alternate" content="pt_BR"><meta property="og:image" content="https://marcelotaparelli.com.br/og/en.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="Marcelo Taparelli — From real problems to intelligent products."><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Ops Triage AI — Marcelo Taparelli"><meta name="twitter:description" content="Auditable triage with a deterministic baseline, Ollama, and hybrid policy; separate Jev and Laya evaluations, including domain adaptation, outside the runtime."><meta name="twitter:image" content="https://marcelotaparelli.com.br/og/en.png"><meta name="twitter:image:alt" content="Marcelo Taparelli — From real problems to intelligent products."><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Person","@id":"https://marcelotaparelli.com.br/#person","name":"Marcelo Taparelli","url":"https://marcelotaparelli.com.br","jobTitle":"Software Engineer","sameAs":["https://www.linkedin.com/in/marcelo-taparelli/","https://github.com/marcelotaparelli"]},{"@type":"WebSite","@id":"https://marcelotaparelli.com.br/#website","url":"https://marcelotaparelli.com.br","name":"Marcelo Taparelli","inLanguage":["pt-BR","en"]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Projects","item":"https://marcelotaparelli.com.br/en/projects/"},{"@type":"ListItem","position":2,"name":"Ops Triage AI","item":"https://marcelotaparelli.com.br/en/projects/ops-triage-ai/"}]}]}</script><link rel="stylesheet" href="/_astro/BaseLayout.D1MGyZ-W.css"></head><body><a class="skip-link" href="#main">Skip to content</a><header class="site-header"><div class="container header-inner"><a class="brand" href="/en/" aria-label="Marcelo Taparelli"><svg width="30" height="30" viewBox="0 0 40 40" fill="none" aria-hidden="true"><path d="M5 30V10l10 12 10-12v20M25 10h12M31 10v20" stroke="currentColor" stroke-width="2" stroke-linejoin="round"></path></svg><span>Marcelo Taparelli<span class="brand-dot">.</span></span></a><nav class="desktop-nav" aria-label="Main navigation"><a href="/en/projects/" aria-current="page">Projects</a><a href="/en/about/">About</a><a href="/en/articles/">Articles</a><a href="/en/contact/">Contact</a></nav><div class="header-actions"><nav class="language-switch" aria-label="Select language"><a href="/projetos/ops-triage-ai/" lang="pt-BR" hreflang="pt-BR" aria-label="Português">PT</a><span aria-hidden="true">/</span><a href="/en/projects/ops-triage-ai/" lang="en" hreflang="en" aria-current="true" aria-label="English">EN</a></nav><details class="mobile-menu"><summary aria-label="Menu"><span class="menu-lines" aria-hidden="true"></span><span class="sr-only">Menu</span></summary><nav aria-label="Main navigation"><a href="/en/projects/" aria-current="page">Projects</a><a href="/en/about/">About</a><a href="/en/articles/">Articles</a><a href="/en/contact/">Contact</a></nav></details></div></div></header><script type="module">var e=document.querySelector(`.mobile-menu`),t=e?.querySelector(`summary`);document.addEventListener(`keydown`,n=>{n.key===`Escape`&&e?.open&&(e.open=!1,t?.focus())}),document.addEventListener(`click`,t=>{e?.open&&t.target instanceof Node&&!e.contains(t.target)&&(e.open=!1)});</script><main id="main" tabindex="-1"><div class="container"><nav class="breadcrumb" aria-label="Breadcrumb"><a href="/en/projects/">Projects</a><span aria-hidden="true">/</span><span aria-current="page">Ops Triage AI</span></nav><header class="page-intro case-intro"><p class="eyebrow">Applied AI · Systems</p><h1>Ops Triage AI</h1><p class="section-description">Auditable triage with a deterministic baseline, Ollama, and hybrid policy; separate Jev and Laya evaluations, including domain adaptation, outside the runtime.</p><a class="text-link mt-5" href="https://github.com/marcelotaparelli/ops-triage-ai" target="_blank" rel="noopener noreferrer" aria-label="Visit website: Ops Triage AI — opens in a new tab">Visit website<svg class="arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 18 18 6M6 6h12v12"></path></svg></a></header><dl class="case-metadata"><div><dt>My contribution</dt><dd>System design and implementation</dd></div><div><dt>Context</dt><dd>Authored open-source project</dd></div><div><dt>Confirmed technologies</dt><dd>Bun · TypeScript · PostgreSQL · Prisma · Vitest · Zod · Docker · GitHub Actions · Ollama · Jev 1.13 · OpenRouter · Python · PyTorch · Laya · CUDA</dd></div></dl><div class="editorial-grid"><aside class="editorial-sidebar"><p class="eyebrow">In this article</p><nav aria-label="In this article"><a href="#problem">Problem</a><a href="#architecture">Architecture</a><a href="#engineering-decisions">Engineering decisions</a><a href="#evaluation">Evaluation</a><a href="#official-results">Official results</a><a href="#trade-offs">Trade-offs</a><a href="#limits-of-the-historical-hybrid-benchmark">Limits of the historical hybrid benchmark</a><a href="#jev-113-experiment">Jev 1.13 experiment</a><a href="#laya-from-zero-shot-to-domain-adaptation">Laya: from zero-shot to domain adaptation</a><a href="#evidence">Evidence</a></nav></aside><article class="prose"><h2 id="problem">Problem</h2>
 <p>Operational ticket triage usually depends on manual reading or an opaque
 classifier: no structured decision, no audit trail, and no honest measurement
 of where automation is right and where it needs human review.</p>
@@ -46,7 +46,8 @@ parameters — commit <code>f36e8ef8fcc70be09ab5ba9883efc7c34f3591a2</code>, pro
 <p>The official results table below belongs to the historical deterministic,
 Ollama, and <code>HybridPolicy</code> benchmark. A later, isolated evaluation added Jev
 1.13 as a third paradigm on the same frozen held-out set; Jev was not
-integrated into <code>HybridPolicy</code>.</p>
+integrated into <code>HybridPolicy</code>. Laya was evaluated afterward, first zero-shot
+and then with domain adaptation, also outside the runtime.</p>
 <p>The harness compares the deterministic baseline, the standalone LLM, and the
 hybrid on quality, severity recall, disagreement, fallback, review reasons,
 and latency. It deliberately does not emit: human-review precision/recall
@@ -130,8 +131,8 @@ accuracy — evidence that explicit rules are brittle outside known
 vocabulary, which justifies combining with the LLM instead of a straight
 swap.</li>
 </ul>
-<h2 id="limitations">Limitations</h2>
-<p>Stated directly, what this case does not claim:</p>
+<h2 id="limits-of-the-historical-hybrid-benchmark">Limits of the historical hybrid benchmark</h2>
+<p>Limits of this historical evaluation:</p>
 <ul>
 <li>Synthetic English-only dataset with 70 examples.</li>
 <li>A single local model evaluated.</li>
@@ -282,6 +283,116 @@ probability distributions and sub-second average standalone latency. The
 small synthetic dataset does not establish production superiority. The
 architectural decision remains benchmark/evaluation only; there was no
 <code>HybridPolicy</code> integration.</p>
+<h2 id="laya-from-zero-shot-to-domain-adaptation">Laya: from zero-shot to domain adaptation</h2>
+<p>After Jev, I evaluated the general <code>convaiinnovations/laya</code> checkpoint, a
+non-autoregressive decision model with code and open weights under Apache 2.0.
+I used <code>laya==0.3.23</code> and the protocol’s frozen revision, retaining the same
+held-out set. This base checkpoint differs from <code>laya-typed-decisions</code>, which
+has already been specialized on other workflows.</p>
+<p>Zero-shot, Laya got <strong>8/70 tuples right (11.43%)</strong>. The clearest pattern was
+<strong>40/40 expected LOW priorities predicted as MEDIUM</strong>. Auditing options,
+indices, mapping, normalization, and parsed outputs found no integration bug
+that invalidated the behavior. The next hypothesis was that the general model
+needed adaptation to our taxonomy and domain.</p>
+<h3 id="adaptation-protocol">Adaptation protocol</h3>
+<p>I separated <strong>1,120 TRAIN tickets</strong> for changing weights and <strong>280 VALIDATION
+tickets</strong> for checkpoint selection. The 70 HELD-OUT tickets stayed outside
+data generation, training, validation, selection, tuning, thresholds, and
+calibration. TRAIN and VALIDATION are synthetic too, sharing scenario families
+with distinct wording.</p>
+<p>Fine-tuning started from the same base model. VALIDATION selected epoch 4 by
+highest exact-tuple accuracy, using predeclared tie-breakers. <strong>Freeze 2</strong> fixed
+data, weights, code, and configuration before the single official adapted
+evaluation. The sequence is baseline → Ollama → HybridPolicy → separate Jev
+evaluation → Laya zero-shot → adaptation → selection → Freeze 2 → adapted held-out.</p>
+<h3 id="training-infrastructure">Training infrastructure</h3>
+<p>The inference host, with four vCPUs and roughly 4 GB RAM, was unsuitable for
+this training. I used a temporary RunPod GPU: <strong>NVIDIA RTX A5000, 24 GB VRAM</strong>,
+Python 3.11, PyTorch 2.5.1, and CUDA 12.1. Training ran for four epochs with
+mixed precision (FP16 autocast / FP32 master weights), gradient accumulation,
+and gradient checkpointing to manage memory.</p>
+<p>In the first run, the scheduler advanced even when <code>GradScaler</code> skipped an
+optimizer update. I preserved the artifacts, rejected the run on methodological
+validity, and corrected the coordination before repeating training and opening
+the adapted held-out evaluation. The official run recorded <strong>420 attempts,
+413 applied updates, seven skips, and 413 scheduler steps</strong>. It was not chosen
+for more favorable accuracy.</p>
+<p>The <code>.safetensors</code> checkpoint was retained locally outside the Pod; SHA-256,
+size, selection, and configuration are documented in public artifacts. Adapted
+weights were not published. This cycle supplies my first hands-on evidence in
+<strong>ML Systems / AI Infrastructure</strong>, bounded to training, checkpoints, and
+experimental evaluation.</p>
+<p>Final evaluation ran on CPU without the GPU, averaging <strong>1,619 ms</strong> per ticket,
+versus 1,414 ms zero-shot. Jev had recorded 569 ms over API/network in a
+different context. Local inference did not automatically mean lower latency
+on this CPU; the serving paths do not support a like-for-like speed comparison.</p>
+<p>Measured GPU tasks totaled 1,523.51 seconds. At the recorded rate of roughly
+US$ 0.28/hour including disk, <strong>US$ 0.1185 estimates those tasks</strong>, excluding
+setup and idle time; it is not the Pod’s total bill. Laya incurred US$ 0 in
+external per-token/request charges, while infrastructure and operations remained
+our responsibility. The report does not document teardown: the Pod had not
+been destroyed when evaluation was completed.</p>
+<h3 id="results-and-severity-regression">Results and severity regression</h3>
+<p>Accuracy by field and exact tuple, on the same held-out set:</p>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th style="text-align:right">Zero-shot</th>
+<th style="text-align:right">Adapted</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Category</td>
+<td style="text-align:right">84.29%</td>
+<td style="text-align:right">97.14%</td>
+</tr>
+<tr>
+<td>Priority</td>
+<td style="text-align:right">31.43%</td>
+<td style="text-align:right">94.29%</td>
+</tr>
+<tr>
+<td>Risk</td>
+<td style="text-align:right">62.86%</td>
+<td style="text-align:right">92.86%</td>
+</tr>
+<tr>
+<td>Exact tuple</td>
+<td style="text-align:right">11.43%</td>
+<td style="text-align:right">85.71%</td>
+</tr>
+</tbody>
+</table>
+<p>Correct tuples rose from <strong>8/70 to 60/70</strong>, and LOW → MEDIUM errors fell from
+<strong>40/40 to 0/40</strong>. HIGH risk recall rose from <strong>57.14% to 100%</strong> (4/7 → 7/7),
+but HIGH/CRITICAL priority recall regressed from <strong>92.86% to 85.71%</strong>
+(13/14 → 12/14). Aggregate improvement did not eliminate severity errors.</p>
+<p>Jev had reached <strong>66/70 correct tuples (94.29%) without any of our TRAIN
+examples</strong>; adapted Laya received 1,120. The comparison is asymmetric: Jev
+showed strong out-of-the-box generalization on this benchmark, while Laya
+showed the control open weights offer for adapting behavior to a domain.</p>
+<h3 id="confidence-and-generalization-limits">Confidence and generalization limits</h3>
+<p>Adapted Laya’s confidence stayed close to 1, yet <strong>10/70 tuples were still
+wrong</strong>. Thresholds through 0.90 retained every ticket; 0.95 and 0.99 removed
+only one, leaving exact-tuple accuracy below 90%. High confidence did not
+become a reliable estimate of correctness, and its semantics differ from
+Jev’s reported confidence.</p>
+<p>Exact-tuple accuracy was <strong>100% on TRAIN → 92.50% on VALIDATION → 85.71% on
+HELD-OUT</strong>. Strong fit and saturated confidence are signs consistent with
+memorization and overconfidence; this small sample does not establish how
+severe the effect is.</p>
+<p>These evaluations use English, a single domain, and synthetic data, with one
+official run per protocol and no validation on real traffic. <strong>Jev and Laya
+remain evaluation-only, outside HybridPolicy and the runtime.</strong> The experiment
+exercised evaluation and adaptation, without deploying an adapted production
+service.</p>
+<p>The <a href="/en/articles/jev-1-13-decision-model-benchmark/">Jev article</a> covers the
+initial evaluation; <a href="/en/articles/laya-vs-jev-zero-shot-fine-tuning/">Laya vs Jev</a>
+explains the protocols, calibration, and cost of control. The</p>
+<a href="https://github.com/marcelotaparelli/ops-triage-ai/blob/e8c75f0ff75aafcd24403f860e1ad7d4450392f5/docs/evaluation/laya-domain-adaptation-final-report.md" target="_blank" rel="noopener noreferrer"><p>final adaptation report</p></a>
+<p>collects the metrics and links the artifacts for auditing.</p>
 <h2 id="evidence">Evidence</h2>
 <ul>
 <li>Repository: <a href="https://github.com/marcelotaparelli/ops-triage-ai" target="_blank" rel="noopener noreferrer">ops-triage-ai on GitHub</a></li>
@@ -290,4 +401,4 @@ architectural decision remains benchmark/evaluation only; there was no
 <li>Jev 1.13 experiment report: <a href="https://github.com/marcelotaparelli/ops-triage-ai/blob/main/docs/evaluation/jev-1.13-held-out-4c41e0b.md" target="_blank" rel="noopener noreferrer">jev-1.13-held-out-4c41e0b.md</a></li>
 <li>Jev held-out artifact: <a href="https://github.com/marcelotaparelli/ops-triage-ai/blob/main/artifacts/jev-1.13-held-out-4c41e0b.json" target="_blank" rel="noopener noreferrer">jev-1.13-held-out-4c41e0b.json</a></li>
 </ul><a class="text-link" href="/en/projects/"><svg class="arrow arrow--left" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12h15m-6-6 6 6-6 6"></path></svg>Back to projects</a></article></div></div><section class="contact-section" aria-labelledby="contact-title"><div class="container contact-inner"><p class="eyebrow"><span class="status-dot" aria-hidden="true"></span>LET’S TALK</p><h2 id="contact-title" class="contact-title preserve-lines">Good products start
-with a good conversation.</h2><p class="section-description">Professional opportunities, partnerships, or a conversation about software, engineering, and applied AI.</p><a class="email-link" href="mailto:contato@marcelotaparelli.com.br">contato@marcelotaparelli.com.br<svg class="arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 18 18 6M6 6h12v12"></path></svg></a><a class="text-link" href="https://www.linkedin.com/in/marcelo-taparelli/" target="_blank" rel="noopener noreferrer">Connect on LinkedIn<svg class="arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 18 18 6M6 6h12v12"></path></svg></a></div></section></main><footer class="site-footer"><div class="container footer-top"><div><a class="brand" href="/en/"><svg width="30" height="30" viewBox="0 0 40 40" fill="none" aria-hidden="true"><path d="M5 30V10l10 12 10-12v20M25 10h12M31 10v20" stroke="currentColor" stroke-width="2" stroke-linejoin="round"></path></svg><span>Marcelo Taparelli<span class="brand-dot">.</span></span></a><p>Problem first. Technology second.</p></div><nav class="footer-links" aria-label="Social links and résumé"><a href="https://github.com/marcelotaparelli" target="_blank" rel="noopener noreferrer">GitHub</a><a href="https://www.linkedin.com/in/marcelo-taparelli/" target="_blank" rel="noopener noreferrer">LinkedIn</a><a href="mailto:contato@marcelotaparelli.com.br">Email</a><a class="text-link" href="/cv/marcelo-taparelli-cv-en.pdf" download>Download résumé<span class="file-label">PDF</span><svg class="arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 18 18 6M6 6h12v12"></path></svg></a></nav></div><div class="container footer-bottom"><span>© 2026 Marcelo Taparelli</span><span lang="en">Software Engineering · Applied AI · Product</span></div></footer></body></html>
+with a good conversation.</h2><p class="section-description">Professional opportunities, partnerships, or a conversation about software and AI Engineering.</p><a class="email-link" href="mailto:contato@marcelotaparelli.com.br">contato@marcelotaparelli.com.br<svg class="arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 18 18 6M6 6h12v12"></path></svg></a><a class="text-link" href="https://www.linkedin.com/in/marcelo-taparelli/" target="_blank" rel="noopener noreferrer">Connect on LinkedIn<svg class="arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 18 18 6M6 6h12v12"></path></svg></a></div></section></main><footer class="site-footer"><div class="container footer-top"><div><a class="brand" href="/en/"><svg width="30" height="30" viewBox="0 0 40 40" fill="none" aria-hidden="true"><path d="M5 30V10l10 12 10-12v20M25 10h12M31 10v20" stroke="currentColor" stroke-width="2" stroke-linejoin="round"></path></svg><span>Marcelo Taparelli<span class="brand-dot">.</span></span></a><p>Problem first. Technology second.</p></div><nav class="footer-links" aria-label="Social links and résumé"><a href="https://github.com/marcelotaparelli" target="_blank" rel="noopener noreferrer">GitHub</a><a href="https://www.linkedin.com/in/marcelo-taparelli/" target="_blank" rel="noopener noreferrer">LinkedIn</a><a href="mailto:contato@marcelotaparelli.com.br">Email</a><a class="text-link" href="/cv/marcelo-taparelli-cv-en.pdf" download>Download résumé<span class="file-label">PDF</span><svg class="arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 18 18 6M6 6h12v12"></path></svg></a></nav></div><div class="container footer-bottom"><span>© 2026 Marcelo Taparelli</span><span lang="en">Software Engineering · AI Engineering · Product</span></div></footer></body></html>
