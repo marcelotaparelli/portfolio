@@ -71,22 +71,22 @@ const text = t(locale).about;
     <h2>{text.learning}</h2>
     <p>{text.learningText}</p>
   </section>
-  <section class="container about-section complementary-section">
-    <h2>{text.complementary}</h2>
-    <ul class="complementary-list">
-      {text.complementaryItems.map((item) => (
-        <li>{item}</li>
-      ))}
-    </ul>
-    <p class="complementary-cta">
-      <a
-        href={text.complementaryLink}
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        {text.complementaryCta}
-      </a>
-    </p>
+  <section class="container about-section education-section">
+    <h2>{text.education.heading}</h2>
+    <ol class="education-list">
+      <li>
+        <h3>{text.education.postgraduate.title}</h3>
+        <p>{text.education.postgraduate.detail}</p>
+      </li>
+      <li>
+        <h3>{text.education.degree.title}</h3>
+        <p>{text.education.degree.detail}</p>
+      </li>
+      <li>
+        <h3>{text.education.coursework.title}</h3>
+        <p>{text.education.coursework.detail}</p>
+      </li>
+    </ol>
   </section>
   <ContactBlock locale={locale} />
 </BaseLayout>

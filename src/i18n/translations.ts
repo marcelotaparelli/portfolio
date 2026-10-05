@@ -122,21 +122,23 @@ const pt = {
     capabilities: 'Competências em contexto',
     learning: 'Engenharia na prática',
     learningText:
-      'No OpsPilot AI, construí RAG e workflows com agentes em Python/FastAPI, pgvector, LangGraph e OpenAI, com aprovação humana e OpenTelemetry. No Ops Triage AI, combinei baseline determinístico, LLM local e política híbrida; avaliei Jev e adaptei Laya com PyTorch/CUDA em experimentos separados do runtime. Na Resilient Transaction API, trabalhei idempotência, resiliência e operação observável com TypeScript/Bun, PostgreSQL e Redis, incluindo um laboratório AWS temporário, fora de produção. Tenho formação em Análise e Desenvolvimento de Sistemas, concluída em 2026.',
-    complementary: 'Formação complementar — Alura',
-    complementaryItems: [
-      'Engenharia de Software',
-      'Microsserviços',
-      'Back-end',
-      'APIs com Node.js e Express',
-      'Autenticação, testes e segurança em Node.js',
-      'DevOps e CI/CD',
-      'Cloud / AWS',
-      'Desenvolvimento Seguro / Cibersegurança',
-    ],
-    complementaryCta: 'Ver formação completa na Alura',
-    complementaryLink:
-      'https://cursos.alura.com.br/user/contato-marcelotaparelli-com-br/fullCertificate/19f834e62e372bdd70c34a584dbad811',
+      'No OpsPilot AI, construí RAG e workflows com agentes em Python/FastAPI, pgvector, LangGraph e OpenAI, com aprovação humana e OpenTelemetry. No Ops Triage AI, combinei baseline determinístico, LLM local e política híbrida; avaliei Jev e adaptei Laya com PyTorch/CUDA em experimentos separados do runtime. Na Resilient Transaction API, trabalhei idempotência, resiliência e operação observável com TypeScript/Bun, PostgreSQL e Redis, incluindo um laboratório AWS temporário, fora de produção.',
+    education: {
+      heading: 'Formação',
+      postgraduate: {
+        title: 'Pós-graduação em Engenharia de IA',
+        detail: 'Em andamento · conclusão prevista: abril de 2027',
+      },
+      degree: {
+        title: 'Análise e Desenvolvimento de Sistemas',
+        detail: 'Concluído em 2026',
+      },
+      coursework: {
+        title: 'Cursos complementares',
+        detail:
+          'Engenharia de Software · Back-end · APIs Node.js · Autenticação · Testes · Segurança · DevOps/CI/CD · Cloud/AWS · Desenvolvimento Seguro',
+      },
+    },
   },
   notFound: {
     eyebrow: 'ERRO 404',
@@ -269,21 +271,23 @@ const en: Translations = {
     capabilities: 'Capabilities in context',
     learning: 'Engineering in practice',
     learningText:
-      'In OpsPilot AI, I built RAG and agentic workflows with Python/FastAPI, pgvector, LangGraph, and OpenAI, with human approval and OpenTelemetry. In Ops Triage AI, I combined a deterministic baseline, a local LLM, and a hybrid policy; I evaluated Jev and adapted Laya with PyTorch/CUDA in experiments separate from the runtime. In Resilient Transaction API, I worked on idempotency, resilience, and observable operations with TypeScript/Bun, PostgreSQL, and Redis, including a temporary non-production AWS lab. I hold a degree in Systems Analysis and Development, completed in 2026.',
-    complementary: 'Additional training — Alura',
-    complementaryItems: [
-      'Software Engineering',
-      'Microservices',
-      'Back-end',
-      'APIs with Node.js and Express',
-      'Authentication, Testing and Security with Node.js',
-      'DevOps and CI/CD',
-      'Cloud / AWS',
-      'Secure Development / Cybersecurity',
-    ],
-    complementaryCta: 'View full training record',
-    complementaryLink:
-      'https://cursos.alura.com.br/user/contato-marcelotaparelli-com-br/fullCertificate/19f834e62e372bdd70c34a584dbad811',
+      'In OpsPilot AI, I built RAG and agentic workflows with Python/FastAPI, pgvector, LangGraph, and OpenAI, with human approval and OpenTelemetry. In Ops Triage AI, I combined a deterministic baseline, a local LLM, and a hybrid policy; I evaluated Jev and adapted Laya with PyTorch/CUDA in experiments separate from the runtime. In Resilient Transaction API, I worked on idempotency, resilience, and observable operations with TypeScript/Bun, PostgreSQL, and Redis, including a temporary non-production AWS lab.',
+    education: {
+      heading: 'Education',
+      postgraduate: {
+        title: 'Postgraduate Program in AI Engineering',
+        detail: 'In progress · expected completion: April 2027',
+      },
+      degree: {
+        title: 'Systems Analysis and Development',
+        detail: 'Completed in 2026',
+      },
+      coursework: {
+        title: 'Additional coursework',
+        detail:
+          'Software Engineering · Back-end · Node.js APIs · Authentication · Testing · Security · DevOps/CI/CD · Cloud/AWS · Secure Development',
+      },
+    },
   },
   notFound: {
     eyebrow: 'ERROR 404',

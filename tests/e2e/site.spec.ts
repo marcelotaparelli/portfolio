@@ -333,7 +333,7 @@ test('AI and software positioning, metadata and project priority agree in both l
       }
       const body = await page.locator('main').innerText();
       expect(body).not.toMatch(
-        /aspiring|transitioning|deepening|learning AI|Cruzeiro|postgraduate|pós-graduação/i,
+        /aspiring|transitioning|deepening|learning AI|Cruzeiro|UniBF/i,
       );
       if (path === home) {
         expect(
@@ -390,5 +390,68 @@ test('AI and software positioning, metadata and project priority agree in both l
         'Salus',
       ]);
     }
+  }
+});
+
+test('education has the required order and institution exposure in both languages', async ({
+  page,
+}) => {
+  for (const locale of [
+    {
+      about: '/sobre/',
+      cv: 'pt-br.html',
+      heading: 'Formação',
+      postgraduate: 'Pós-graduação em Engenharia de IA',
+      siteDate: 'abril de 2027',
+      cvDate: '04/2027',
+      degree: 'Análise e Desenvolvimento de Sistemas',
+      coursework: 'Cursos complementares',
+      languages: 'Idiomas',
+      native: 'Português — nativo',
+      advanced: 'Inglês — avançado',
+    },
+    {
+      about: '/en/about/',
+      cv: 'en.html',
+      heading: 'Education',
+      postgraduate: 'Postgraduate Program in AI Engineering',
+      siteDate: 'April 2027',
+      cvDate: 'Apr 2027',
+      degree: 'Systems Analysis and Development',
+      coursework: 'Additional coursework',
+      languages: 'Languages',
+      native: 'Portuguese — native',
+      advanced: 'English — advanced',
+    },
+  ]) {
+    await page.goto(locale.about);
+    const section = page.locator('.education-section');
+    await expect(section.locator('h2')).toHaveText(locale.heading);
+    await expect(section.locator('h3')).toHaveText([
+      locale.postgraduate,
+      locale.degree,
+      locale.coursework,
+    ]);
+    await expect(section.locator('li').nth(0)).toContainText(locale.siteDate);
+    await expect(section.locator('li').nth(1)).toContainText('2026');
+    expect(await section.innerText()).not.toMatch(/Cruzeiro|UniBF|Alura/i);
+
+    await page.goto(new URL(`../../cv/${locale.cv}`, import.meta.url).href);
+    await expect(page.locator('h2').last()).toHaveText(locale.languages);
+    await expect(page.locator('h2').nth(4)).toHaveText(locale.heading);
+    const education = page.locator('.education');
+    await expect(education.locator('strong')).toHaveText([
+      `${locale.postgraduate} — Cruzeiro do Sul Virtual`,
+      `${locale.degree} — UniBF`,
+      `${locale.coursework} — Alura`,
+    ]);
+    await expect(education.locator('p').nth(0)).toContainText(locale.cvDate);
+    await expect(education.locator('p').nth(1)).toContainText('2026');
+    await expect(page.locator('.education + h2 + p')).toContainText(
+      locale.native,
+    );
+    await expect(page.locator('.education + h2 + p')).toContainText(
+      locale.advanced,
+    );
   }
 });

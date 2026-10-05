@@ -1,5 +1,26 @@
 # Implementation status
 
+## Bilingual education and CV structure (2026-10-05)
+
+- Replaced the About/Sobre complementary-training block with one ordered
+  Education/Formação section: ongoing postgraduate AI Engineering (expected
+  April 2027), Systems Analysis and Development (completed 2026), then
+  additional coursework. Institution names appear only in the CVs.
+- Reorganized both CVs into Education/Formação and separate
+  Languages/Idiomas sections. The postgraduate program is identified as such,
+  with Cruzeiro do Sul Virtual and expected 04/2027 (Apr 2027 in EN); ADS
+  lists UniBF and 2026; coursework lists Alura. Both PDFs were regenerated
+  from the existing HTML/CSS pipeline and verified as one A4 page each, with
+  4.4px measured bottom headroom and no observed clipping.
+- Updated the E2E exposure rule to allow postgraduate education on About while
+  rejecting institution names there, and added PT/EN checks for site/CV
+  education order, dates, providers, and language sections. Verification
+  passed: format check, lint, typecheck (0 errors, 0 warnings, 20 hints), 42
+  unit tests, 24 E2E tests, release check, preview and production builds (38
+  pages each), both artifact checks (38 HTML documents each), PDF generation,
+  PDF text/raster inspection, and visual review of About desktop/mobile and
+  CV HTML/PDF in both languages. No horizontal overflow at 1440px or 390px.
+
 ## AI Engineer and Software Engineer portfolio positioning (2026-10-05)
 
 - Audited the bilingual Astro site, project/article collections, shared copy,
