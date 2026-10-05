@@ -405,7 +405,9 @@ test('education has the required order and institution exposure in both language
       siteDate: 'abril de 2027',
       cvDate: '04/2027',
       degree: 'Análise e Desenvolvimento de Sistemas',
-      coursework: 'Cursos complementares',
+      coursework: 'Engenharia de Software — Alura',
+      courseworkDetail:
+        'Back-end · APIs Node.js · Autenticação · Testes · Segurança · DevOps/CI/CD · Cloud/AWS · Desenvolvimento Seguro',
       languages: 'Idiomas',
       native: 'Português — nativo',
       advanced: 'Inglês — avançado',
@@ -418,7 +420,9 @@ test('education has the required order and institution exposure in both language
       siteDate: 'April 2027',
       cvDate: 'Apr 2027',
       degree: 'Systems Analysis and Development',
-      coursework: 'Additional coursework',
+      coursework: 'Software Engineering — Alura',
+      courseworkDetail:
+        'Back-end · Node.js APIs · Authentication · Testing · Security · DevOps/CI/CD · Cloud/AWS · Secure Development',
       languages: 'Languages',
       native: 'Portuguese — native',
       advanced: 'English — advanced',
@@ -434,7 +438,10 @@ test('education has the required order and institution exposure in both language
     ]);
     await expect(section.locator('li').nth(0)).toContainText(locale.siteDate);
     await expect(section.locator('li').nth(1)).toContainText('2026');
-    expect(await section.innerText()).not.toMatch(/Cruzeiro|UniBF|Alura/i);
+    await expect(section.locator('li').nth(2).locator('p')).toHaveText(
+      locale.courseworkDetail,
+    );
+    expect(await section.innerText()).not.toMatch(/Cruzeiro|UniBF/i);
 
     await page.goto(new URL(`../../cv/${locale.cv}`, import.meta.url).href);
     await expect(page.locator('h2').last()).toHaveText(locale.languages);
@@ -443,10 +450,13 @@ test('education has the required order and institution exposure in both language
     await expect(education.locator('strong')).toHaveText([
       `${locale.postgraduate} — Cruzeiro do Sul Virtual`,
       `${locale.degree} — UniBF`,
-      `${locale.coursework} — Alura`,
+      locale.coursework,
     ]);
     await expect(education.locator('p').nth(0)).toContainText(locale.cvDate);
     await expect(education.locator('p').nth(1)).toContainText('2026');
+    await expect(education.locator('p').nth(2)).toContainText(
+      locale.courseworkDetail,
+    );
     await expect(page.locator('.education + h2 + p')).toContainText(
       locale.native,
     );

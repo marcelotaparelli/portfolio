@@ -1,5 +1,22 @@
 # Implementation status
 
+## Named Software Engineering training (2026-10-05)
+
+- Replaced the generic third education item in PT/EN About and CVs with
+  Engenharia de Software — Alura / Software Engineering — Alura. The topic
+  lists now begin with Back-end and retain the existing subjects. About shows
+  Alura but still excludes UniBF and Cruzeiro do Sul Virtual; the CVs retain
+  all three institutions.
+- Regenerated both PDFs through the existing pipeline: one A4 page each,
+  20.0px measured bottom headroom, with no observed clipping. Verified their
+  extracted text and reviewed About desktop/mobile and CV HTML in both
+  languages. No horizontal overflow at 1440px or 390px.
+- Passed format check, lint, typecheck (0 errors, 0 warnings, 20 hints), 42
+  unit tests, 24 E2E tests, release check, preview and production builds (38
+  pages each), and preview/production artifact checks (38 HTML documents
+  each). The E2E education check now permits Alura on About while rejecting
+  UniBF and Cruzeiro there.
+
 ## Bilingual education and CV structure (2026-10-05)
 
 - Replaced the About/Sobre complementary-training block with one ordered

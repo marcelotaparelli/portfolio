@@ -134,9 +134,9 @@ const pt = {
         detail: 'Concluído em 2026',
       },
       coursework: {
-        title: 'Cursos complementares',
+        title: 'Engenharia de Software — Alura',
         detail:
-          'Engenharia de Software · Back-end · APIs Node.js · Autenticação · Testes · Segurança · DevOps/CI/CD · Cloud/AWS · Desenvolvimento Seguro',
+          'Back-end\u00a0· APIs Node.js\u00a0· Autenticação\u00a0· Testes\u00a0· Segurança\u00a0· DevOps/CI/CD\u00a0· Cloud/AWS\u00a0· Desenvolvimento Seguro',
       },
     },
   },
@@ -283,9 +283,9 @@ const en: Translations = {
         detail: 'Completed in 2026',
       },
       coursework: {
-        title: 'Additional coursework',
+        title: 'Software Engineering — Alura',
         detail:
-          'Software Engineering · Back-end · Node.js APIs · Authentication · Testing · Security · DevOps/CI/CD · Cloud/AWS · Secure Development',
+          'Back-end\u00a0· Node.js APIs\u00a0· Authentication\u00a0· Testing\u00a0· Security\u00a0· DevOps/CI/CD\u00a0· Cloud/AWS\u00a0· Secure Development',
       },
     },
   },
