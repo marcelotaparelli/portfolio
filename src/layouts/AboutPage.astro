@@ -18,8 +18,8 @@ const text = t(locale).about;
 <BaseLayout
   locale={locale}
   page="about"
-  title={`${t(locale).nav.about} — Marcelo Taparelli`}
-  description={text.intro}
+  title={`${t(locale).nav.about} — ${t(locale).identity.headline} — Marcelo Taparelli`}
+  description={t(locale).identity.description}
   equivalent={pathFor('about', otherLocale(locale))}
 >
   <section class="container page-intro about-hero">
@@ -44,9 +44,7 @@ const text = t(locale).about;
         alt="Marcelo Taparelli"
         loading="eager"
       />
-      <figcaption lang="en">
-        Software Engineering · AI Engineering · Product
-      </figcaption>
+      <figcaption>{t(locale).identity.pillars}</figcaption>
     </figure>
   </section>
   <section class="container about-section">

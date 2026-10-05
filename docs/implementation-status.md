@@ -1,5 +1,39 @@
 # Implementation status
 
+## AI Engineer and Software Engineer portfolio positioning (2026-10-05)
+
+- Audited the bilingual Astro site, project/article collections, shared copy,
+  metadata and Person JSON-LD, CV source/generator/PDFs, publication checks,
+  and repository quality gates before editing. Confirmed OpsPilot and Ops
+  Triage evidence against their public repository documentation; retained the
+  independent OpenAI live-smoke and GitLab sandbox-smoke boundary, and made no
+  production deployment, exactly-once, measured cost, or model-quality claims.
+- Updated PT-BR and EN Home, About, shared identity metadata, skills, footer,
+  and social cards to present AI Engineer & Software Engineer with Product
+  thinking. Added the paired OpsPilot case and reordered the bilingual cases:
+  OpsPilot, Ops Triage, Resilient Transaction API, Salus, then other projects.
+  Reframed Ops Triage as model evaluation/domain adaptation, Resilient as
+  reliability/cloud engineering, and Salus as backend/software architecture.
+  Historical editorial articles remain intact.
+- Updated both one-page A4 CVs through the existing generator. Each has 10.2px
+  measured bottom headroom; the PDF pipeline verified one page per locale.
+  Refreshed PT/EN OpenGraph cards through the existing generator.
+- Verified: frozen dependency installation; lint; format check; typecheck (0
+  errors, 0 warnings, 20 hints); 42 unit tests; CV generation; release check;
+  preview and production builds (38 pages each); preview and production
+  artifact validation (38 HTML documents each); 23 E2E tests; asset measurement;
+  Lighthouse mobile runs for Home, About, and a project case (all reported
+  performance/accessibility 1.0); visual review of Home, About, project index,
+  OpsPilot, Ops Triage, and Resilient in both locales at desktop and 390/320px.
+  No page overflow or observed clipping; `git diff --check` passed.
+- The repository-wide old-positioning search found only dated internal status
+  history and preserved editorial/article records, not current public identity
+  copy. No such institution reference is present in current site or CV output.
+  Performance and visual review reports remain ignored local artifacts under
+  `reports/`; browser tooling remains under ignored `node_modules/`.
+- Changes are committed locally with the configured author/committer identity.
+  No push or deployment performed.
+
 ## Commit identity correction (2026-10-02)
 
 - At the author's request, configured repository-local Git identity as

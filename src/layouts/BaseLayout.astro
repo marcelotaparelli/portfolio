@@ -40,7 +40,8 @@ const person = {
   '@id': `${site.origin}/#person`,
   name: site.name,
   url: site.origin,
-  jobTitle: 'Software Engineer',
+  jobTitle: t(locale).identity.headline,
+  description: t(locale).identity.description,
   sameAs: [site.linkedin, site.github],
 };
 const graph = [
@@ -51,6 +52,7 @@ const graph = [
     url: site.origin,
     name: site.name,
     inLanguage: ['pt-BR', 'en'],
+    description: t(locale).identity.description,
   },
   ...(page === 'about'
     ? [
@@ -110,7 +112,7 @@ const graph = [
     <meta property="og:image:height" content="630" />
     <meta
       property="og:image:alt"
-      content={`${site.name} — From real problems to intelligent products.`}
+      content={`${site.name} — ${t(locale).identity.headline}`}
     />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
@@ -118,7 +120,7 @@ const graph = [
     <meta name="twitter:image" content={image} />
     <meta
       name="twitter:image:alt"
-      content={`${site.name} — From real problems to intelligent products.`}
+      content={`${site.name} — ${t(locale).identity.headline}`}
     />
     <script
       is:inline

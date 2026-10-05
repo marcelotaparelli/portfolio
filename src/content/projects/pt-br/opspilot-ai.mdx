@@ -1,0 +1,175 @@
+---
+translationKey: opspilot-ai
+locale: pt-BR
+slug: opspilot-ai
+title: OpsPilot AI
+description: Copiloto de operações de IA orientado a produção com Python/FastAPI, RAG com evidências, busca híbrida e agentes LangGraph limitados; ações no GitLab exigem aprovação humana.
+status: published
+reviewed: true
+order: 1
+category: Engenharia de IA · RAG · Agentes
+role: Desenho e implementação do sistema
+context: Projeto público autoral — código aberto
+technologies:
+  [
+    Python,
+    FastAPI,
+    RAG,
+    PostgreSQL,
+    pgvector,
+    LangGraph,
+    OpenAI,
+    GitLab,
+    Evals,
+    OpenTelemetry,
+    Docker,
+    Terraform,
+  ]
+externalUrl: https://github.com/marcelotaparelli/opspilot-ai
+contribution: Busca com evidências, autorização determinística, ações vinculadas à aprovação, evals e observabilidade de IA; evidências independentes de integração pós-release com OpenAI e sandbox GitLab.
+---
+
+## Problema e decisão de produto
+
+Operadores precisam encontrar o runbook certo e transformar o contexto em
+trabalho rastreável. O OpsPilot consulta conhecimento operacional do tenant,
+responde com referências a evidências e pode propor uma issue no GitLab para
+outra pessoa aprovar.
+
+O modelo ajuda a interpretar a solicitação e preparar a proposta. Identidade,
+autorização, aprovação e execução pertencem ao código da aplicação. Essa
+fronteira permite usar IA sem dar ao texto gerado autoridade sobre ações
+externas.
+
+## RAG fundamentado em evidências
+
+A base é **Python/FastAPI → RAG e workflows LangGraph limitados →
+PostgreSQL/pgvector**, com adapters OpenAI para embeddings, respostas e
+planejamento.
+
+- A ingestão normaliza e divide o texto em chunks com sobreposição, gravando
+  texto e embeddings atomicamente. Identificadores do espaço de embeddings
+  impedem a comparação entre vetores incompatíveis.
+- A busca híbrida combina busca vetorial exata por cosseno e full-text search
+  do PostgreSQL. Reciprocal rank fusion e desempate determinístico combinam
+  os rankings.
+- O filtro de tenant ocorre antes do ranking e dos limites. Contexto local à
+  transação e row-level security forçada no PostgreSQL protegem as fronteiras
+  entre tenants e a reutilização de conexões do pool.
+- Structured outputs passam por schemas. As citações precisam pertencer ao
+  contexto autorizado recuperado; uma saída sem citações vira abstenção fixa.
+
+Validar que uma citação pertence ao contexto não prova que a resposta decorre
+da evidência. RLS protege contra predicados ausentes e vazamento de contexto;
+o papel de runtime pode definir esse contexto, portanto não protege contra
+SQL arbitrário executado com esse papel.
+
+## Agentes com controles determinísticos
+
+LangGraph limita passos, deadlines e tentativas de saída inválida. O planner
+pode buscar conhecimento, preparar uma issue ou responder. Políticas para
+projetos, labels e responsáveis são executadas fora do LLM.
+
+Um aprovador distinto aceita a ação exata armazenada, vinculada a um hash
+SHA-256 imutável do JSON canônico. A execução confere novamente o hash e a
+política vigente. PostgreSQL persiste propostas, decisões, claims de execução
+e uma trilha de auditoria append-only.
+
+Efeitos externos usam marcadores estáveis de ação e reconciliação. Se uma
+resposta do GitLab é perdida ou ambígua, a recuperação procura o marcador
+antes de reenviar dentro dos limites. É necessário um pedido explícito de
+resume. Visibilidade da busca e requests em andamento continuam sendo limites;
+não há garantia exactly-once.
+
+## Evals e observabilidade
+
+Retrieval-v2 separou desenvolvimento de um held-out sintético congelado. Em
+36 queries held-out, MRR@5 lexical / fake-vector / híbrido foi **0,7532 /
+0,4375 / 0,6306**. A busca lexical superou a híbrida com o embedder fake
+determinístico. Esses números não medem embeddings semânticos nem qualidade
+de respostas com modelo real. O CI executa regressões de desenvolvimento,
+sem reabrir o held-out já consumido.
+
+A avaliação de agentes passou em **16/16** casos com planners scripted/offline,
+PostgreSQL real e GitLab fake. Ela exercita autorização, aprovação,
+recuperação e execução, sem medir a qualidade das decisões de um LLM real.
+
+OpenTelemetry conecta requests, retrieval, chamadas de IA, políticas,
+aprovações, execução e reconciliação. Logs correlacionam request/run/trace IDs.
+Allowlists excluem conteúdo e segredos, e labels de métricas são limitadas.
+Uso ou custo desconhecido permanece desconhecido. Falhas na exportação de
+telemetria ficam fora da lógica do produto.
+
+## Release e evidências live independentes
+
+A release **v0.1.0** está publicada no GitHub. A validação local passou em
+241 testes unitários e 72 de integração, além da reprodução em ambiente limpo.
+O GitHub Actions passou nos jobs `checks` e `terraform`. A validação inclui
+regressões de segurança, runtime Docker restrito, migrations, scans de
+imagem/dependências e planos Terraform offline.
+
+Há duas execuções independentes de integração após a release:
+
+- **OpenAI live smoke — 4 de outubro de 2026:** embeddings reais com 256
+  dimensões, schemas estritos de resposta/planner, RAG com banco, pertinência
+  das citações, registro de uso/modelo servido, presença de traces e timeout
+  limitado.
+- **GitLab live sandbox smoke — 5 de outubro de 2026:** nenhum request antes
+  da aprovação, criação e confirmação da issue, segunda aprovação rejeitada
+  com 409, resume sem nova criação e fechamento confirmado da issue.
+
+Foram execuções separadas. Elas não comprovam um único fluxo live end-to-end
+OpenAI + GitLab. Evidência de integração não é avaliação de qualidade do
+modelo; os preços OpenAI não estavam configurados, portanto não há custo
+medido reivindicado.
+
+## Trade-offs e limites
+
+A busca vetorial exata mantém a implementação explícita, mas tem trabalho
+linear. Tokens estáticos não têm SSO ou lifecycle de identidade, não há ACLs
+dentro do tenant e a recuperação não tem worker automático. A aprovação humana
+adiciona trabalho operacional em troca de controle sobre ações relevantes.
+
+Terraform descreve AWS ALB, ECS/Fargate, RDS/pgvector privado, ECR e Secrets
+Manager. É um blueprint validado; **nenhum deploy AWS foi realizado**.
+A imagem da release mantém 44 findings HIGH sem correção disponível, com zero
+HIGH/CRITICAL corrigíveis. Passar no gate configurado não significa ausência
+de riscos conhecidos nem um sistema implantado em produção.
+
+## Evidências
+
+- <a
+    href="https://github.com/marcelotaparelli/opspilot-ai"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    README e código-fonte
+  </a>
+- <a
+    href="https://github.com/marcelotaparelli/opspilot-ai/blob/main/docs/evaluation/retrieval-v2.md"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    Protocolo e resultados de retrieval
+  </a>
+- <a
+    href="https://github.com/marcelotaparelli/opspilot-ai/blob/main/docs/architecture/agent-workflow.md"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    Workflow de agentes, políticas e falhas
+  </a>
+- <a
+    href="https://github.com/marcelotaparelli/opspilot-ai/blob/main/docs/evidence/release/live-provider-status.md"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    Registros e escopo das integrações live independentes
+  </a>
+- <a
+    href="https://github.com/marcelotaparelli/opspilot-ai/blob/main/docs/CURRENT-STATE.md"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    Status da release e origem das validações
+  </a>

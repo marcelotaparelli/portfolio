@@ -340,6 +340,16 @@
   .hero-period {
     color: var(--color-accent);
   }
+  .hero-positioning {
+    max-width: 700px;
+    margin-top: 24px;
+    color: var(--color-accent);
+    font-size: 15px;
+    line-height: 1.7;
+  }
+  .hero-intro p + p {
+    margin-top: 12px;
+  }
   .hero-intro {
     max-width: 525px;
     margin-top: 30px;

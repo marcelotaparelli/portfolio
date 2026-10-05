@@ -1,0 +1,167 @@
+---
+translationKey: opspilot-ai
+locale: en
+slug: opspilot-ai
+title: OpsPilot AI
+description: Production-oriented AI operations copilot with Python/FastAPI, evidence-grounded RAG, hybrid retrieval and bounded LangGraph agents; GitLab actions require human approval.
+status: published
+reviewed: true
+order: 1
+category: AI Engineering · RAG · Agents
+role: System design and implementation
+context: Authored open-source project
+technologies:
+  [
+    Python,
+    FastAPI,
+    RAG,
+    PostgreSQL,
+    pgvector,
+    LangGraph,
+    OpenAI,
+    GitLab,
+    Evals,
+    OpenTelemetry,
+    Docker,
+    Terraform,
+  ]
+externalUrl: https://github.com/marcelotaparelli/opspilot-ai
+contribution: Evidence-grounded retrieval, deterministic authorization, approval-bound actions, evals and AI observability; independent post-release OpenAI and GitLab sandbox integration evidence.
+---
+
+## Problem and product decision
+
+Operators need to find the right runbook and turn findings into tracked work.
+OpsPilot searches tenant-owned operational knowledge, answers with evidence
+references, and can propose a GitLab issue for another person to approve.
+
+The model helps interpret the request and prepare a proposal. Application code
+owns identity, authorization, approval, and execution. This boundary makes AI
+useful without giving generated text authority over external writes.
+
+## Evidence-grounded RAG
+
+The core stack is **Python/FastAPI → RAG and bounded LangGraph workflows →
+PostgreSQL/pgvector**, with OpenAI adapters for embeddings, answers, and planning.
+
+- Ingestion normalizes text, chunks it with overlap, and stores text and
+  embeddings atomically. Embedding-space IDs prevent incompatible vectors
+  from being compared.
+- Hybrid retrieval combines exact cosine vector search and PostgreSQL full-text
+  search. Reciprocal rank fusion and deterministic tie-breaks combine rankings.
+- Tenant filtering happens before ranking and limits. Transaction-local tenant
+  context and forced PostgreSQL row-level security protect tenant boundaries
+  and connection-pool reuse.
+- Structured outputs are schema-validated. Citation IDs must belong to the
+  authorized retrieved context; uncited output becomes a fixed abstention.
+
+Citation membership does not prove that an answer follows from its evidence.
+RLS protects against missing predicates and context leakage; the runtime role
+can set tenant context, so it does not protect against arbitrary SQL executed
+as that role.
+
+## Agents with deterministic controls
+
+LangGraph bounds steps, deadlines, and invalid-output attempts. The planner can
+search knowledge, prepare one issue, or answer. Authorization policies for
+projects, labels, and assignees run outside the LLM.
+
+A distinct approver accepts the exact stored action, bound to an immutable
+SHA-256 hash of canonical JSON. Execution checks that hash and current policy
+again. PostgreSQL persists proposals, decisions, execution claims, and an
+append-only audit trail.
+
+External effects use stable action markers and reconciliation. If a GitLab
+response is lost or ambiguous, recovery looks for the marker before a bounded
+resend. Recovery requires an explicit resume request. Search visibility and
+in-flight requests remain limits; this is not an exactly-once guarantee.
+
+## Evals and observability
+
+Retrieval-v2 separated development from a frozen synthetic held-out. On 36
+held-out queries, lexical / fake-vector / hybrid MRR@5 was **0.7532 / 0.4375 /
+0.6306**. Lexical beat hybrid with the deterministic fake embedder. These
+numbers do not measure semantic embeddings or real-model answer quality.
+CI runs development regressions; it does not reopen the consumed held-out.
+
+The agent evaluation passed **16/16** cases with scripted/offline planners,
+real PostgreSQL, and fake GitLab. It exercises authorization, approval,
+recovery, and execution controls rather than real LLM decision quality.
+
+OpenTelemetry connects requests, retrieval, AI calls, policies, approvals,
+execution, and reconciliation. Logs correlate request/run/trace IDs. Attribute
+allowlists exclude content and secrets; metric labels are bounded. Unknown
+usage or cost stays unknown. Telemetry export failures stay outside product
+logic.
+
+## Release and independent live evidence
+
+Release **v0.1.0** is published on GitHub. Local release validation passed
+241 unit and 72 integration tests, plus clean-room reproduction. Hosted
+GitHub Actions passed the `checks` and `terraform` jobs. Validation includes
+security regressions, restricted Docker runtime, migrations, dependency/image
+scans, and offline Terraform plans.
+
+Two independent post-release integration runs are documented:
+
+- **OpenAI live smoke — October 4, 2026:** real 256-dimensional embeddings,
+  strict answer/planner schemas, database-backed RAG, citation membership,
+  usage/served-model records, trace presence, and a bounded timeout.
+- **GitLab live sandbox smoke — October 5, 2026:** no GitLab request before
+  approval, issue creation and confirmation, second approval rejected with
+  409, resume without another create, and confirmed issue closure.
+
+These were separate runs. They do not establish a single live end-to-end
+OpenAI + GitLab flow. Integration evidence is not model-quality evaluation;
+OpenAI pricing was unconfigured, so measured cost is not claimed.
+
+## Trade-offs and limits
+
+Exact vector search keeps the implementation explicit but scales linearly.
+Static tokens have no SSO or identity lifecycle, there are no within-tenant
+ACLs, and recovery has no background worker. Human approval adds operational
+work in exchange for control over consequential actions.
+
+Terraform describes AWS ALB, ECS/Fargate, private RDS/pgvector, ECR, and Secrets
+Manager. It is a validated blueprint; **no AWS deployment was performed**.
+The release image retains 44 unfixed HIGH findings, with zero fixable
+HIGH/CRITICAL findings. Passing the configured gate does not mean there are
+no known risks, or that this is a system deployed in production.
+
+## Evidence
+
+- <a
+    href="https://github.com/marcelotaparelli/opspilot-ai"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    README and source code
+  </a>
+- <a
+    href="https://github.com/marcelotaparelli/opspilot-ai/blob/main/docs/evaluation/retrieval-v2.md"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    Retrieval protocol and results
+  </a>
+- <a
+    href="https://github.com/marcelotaparelli/opspilot-ai/blob/main/docs/architecture/agent-workflow.md"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    Agent workflow, policies, and failure modes
+  </a>
+- <a
+    href="https://github.com/marcelotaparelli/opspilot-ai/blob/main/docs/evidence/release/live-provider-status.md"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    Independent live integration records and scope
+  </a>
+- <a
+    href="https://github.com/marcelotaparelli/opspilot-ai/blob/main/docs/CURRENT-STATE.md"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    Release status and validation provenance
+  </a>

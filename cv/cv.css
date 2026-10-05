@@ -85,6 +85,11 @@ header .contact {
   margin: 0;
 }
 
+header .keywords {
+  font-size: 8.5pt;
+  margin: 0 0 2pt;
+}
+
 a {
   color: inherit;
   text-decoration: none;

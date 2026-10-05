@@ -1,6 +1,14 @@
 import type { Locale } from './routes';
 
 const pt = {
+  identity: {
+    headline: 'Engenheiro de IA & Engenheiro de Software',
+    supporting:
+      'Python, RAG, Agentes, Evals | TypeScript, Bun, Node.js | Foco em Produto',
+    description:
+      'Engenheiro de IA e de Software com foco em Produto. Sistemas de IA e backend com Python, RAG, agentes, evals, TypeScript, Bun e Node.js.',
+    pillars: 'Engenharia de IA · Engenharia de Software · Produto',
+  },
   nav: {
     projects: 'Projetos',
     about: 'Sobre',
@@ -28,15 +36,16 @@ const pt = {
   updated: 'Atualizado em',
   footerNote: 'Problema primeiro. Tecnologia depois.',
   hero: {
-    eyebrow: 'SOFTWARE ENGINEER',
+    eyebrow: 'ENGENHARIA DE IA E SOFTWARE',
     title: {
-      first: 'DE PROBLEMAS',
-      second: 'REAIS',
-      third: 'A PRODUTOS',
-      fourth: 'INTELIGENTES',
+      first: 'ENGENHEIRO',
+      second: 'DE IA &',
+      third: 'ENGENHEIRO',
+      fourth: 'DE SOFTWARE',
     },
     intro:
-      'Transformo problemas reais em software confiável, seguro e eficiente. Estou aprofundando essa base em Engenharia de IA para construir sistemas inteligentes com comportamento mensurável e foco em produção.',
+      'Construo produtos de IA confiáveis e sistemas backend do problema até a produção.',
+    body: 'Meu trabalho combina Engenharia de IA — RAG, agentes, avaliação, guardrails e observabilidade — com Engenharia de Software em TypeScript, Bun, Node.js, PostgreSQL, Redis, Docker e infraestrutura cloud.',
     work: 'Ver projetos',
     contact: 'Vamos conversar',
     caption: 'Engenharia com perspectiva de produto.',
@@ -45,7 +54,7 @@ const pt = {
     eyebrow: '01 / TRABALHOS SELECIONADOS',
     title: 'Problemas reais.\nTrabalho concreto.',
     description:
-      'Experiência com software em produção, automação e projetos autorais com evidências e limites explícitos.',
+      'RAG e agentes com controles de execução, avaliação e adaptação de modelos, backend resiliente e automação. Cada case apresenta evidências e limites explícitos.',
   },
   thinking: {
     eyebrow: '02 / COMO TOMO DECISÕES',
@@ -59,7 +68,7 @@ const pt = {
       },
       {
         title: 'Escolher com critério',
-        text: 'Complexidade precisa se justificar. Tecnologia, arquitetura e IA devem servir ao problema.',
+        text: 'Tecnologia e IA precisam justificar sua complexidade e gerar valor suficiente. Explicito trade-offs de segurança, confiabilidade, custo, latência e operação.',
       },
       {
         title: 'Examinar o resultado',
@@ -85,7 +94,7 @@ const pt = {
     eyebrow: 'VAMOS CONVERSAR',
     title: 'Bons produtos começam\ncom uma boa conversa.',
     description:
-      'Oportunidades profissionais, parcerias ou uma conversa sobre software e Engenharia de IA.',
+      'Oportunidades profissionais, parcerias ou uma conversa sobre Engenharia de IA, software e produto.',
     email: 'Escreva para mim',
     linkedin: 'Conectar no LinkedIn',
   },
@@ -93,29 +102,29 @@ const pt = {
     eyebrow: 'PROJETOS',
     title: 'Do contexto\nà contribuição.',
     description:
-      'Uma seleção de sistemas, aplicações web e automações. Cada case delimita minha contribuição e apresenta as evidências disponíveis.',
+      'Projetos de Engenharia de IA e de Software: RAG, agentes, evals, adaptação de modelos e backend confiável. Contribuições, trade-offs e evidências em cada case.',
   },
   articles: {
     eyebrow: 'ARTIGOS',
     title: 'Como penso\nengenharia.',
     description:
-      'Decisões técnicas, produto e aprendizado documentado. Com contexto, trade-offs e evidências.',
+      'Decisões de Engenharia de IA, software e produto, com contexto, trade-offs e evidências. Artigos preservam o registro de cada experimento.',
     empty: 'Novos artigos estão em preparação.',
   },
   about: {
     eyebrow: 'SOBRE',
-    title: 'Software, produto\ne o problema humano.',
+    title: 'IA, software\ne foco em Produto.',
     intro:
-      'Sou Marcelo Taparelli, engenheiro de software. Minha trajetória combina experiência prática em desenvolvimento de software e produto com formação em Análise e Desenvolvimento de Sistemas, concluída em 2026, e uma Pós-graduação em Engenharia de IA em andamento.',
-    body: 'Atuo com backend, APIs, aplicações web, automação e evolução de sistemas. Considero segurança parte do desenho: explicito limites de acesso, valido entradas, protejo segredos e testo regras críticas. Para confiabilidade e performance, uso limites de recursos, acesso a dados previsível e latência medida. Também uso AI coding agents para apoiar planejamento, implementação, debugging, testes e validação, sempre com revisão humana e quality gates.',
+      'Sou Marcelo Taparelli, Engenheiro de IA e Engenheiro de Software com foco em Produto. Minha engenharia combina sistemas de IA com fundamentos fortes de backend: parto do problema, defino o comportamento esperado e construo uma solução que possa ser testada, observada e operada.',
+    body: 'Componentes probabilísticos de IA precisam de controles determinísticos ao redor. Uso contratos tipados e schemas para validar saídas, políticas para limitar ações e testes e evals para verificar comportamento. Observabilidade, guardrails, fallbacks e aprovação humana tornam falhas visíveis e controláveis. Produto guia as decisões: confiabilidade, segurança, custo, latência e operação precisam fazer sentido para quem usa a solução.',
     journey: 'Uma trajetória de conexões',
     journeyText:
       'Antes e ao longo do trabalho com software, vendas, negociação e ensino de inglês ampliaram meu repertório de comunicação. Na atuação como Product Owner, trabalhei com briefing, requisitos, priorização e o ciclo de entrega de websites.',
     practice: 'Experiência profissional',
     capabilities: 'Competências em contexto',
-    learning: 'Aprofundamento atual',
+    learning: 'Engenharia na prática',
     learningText:
-      'Aprofundo Engenharia de IA a partir da minha base em Engenharia de Software. No Ops Triage AI, construí a triagem com baseline determinístico, Ollama e HybridPolicy, revisão humana e auditoria. Depois avaliei Jev e Laya separadamente, sem integrá-los à política híbrida. Adaptei Laya com PyTorch, TRAIN/VALIDATION separados, GPU/CUDA e seleção de checkpoint antes do held-out congelado. Esse ciclo de avaliação e adaptação abriu minha primeira experiência prática em ML Systems / AI Infrastructure. Na Resilient Transaction API, trabalho idempotência, resiliência e operação observável; um laboratório temporário na AWS, fora de produção, exercitou Terraform, migrations, testes funcionais e auditoria após a destruição dos recursos.',
+      'No OpsPilot AI, construí RAG e workflows com agentes em Python/FastAPI, pgvector, LangGraph e OpenAI, com aprovação humana e OpenTelemetry. No Ops Triage AI, combinei baseline determinístico, LLM local e política híbrida; avaliei Jev e adaptei Laya com PyTorch/CUDA em experimentos separados do runtime. Na Resilient Transaction API, trabalhei idempotência, resiliência e operação observável com TypeScript/Bun, PostgreSQL e Redis, incluindo um laboratório AWS temporário, fora de produção. Tenho formação em Análise e Desenvolvimento de Sistemas, concluída em 2026.',
     complementary: 'Formação complementar — Alura',
     complementaryItems: [
       'Engenharia de Software',
@@ -142,6 +151,14 @@ const pt = {
 
 type Translations = typeof pt;
 const en: Translations = {
+  identity: {
+    headline: 'AI Engineer & Software Engineer',
+    supporting:
+      'Python, RAG, Agents, Evals | TypeScript, Bun, Node.js | Product-minded',
+    description:
+      'Product-minded AI Engineer & Software Engineer building AI and backend systems with Python, RAG, agents, evals, TypeScript, Bun and Node.js.',
+    pillars: 'AI Engineering · Software Engineering · Product',
+  },
   nav: {
     projects: 'Projects',
     about: 'About',
@@ -170,15 +187,16 @@ const en: Translations = {
   updated: 'Updated',
   footerNote: 'Problem first. Technology second.',
   hero: {
-    eyebrow: 'SOFTWARE ENGINEER',
+    eyebrow: 'AI & SOFTWARE ENGINEERING',
     title: {
-      first: 'FROM REAL',
-      second: 'PROBLEMS',
-      third: 'TO INTELLIGENT',
-      fourth: 'PRODUCTS',
+      first: 'AI',
+      second: 'ENGINEER &',
+      third: 'SOFTWARE',
+      fourth: 'ENGINEER',
     },
     intro:
-      'I turn real problems into reliable, secure, and efficient software. I’m deepening that foundation in AI Engineering to build intelligent systems with measurable behavior and a production focus.',
+      'I build reliable AI products and backend systems from problem to production.',
+    body: 'My work combines AI Engineering — RAG, agentic workflows, evaluation, guardrails, and observability — with Software Engineering in TypeScript, Bun, Node.js, PostgreSQL, Redis, Docker, and cloud infrastructure.',
     work: 'View projects',
     contact: 'Let’s talk',
     caption: 'Engineering with a product perspective.',
@@ -187,7 +205,7 @@ const en: Translations = {
     eyebrow: '01 / SELECTED WORK',
     title: 'Real problems.\nTangible work.',
     description:
-      'Experience with software in production, automation, and authored projects with explicit evidence and limitations.',
+      'RAG and agents with execution controls, model evaluation and adaptation, resilient backend systems, and automation. Each case presents explicit evidence and limitations.',
   },
   thinking: {
     eyebrow: '02 / HOW I MAKE DECISIONS',
@@ -200,7 +218,7 @@ const en: Translations = {
       },
       {
         title: 'Choose deliberately',
-        text: 'Complexity needs a reason. Technology, architecture, and AI should serve the problem.',
+        text: 'Technology and AI must justify their complexity and deliver enough value. I make trade-offs in security, reliability, cost, latency, and operability explicit.',
       },
       {
         title: 'Examine the outcome',
@@ -225,7 +243,7 @@ const en: Translations = {
     eyebrow: 'LET’S TALK',
     title: 'Good products start\nwith a good conversation.',
     description:
-      'Professional opportunities, partnerships, or a conversation about software and AI Engineering.',
+      'Professional opportunities, partnerships, or a conversation about AI Engineering, software, and product.',
     email: 'Send me an email',
     linkedin: 'Connect on LinkedIn',
   },
@@ -233,29 +251,29 @@ const en: Translations = {
     eyebrow: 'PROJECTS',
     title: 'From context\nto contribution.',
     description:
-      'A selection of systems, web applications, and automation. Each case defines my contribution and presents the available evidence.',
+      'AI and Software Engineering projects: RAG, agents, evals, model adaptation, and reliable backend systems. Each case defines contributions, trade-offs, and evidence.',
   },
   articles: {
     eyebrow: 'ARTICLES',
     title: 'How I think\nabout engineering.',
     description:
-      'Technical decisions, product thinking, and documented learning. With context, trade-offs, and evidence.',
+      'AI Engineering, software, and product decisions with context, trade-offs, and evidence. Articles preserve the record of each experiment.',
     empty: 'New articles are in preparation.',
   },
   about: {
     eyebrow: 'ABOUT',
-    title: 'Software, product,\nand the human problem.',
+    title: 'AI, software,\nand product thinking.',
     intro:
-      'I’m Marcelo Taparelli, a software engineer. My background combines hands-on software development and product experience with a degree in Systems Analysis and Development, completed in 2026, and an ongoing postgraduate program in AI Engineering.',
-    body: 'I work across backend systems, APIs, web applications, automation, and system evolution. I treat security as part of software design: I make access boundaries explicit, validate inputs, protect secrets, and test critical rules. For reliability and performance, I use resource limits, predictable data access, and measured latency. I also use AI coding agents for planning, implementation, debugging, testing, and validation, with human review and quality gates.',
+      'I’m Marcelo Taparelli, an AI Engineer & Software Engineer with a product mindset. My engineering combines AI systems with strong backend foundations: I start with the problem, define the expected behavior, and build a solution that can be tested, observed, and operated.',
+    body: 'Probabilistic AI components need deterministic engineering controls around them. I use typed contracts and schemas to validate outputs, policies to bound actions, and tests and evals to verify behavior. Observability, guardrails, fallbacks, and human approval make failures visible and manageable. Product thinking guides the decisions: reliability, security, cost, latency, and operability must serve the people using the solution.',
     journey: 'A path of connections',
     journeyText:
       'Before and alongside software, sales, negotiation, and teaching English broadened my communication skills. As a Product Owner, I worked on briefs, requirements, prioritization, and the website delivery lifecycle.',
     practice: 'Professional experience',
     capabilities: 'Capabilities in context',
-    learning: 'Current focus',
+    learning: 'Engineering in practice',
     learningText:
-      'I’m deepening my AI Engineering practice from a Software Engineering foundation. In Ops Triage AI, I built a deterministic baseline, Ollama integration, and HybridPolicy with human review and auditing. I later evaluated Jev and Laya separately, without adding either to the hybrid policy. I adapted Laya with PyTorch, separate TRAIN/VALIDATION sets, GPU/CUDA training, and checkpoint selection before the frozen held-out evaluation. This evaluation and adaptation cycle gave me my first hands-on experience in ML Systems / AI Infrastructure. In Resilient Transaction API, I work on idempotency, resilience, and observable operations; a temporary non-production AWS lab exercised Terraform, migrations, functional tests, and post-destroy resource auditing.',
+      'In OpsPilot AI, I built RAG and agentic workflows with Python/FastAPI, pgvector, LangGraph, and OpenAI, with human approval and OpenTelemetry. In Ops Triage AI, I combined a deterministic baseline, a local LLM, and a hybrid policy; I evaluated Jev and adapted Laya with PyTorch/CUDA in experiments separate from the runtime. In Resilient Transaction API, I worked on idempotency, resilience, and observable operations with TypeScript/Bun, PostgreSQL, and Redis, including a temporary non-production AWS lab. I hold a degree in Systems Analysis and Development, completed in 2026.',
     complementary: 'Additional training — Alura',
     complementaryItems: [
       'Software Engineering',

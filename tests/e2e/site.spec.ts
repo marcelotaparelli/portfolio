@@ -12,6 +12,11 @@ const pairs = [
   ['/projetos/google-drive-wordpress/', '/en/projects/google-drive-wordpress/'],
   ['/projetos/salus/', '/en/projects/salus/'],
   ['/projetos/ops-triage-ai/', '/en/projects/ops-triage-ai/'],
+  ['/projetos/opspilot-ai/', '/en/projects/opspilot-ai/'],
+  [
+    '/projetos/resilient-transaction-api/',
+    '/en/projects/resilient-transaction-api/',
+  ],
 ];
 
 test('all page pairs have equivalent navigation and reciprocal SEO', async ({
@@ -89,6 +94,15 @@ for (const path of [
   '/',
   '/en/',
   '/sobre/',
+  '/en/about/',
+  '/projetos/',
+  '/en/projects/',
+  '/projetos/opspilot-ai/',
+  '/en/projects/opspilot-ai/',
+  '/projetos/ops-triage-ai/',
+  '/en/projects/ops-triage-ai/',
+  '/projetos/resilient-transaction-api/',
+  '/en/projects/resilient-transaction-api/',
   '/projetos/agencia-catus/',
   '/contato/',
   '/artigos/',
@@ -191,6 +205,24 @@ test('project external links are explicit, safe and locale-equivalent', async ({
       cta: 'Visit website',
       aria: 'Visit website: Ops Triage AI — opens in a new tab',
     },
+    ...['pt-BR', 'en'].flatMap((locale) =>
+      ['opspilot-ai', 'resilient-transaction-api'].map((slug) => {
+        const english = locale === 'en';
+        const title =
+          slug === 'opspilot-ai' ? 'OpsPilot AI' : 'Resilient Transaction API';
+        const listing = english ? '/en/projects/' : '/projetos/';
+        return {
+          listing,
+          casePath: listing + slug + '/',
+          url: 'https://github.com/marcelotaparelli/' + slug,
+          readCase: english ? 'Explore case' : 'Explorar case',
+          cta: english ? 'Visit website' : 'Visitar site',
+          aria: english
+            ? 'Visit website: ' + title + ' — opens in a new tab'
+            : 'Visitar site: ' + title + ' — abre em nova aba',
+        };
+      }),
+    ),
   ];
   for (const item of expectations) {
     await page.goto(item.listing);
@@ -276,4 +308,72 @@ test('draft preview is non-indexable and CV links target valid locale PDFs', asy
   expect(await (await request.get('/sitemap.xml')).text()).not.toContain(
     '<loc>',
   );
+});
+
+test('AI and software positioning, metadata and project priority agree in both languages', async ({
+  page,
+}) => {
+  for (const [home, about, projects, headline, supporting] of [
+    [
+      '/',
+      '/sobre/',
+      '/projetos/',
+      'Engenheiro de IA & Engenheiro de Software',
+      'Python, RAG, Agentes, Evals | TypeScript, Bun, Node.js | Foco em Produto',
+    ],
+    [
+      '/en/',
+      '/en/about/',
+      '/en/projects/',
+      'AI Engineer & Software Engineer',
+      'Python, RAG, Agents, Evals | TypeScript, Bun, Node.js | Product-minded',
+    ],
+  ]) {
+    for (const path of [home!, about!]) {
+      await page.goto(path);
+      await expect(page).toHaveTitle(new RegExp(headline!));
+      const graph = JSON.parse(
+        await page.locator('script[type="application/ld+json"]').innerText(),
+      )['@graph'] as Array<{ '@type': string; jobTitle?: string }>;
+      expect(graph.find((item) => item['@type'] === 'Person')?.jobTitle).toBe(
+        headline,
+      );
+      for (const name of ['og:title', 'twitter:title']) {
+        await expect(
+          page.locator(`meta[property="${name}"], meta[name="${name}"]`),
+        ).toHaveAttribute('content', new RegExp(headline!));
+      }
+      const body = await page.locator('main').innerText();
+      expect(body).not.toMatch(
+        /aspiring|transitioning|deepening|learning AI|Cruzeiro|postgraduate|pós-graduação/i,
+      );
+      if (path === home) {
+        expect(
+          (await page.locator('h1').innerText())
+            .replace(/\s+/g, ' ')
+            .trim()
+            .toLowerCase(),
+        ).toBe(headline!.toLowerCase());
+        await expect(page.locator('.hero-positioning')).toHaveText(supporting!);
+      }
+    }
+    for (const path of [home!, projects!]) {
+      await page.goto(path);
+      expect(
+        (
+          await page
+            .locator('.project-info')
+            .locator('h2, h3')
+            .allTextContents()
+        )
+          .slice(0, 4)
+          .map((s) => s.trim()),
+      ).toEqual([
+        'OpsPilot AI',
+        'Ops Triage AI',
+        'Resilient Transaction API',
+        'Salus',
+      ]);
+    }
+  }
 });

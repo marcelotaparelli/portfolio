@@ -1,6 +1,6 @@
 # Marcelo Taparelli — Professional Portfolio
 
-Professional engineering portfolio focused on Software Engineering, AI Engineering and Product.
+Professional engineering portfolio focused on AI Engineering, Software Engineering and Product.
 
 Built around a simple principle:
 
@@ -101,7 +101,7 @@ dist/
 
 **Marcelo Taparelli**
 
-Software Engineer · AI Engineering
+AI Engineer & Software Engineer | Python, RAG, Agents, Evals | TypeScript, Bun, Node.js | Product-minded
 
 - Portfolio: https://marcelotaparelli.com.br
 - LinkedIn: https://www.linkedin.com/in/marcelo-taparelli/

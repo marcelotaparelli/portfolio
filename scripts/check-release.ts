@@ -10,6 +10,7 @@ const expected = new Set([
   'portfolio-decisions',
   'salus',
   'ops-triage-ai',
+  'opspilot-ai',
   'resilient-transaction-api',
   'llm-did-not-win-everywhere',
   'jev-1-13-decision-model-benchmark',

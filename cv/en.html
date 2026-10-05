@@ -9,7 +9,11 @@
     <div class="sheet">
       <header>
         <h1>Marcelo Vinicius Taparelli</h1>
-        <p class="title">Software Engineer | AI Engineering</p>
+        <p class="title">AI Engineer &amp; Software Engineer</p>
+        <p class="keywords">
+          Python · RAG · Agents · Evals · TypeScript · Bun · Node.js ·
+          PostgreSQL · AWS
+        </p>
         <p class="contact">
           Campinas, SP | +55 19 99659-2477 |
           <a href="mailto:contato@marcelotaparelli.com.br"
@@ -26,12 +30,10 @@
 
       <h2>Professional summary</h2>
       <p>
-        Software Engineer with experience across backend, APIs, web
-        applications, automation, and production systems. I build reliable,
-        testable, secure software with attention to observability and
-        performance. I’m pursuing a postgraduate program in AI Engineering, with
-        practical work in model evaluation, adaptation, and reproducible
-        experiments.
+        Product-minded AI Engineer &amp; Software Engineer building Generative
+        AI and backend systems with RAG, agents and evals. Typed contracts,
+        tests and observability support decisions in security, reliability,
+        cost, latency and operability.
       </p>
 
       <h2>Professional experience</h2>
@@ -89,53 +91,74 @@
 
       <h2>Technical skills</h2>
       <div class="skills">
-        <p><strong>Languages:</strong> TypeScript, JavaScript, Python, PHP</p>
         <p>
-          <strong>Backend &amp; runtime:</strong> Bun, Node.js, Laravel, REST
-          APIs
+          <strong>AI Engineering / Artificial Intelligence:</strong> Python,
+          FastAPI, LLMs, RAG, embeddings, pgvector, hybrid retrieval, LangGraph,
+          OpenAI, agents, evals, structured outputs, human-in-the-loop,
+          guardrails, OpenTelemetry, PyTorch, CUDA and fine-tuning/domain
+          adaptation.
         </p>
         <p>
-          <strong>Software Engineering:</strong> Clean Architecture, DDD
-          principles, SOLID, Clean Code, TDD, microservices fundamentals, unit,
-          integration and E2E tests, CI/CD, quality gates, resource limits,
-          latency measurement, and production troubleshooting
+          <strong>Software Engineering:</strong> TypeScript, Bun, Node.js,
+          JavaScript, PHP, Laravel, Express, Prisma, REST APIs, PostgreSQL,
+          Redis, Docker, Terraform, Git, CI/CD with GitHub Actions; AWS lab with
+          ECS/Fargate, ALB, RDS, ElastiCache, ECR, IAM, Secrets Manager and
+          CloudWatch.
         </p>
         <p>
-          <strong>Data &amp; infrastructure:</strong> SQL/PostgreSQL, Redis,
-          Docker, Terraform; AWS hands-on in a validated temporary,
-          non-production lab: VPC/subnets, ECS/Fargate, ALB/ACM, RDS,
-          ElastiCache, ECR, Secrets Manager, IAM, and CloudWatch; migrations,
-          troubleshooting, validation, destroy, and audit
-        </p>
-        <p>
-          <strong>Security &amp; reliability:</strong> authentication,
-          ownership-based authorization, per-user isolation, validation, secret
-          management, redacted logs, observability, resource limits, and
-          regression testing
-        </p>
-        <p>
-          <strong>AI Engineering (current focus):</strong> LLM and typed
-          decision-model integration, structured outputs, deterministic
-          baselines, evals, and frozen held-outs; domain adaptation/fine-tuning
-          with Python/PyTorch, validation-based selection,
-          confidence/calibration, and GPU training with CUDA/mixed precision;
-          hybrid policies, human review, and fallbacks
-        </p>
-        <p>
-          <strong>Public project:</strong> Ops Triage AI — Auditable triage with
-          a deterministic baseline, Ollama, hybrid policy, and human review.
-          Jev/Laya evaluated outside the runtime on the same frozen synthetic
-          held-out (70 tickets). Laya adaptation: 1,120 TRAIN, exact tuple
-          11.43% zero-shot → 85.71%; PyTorch/CUDA, validation-based selection,
-          and calibration.
-        </p>
-        <p>
-          <strong>Public project:</strong> Resilient Transaction API — Bun/TS,
-          concurrent idempotency, PostgreSQL as source of truth, Redis, retries,
-          and circuit breaker; Terraform and temporary AWS validation, including
-          migrations, deployment, tests, and post-destroy audit.
+          <strong>Engineering practices:</strong> Product thinking, Clean
+          Architecture, DDD principles, SOLID, Clean Code, TDD, microservices
+          fundamentals, unit/integration/E2E tests, security, reliability,
+          observability and performance.
         </p>
       </div>
+
+      <h2>Selected public projects</h2>
+      <p>
+        <strong
+          ><a href="https://github.com/marcelotaparelli/opspilot-ai"
+            >OpsPilot AI</a
+          >:</strong
+        >
+        Python/FastAPI, evidence-grounded RAG, pgvector/hybrid retrieval, OpenAI
+        and LangGraph agentic AI. Deterministic policies, hash-bound human
+        approval, GitLab reconciliation, evals and OpenTelemetry. Independent
+        post-release OpenAI and GitLab sandbox live smokes; validated Terraform
+        blueprint, without AWS deployment.
+      </p>
+      <p>
+        <strong
+          ><a href="https://github.com/marcelotaparelli/ops-triage-ai"
+            >Ops Triage AI</a
+          >:</strong
+        >
+        Deterministic baseline, local LLM, hybrid policy and human review.
+        Jev/Laya evaluation-only on a frozen synthetic held-out (70 tickets).
+        Laya with PyTorch/CUDA: exact tuple 11.43% zero-shot → 85.71% adapted;
+        validation-based selection. HIGH/CRITICAL recall regressed from 92.86%
+        to 85.71%.
+      </p>
+      <p>
+        <strong
+          ><a
+            href="https://github.com/marcelotaparelli/resilient-transaction-api"
+            >Resilient Transaction API</a
+          >:</strong
+        >
+        TypeScript/Bun, PostgreSQL, Redis, concurrent idempotency, rate
+        limiting, retries, circuit breaker, observability and Docker. Terraform
+        and a temporary non-production AWS lab, with functional validation,
+        destroy and resource audit.
+      </p>
+      <p>
+        <strong
+          ><a href="https://github.com/marcelotaparelli/salus">Salus</a
+          >:</strong
+        >
+        Node.js/Express, PostgreSQL/Prisma, Clean Architecture, domain modeling
+        and a manually implemented TDD core; JWT authentication, ownership-based
+        authorization and automated tests.
+      </p>
 
       <h2>Additional training</h2>
       <p>
@@ -146,8 +169,6 @@
 
       <h2>Education &amp; languages</h2>
       <p>
-        Postgraduate Program in AI Engineering — Cruzeiro do Sul | In
-        progress<br />
         Systems Analysis and Development — UniBF | Completed in 2026<br />
         Languages: Portuguese (native) | English (advanced)
       </p>

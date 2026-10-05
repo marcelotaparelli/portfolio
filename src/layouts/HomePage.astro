@@ -23,12 +23,8 @@ const articles = await articlesFor(locale);
 <BaseLayout
   locale={locale}
   page="home"
-  title={
-    locale === 'en'
-      ? 'Marcelo Taparelli — Software Engineer | AI Engineering'
-      : 'Marcelo Taparelli — Software Engineer | Engenharia de IA'
-  }
-  description={text.hero.intro}
+  title={`${text.identity.headline} — Marcelo Taparelli`}
+  description={text.identity.description}
   equivalent={pathFor('home', otherLocale(locale))}
 >
   <section class="hero container" aria-labelledby="hero-title">
@@ -43,12 +39,13 @@ const articles = await articlesFor(locale);
         <span>{text.hero.title.first}</span>
         <span>{text.hero.title.second}</span>
         <span class="hero-title-light">{text.hero.title.third}</span>
-        <span class="hero-title-light">
-          {text.hero.title.fourth}
-          <span class="hero-period">.</span>
-        </span>
+        <span class="hero-title-light">{text.hero.title.fourth}</span>
       </h1>
-      <p class="hero-intro">{text.hero.intro}</p>
+      <p class="hero-positioning">{text.identity.supporting}</p>
+      <div class="hero-intro">
+        <p>{text.hero.intro}</p>
+        <p>{text.hero.body}</p>
+      </div>
       <div class="hero-actions">
         <a class="button button-primary" href={pathFor('projects', locale)}>
           {text.hero.work}
@@ -78,10 +75,7 @@ const articles = await articlesFor(locale);
       <span class="portrait-rule" aria-hidden="true"></span>
     </div>
     <div class="hero-bottom">
-      <p lang="en">
-        Software Engineering <span>·</span> AI Engineering <span>·</span>{' '}
-        Product
-      </p>
+      <p>{text.identity.pillars}</p>
       <a href="#selected-work" aria-label={text.hero.work}>
         <span aria-hidden="true">↓</span>
       </a>
