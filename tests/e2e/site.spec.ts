@@ -354,11 +354,11 @@ test('AI and software positioning, metadata and project priority agree in both l
         await expect(page.locator('.hero-intro p')).toHaveText(
           path === '/'
             ? [
-                'Construo produtos de IA confiáveis e sistemas backend do problema à produção.',
+                'Construo produtos de IA e sistemas de software confiáveis, do problema real à produção, com foco em valor, segurança, desempenho e operação.',
                 'RAG, agentes, avaliação, guardrails e observabilidade sobre uma base sólida de engenharia de software.',
               ]
             : [
-                'I build reliable AI products and backend systems from problem to production.',
+                'I build reliable AI products and software systems from real-world problems to production, with a focus on value, security, performance, and operability.',
                 'RAG, agents, evaluation, guardrails and observability on a solid software engineering foundation.',
               ],
         );
