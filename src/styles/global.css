@@ -311,7 +311,7 @@
   .hero-copy {
     position: relative;
     z-index: 1;
-    max-width: 860px;
+    max-width: 100%;
   }
   .hero-eyebrow {
     display: flex;
@@ -326,10 +326,13 @@
     color: var(--color-line);
   }
   .hero h1 {
-    font-size: clamp(3.5rem, 6vw, 5.35rem);
-    line-height: 1.035;
+    font-size: clamp(2.5rem, 4.2vw, 3.75rem);
+    line-height: 1.08;
     font-weight: 600;
     letter-spacing: -0.055em;
+  }
+  .hero h1[lang='pt-br'] {
+    font-size: clamp(2.25rem, 4vw, 3.625rem);
   }
   .hero h1 > span {
     display: block;
@@ -1009,11 +1012,6 @@
   }
 }
 
-@media (min-width: 1440px) {
-  .hero h1 {
-    font-size: 88px;
-  }
-}
 @media (max-width: 1050px) {
   .container {
     width: calc(100% - 64px);
@@ -1132,8 +1130,11 @@
     margin-inline: 3px;
   }
   .hero h1 {
-    font-size: clamp(2.65rem, 8.9vw, 4.7rem);
-    line-height: 1.06;
+    font-size: clamp(2rem, 8.2vw, 3rem);
+    line-height: 1.08;
+  }
+  .hero h1[lang='pt-br'] {
+    font-size: clamp(2rem, 8.2vw, 3rem);
   }
   .hero-intro {
     font-size: 14px;

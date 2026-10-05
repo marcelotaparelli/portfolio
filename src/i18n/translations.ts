@@ -36,16 +36,13 @@ const pt = {
   updated: 'Atualizado em',
   footerNote: 'Problema primeiro. Tecnologia depois.',
   hero: {
-    eyebrow: 'ENGENHARIA DE IA E SOFTWARE',
+    eyebrow: 'Engenheiro de IA & Engenheiro de Software',
     title: {
-      first: 'ENGENHEIRO',
-      second: 'DE IA &',
-      third: 'ENGENHEIRO',
-      fourth: 'DE SOFTWARE',
+      first: 'DE PROBLEMAS REAIS',
+      second: 'A PRODUTOS DE IA PRONTOS PARA PRODUÇÃO.',
     },
     intro:
-      'Construo produtos de IA confiáveis e sistemas backend do problema até a produção.',
-    body: 'Meu trabalho combina Engenharia de IA — RAG, agentes, avaliação, guardrails e observabilidade — com Engenharia de Software em TypeScript, Bun, Node.js, PostgreSQL, Redis, Docker e infraestrutura cloud.',
+      'Projeto e construo produtos de IA com RAG, agentes e LLMs apoiados por avaliação, guardrails, observabilidade e uma base sólida de engenharia de software.',
     work: 'Ver projetos',
     contact: 'Vamos conversar',
     caption: 'Engenharia com perspectiva de produto.',
@@ -187,16 +184,13 @@ const en: Translations = {
   updated: 'Updated',
   footerNote: 'Problem first. Technology second.',
   hero: {
-    eyebrow: 'AI & SOFTWARE ENGINEERING',
+    eyebrow: 'AI Engineer & Software Engineer',
     title: {
-      first: 'AI',
-      second: 'ENGINEER &',
-      third: 'SOFTWARE',
-      fourth: 'ENGINEER',
+      first: 'FROM REAL PROBLEMS',
+      second: 'TO PRODUCTION-READY AI PRODUCTS.',
     },
     intro:
-      'I build reliable AI products and backend systems from problem to production.',
-    body: 'My work combines AI Engineering — RAG, agentic workflows, evaluation, guardrails, and observability — with Software Engineering in TypeScript, Bun, Node.js, PostgreSQL, Redis, Docker, and cloud infrastructure.',
+      'I design and build AI products with RAG, agents and LLMs backed by evaluation, guardrails, observability and solid software engineering.',
     work: 'View projects',
     contact: 'Let’s talk',
     caption: 'Engineering with a product perspective.',

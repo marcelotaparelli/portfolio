@@ -33,18 +33,14 @@ const articles = await articlesFor(locale);
       <p class="eyebrow hero-eyebrow">
         <span class="status-dot" aria-hidden="true"></span>
         {text.hero.eyebrow}
-        <span class="eyebrow-separator">/</span>MARCELO TAPARELLI
       </p>
       <h1 id="hero-title" lang={locale}>
         <span>{text.hero.title.first}</span>
-        <span>{text.hero.title.second}</span>
-        <span class="hero-title-light">{text.hero.title.third}</span>
-        <span class="hero-title-light">{text.hero.title.fourth}</span>
+        <span class="hero-title-light">{text.hero.title.second}</span>
       </h1>
       <p class="hero-positioning">{text.identity.supporting}</p>
       <div class="hero-intro">
         <p>{text.hero.intro}</p>
-        <p>{text.hero.body}</p>
       </div>
       <div class="hero-actions">
         <a class="button button-primary" href={pathFor('projects', locale)}>

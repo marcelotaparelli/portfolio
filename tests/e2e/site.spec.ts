@@ -353,8 +353,27 @@ test('AI and software positioning, metadata and project priority agree in both l
             .replace(/\s+/g, ' ')
             .trim()
             .toLowerCase(),
-        ).toBe(headline!.toLowerCase());
+        ).toBe(
+          (path === '/'
+            ? 'De problemas reais a produtos de IA prontos para produção.'
+            : 'From real problems to production-ready AI products.'
+          ).toLowerCase(),
+        );
         await expect(page.locator('.hero-positioning')).toHaveText(supporting!);
+        await expect(page.locator('.hero-eyebrow')).toContainText(headline!);
+        await expect(page.locator('.hero-intro')).toContainText(
+          path === '/'
+            ? 'Projeto e construo produtos de IA com RAG, agentes e LLMs apoiados por avaliação, guardrails, observabilidade e uma base sólida de engenharia de software.'
+            : 'I design and build AI products with RAG, agents and LLMs backed by evaluation, guardrails, observability and solid software engineering.',
+        );
+        await expect(page.locator('.hero-bottom')).toContainText(
+          path === '/'
+            ? 'Engenharia de IA · Engenharia de Software · Produto'
+            : 'AI Engineering · Software Engineering · Product',
+        );
+        await expect(
+          page.locator('.hero-actions .button-primary'),
+        ).toBeVisible();
       }
     }
     for (const path of [home!, projects!]) {
