@@ -36,13 +36,14 @@ const pt = {
   updated: 'Atualizado em',
   footerNote: 'Problema primeiro. Tecnologia depois.',
   hero: {
-    eyebrow: 'Engenheiro de IA & Engenheiro de Software',
+    eyebrow: 'ENGENHEIRO DE IA & ENGENHEIRO DE SOFTWARE',
     title: {
       first: 'DE PROBLEMAS REAIS',
-      second: 'A PRODUTOS DE IA PRONTOS PARA PRODUÇÃO.',
+      second: 'A PRODUTOS DE IA.',
     },
     intro:
-      'Projeto e construo produtos de IA com RAG, agentes e LLMs apoiados por avaliação, guardrails, observabilidade e uma base sólida de engenharia de software.',
+      'Construo produtos de IA confiáveis e sistemas backend do problema à produção.',
+    body: 'RAG, agentes, avaliação, guardrails e observabilidade sobre uma base sólida de engenharia de software.',
     work: 'Ver projetos',
     contact: 'Vamos conversar',
     caption: 'Engenharia com perspectiva de produto.',
@@ -184,13 +185,14 @@ const en: Translations = {
   updated: 'Updated',
   footerNote: 'Problem first. Technology second.',
   hero: {
-    eyebrow: 'AI Engineer & Software Engineer',
+    eyebrow: 'AI ENGINEER & SOFTWARE ENGINEER',
     title: {
       first: 'FROM REAL PROBLEMS',
-      second: 'TO PRODUCTION-READY AI PRODUCTS.',
+      second: 'TO AI PRODUCTS.',
     },
     intro:
-      'I design and build AI products with RAG, agents and LLMs backed by evaluation, guardrails, observability and solid software engineering.',
+      'I build reliable AI products and backend systems from problem to production.',
+    body: 'RAG, agents, evaluation, guardrails and observability on a solid software engineering foundation.',
     work: 'View projects',
     contact: 'Let’s talk',
     caption: 'Engineering with a product perspective.',

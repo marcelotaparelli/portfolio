@@ -38,9 +38,9 @@ const articles = await articlesFor(locale);
         <span>{text.hero.title.first}</span>
         <span class="hero-title-light">{text.hero.title.second}</span>
       </h1>
-      <p class="hero-positioning">{text.identity.supporting}</p>
       <div class="hero-intro">
         <p>{text.hero.intro}</p>
+        <p>{text.hero.body}</p>
       </div>
       <div class="hero-actions">
         <a class="button button-primary" href={pathFor('projects', locale)}>

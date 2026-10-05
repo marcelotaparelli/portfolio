@@ -313,21 +313,9 @@ test('draft preview is non-indexable and CV links target valid locale PDFs', asy
 test('AI and software positioning, metadata and project priority agree in both languages', async ({
   page,
 }) => {
-  for (const [home, about, projects, headline, supporting] of [
-    [
-      '/',
-      '/sobre/',
-      '/projetos/',
-      'Engenheiro de IA & Engenheiro de Software',
-      'Python, RAG, Agentes, Evals | TypeScript, Bun, Node.js | Foco em Produto',
-    ],
-    [
-      '/en/',
-      '/en/about/',
-      '/en/projects/',
-      'AI Engineer & Software Engineer',
-      'Python, RAG, Agents, Evals | TypeScript, Bun, Node.js | Product-minded',
-    ],
+  for (const [home, about, projects, headline] of [
+    ['/', '/sobre/', '/projetos/', 'Engenheiro de IA & Engenheiro de Software'],
+    ['/en/', '/en/about/', '/en/projects/', 'AI Engineer & Software Engineer'],
   ]) {
     for (const path of [home!, about!]) {
       await page.goto(path);
@@ -355,16 +343,24 @@ test('AI and software positioning, metadata and project priority agree in both l
             .toLowerCase(),
         ).toBe(
           (path === '/'
-            ? 'De problemas reais a produtos de IA prontos para produção.'
-            : 'From real problems to production-ready AI products.'
+            ? 'De problemas reais a produtos de IA.'
+            : 'From real problems to AI products.'
           ).toLowerCase(),
         );
-        await expect(page.locator('.hero-positioning')).toHaveText(supporting!);
-        await expect(page.locator('.hero-eyebrow')).toContainText(headline!);
-        await expect(page.locator('.hero-intro')).toContainText(
+        await expect(page.locator('.hero-positioning')).toHaveCount(0);
+        await expect(page.locator('.hero-eyebrow')).toContainText(
+          headline!.toUpperCase(),
+        );
+        await expect(page.locator('.hero-intro p')).toHaveText(
           path === '/'
-            ? 'Projeto e construo produtos de IA com RAG, agentes e LLMs apoiados por avaliação, guardrails, observabilidade e uma base sólida de engenharia de software.'
-            : 'I design and build AI products with RAG, agents and LLMs backed by evaluation, guardrails, observability and solid software engineering.',
+            ? [
+                'Construo produtos de IA confiáveis e sistemas backend do problema à produção.',
+                'RAG, agentes, avaliação, guardrails e observabilidade sobre uma base sólida de engenharia de software.',
+              ]
+            : [
+                'I build reliable AI products and backend systems from problem to production.',
+                'RAG, agents, evaluation, guardrails and observability on a solid software engineering foundation.',
+              ],
         );
         await expect(page.locator('.hero-bottom')).toContainText(
           path === '/'

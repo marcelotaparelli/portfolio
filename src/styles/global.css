@@ -311,7 +311,7 @@
   .hero-copy {
     position: relative;
     z-index: 1;
-    max-width: 100%;
+    max-width: 880px;
   }
   .hero-eyebrow {
     display: flex;
@@ -326,13 +326,10 @@
     color: var(--color-line);
   }
   .hero h1 {
-    font-size: clamp(2.5rem, 4.2vw, 3.75rem);
-    line-height: 1.08;
+    font-size: clamp(3.5rem, 6vw, 5.35rem);
+    line-height: 1.035;
     font-weight: 600;
     letter-spacing: -0.055em;
-  }
-  .hero h1[lang='pt-br'] {
-    font-size: clamp(2.25rem, 4vw, 3.625rem);
   }
   .hero h1 > span {
     display: block;
@@ -343,15 +340,12 @@
   .hero-period {
     color: var(--color-accent);
   }
-  .hero-positioning {
-    max-width: 700px;
-    margin-top: 24px;
-    color: var(--color-accent);
-    font-size: 15px;
-    line-height: 1.7;
-  }
   .hero-intro p + p {
     margin-top: 12px;
+  }
+  .hero-intro p:first-child {
+    color: var(--color-ink);
+    font-size: 16px;
   }
   .hero-intro {
     max-width: 525px;
@@ -417,7 +411,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-top: 72px;
+    margin-top: 110px;
     padding: 22px 0;
     border-top: 1px solid var(--color-line);
   }
@@ -1012,6 +1006,16 @@
   }
 }
 
+@media (min-width: 761px) {
+  .hero h1[lang='en'] {
+    font-size: clamp(3.5rem, 6vw, 82px);
+  }
+}
+@media (min-width: 1440px) {
+  .hero h1 {
+    font-size: 88px;
+  }
+}
 @media (max-width: 1050px) {
   .container {
     width: calc(100% - 64px);
@@ -1030,6 +1034,9 @@
   }
   .hero-intro {
     max-width: 470px;
+  }
+  .hero-bottom {
+    margin-top: 190px;
   }
   .project-row {
     grid-template-columns: 28px minmax(0, 1fr) 180px;
@@ -1130,11 +1137,8 @@
     margin-inline: 3px;
   }
   .hero h1 {
-    font-size: clamp(2rem, 8.2vw, 3rem);
-    line-height: 1.08;
-  }
-  .hero h1[lang='pt-br'] {
-    font-size: clamp(2rem, 8.2vw, 3rem);
+    font-size: clamp(2.65rem, 8.9vw, 4.7rem);
+    line-height: 1.06;
   }
   .hero-intro {
     font-size: 14px;
@@ -1349,6 +1353,11 @@
   }
   .contact-standalone .contact-inner {
     padding-top: 64px;
+  }
+}
+@media (max-width: 360px) {
+  .hero h1[lang='pt-br'] {
+    font-size: 2.375rem;
   }
 }
 @media (prefers-reduced-motion: reduce) {
