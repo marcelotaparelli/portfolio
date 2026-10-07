@@ -49,7 +49,7 @@ const pt = {
     caption: 'Engenharia com perspectiva de produto.',
   },
   work: {
-    eyebrow: '01 / TRABALHOS SELECIONADOS',
+    eyebrow: '02 / TRABALHOS SELECIONADOS',
     title: 'Problemas reais.\nTrabalho concreto.',
     description:
       'RAG e agentes com controles de execução, avaliação e adaptação de modelos, backend resiliente e automação. Cada case apresenta evidências e limites explícitos.',
@@ -188,7 +188,7 @@ const en: Translations = {
     caption: 'Engineering with a product perspective.',
   },
   work: {
-    eyebrow: '01 / SELECTED WORK',
+    eyebrow: '02 / SELECTED WORK',
     title: 'Real problems.\nTangible work.',
     description:
       'RAG and agents with execution controls, model evaluation and adaptation, resilient backend systems, and automation. Each case presents explicit evidence and limitations.',

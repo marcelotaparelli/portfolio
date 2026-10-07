@@ -1,5 +1,18 @@
 # Implementation status
 
+## Home method immediately after Hero (2026-10-07)
+
+- Moved Engineering Method directly after Hero in the shared PT/EN Home.
+  Numbering now reads 01 Method, 02 Selected Work, 03 Experience and 04 Writing.
+  About, diagram design and methodology remain unchanged; the Hero work link
+  still targets `#selected-work`.
+- Verified rendered order, ten steps, sequential numbering, no horizontal
+  overflow and the work anchor at 1440/390px in both languages. Reviewed local
+  screenshots under the ignored `reports/home-method-order/` directory.
+- Passed format, typecheck (0 errors, 0 warnings, 20 existing hints), lint,
+  42 unit tests, 24 E2E, preview/production builds (38 pages each), both artifact
+  validators and release checker. No push, deploy or distribution.
+
 ## Engineering system map and Home information architecture (2026-10-07)
 
 - Replaced the desktop vertical timeline with a full-width system map in the

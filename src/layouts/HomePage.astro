@@ -78,6 +78,7 @@ const articles = await articlesFor(locale);
       </a>
     </div>
   </section>
+  <EngineeringMethod locale={locale} />
   <section
     id="selected-work"
     class="section container"
@@ -100,7 +101,6 @@ const articles = await articlesFor(locale);
     </div>
     <ProjectList entries={projects} locale={locale} />
   </section>
-  <EngineeringMethod locale={locale} />
   <section
     class="section container experience-section"
     aria-labelledby="experience-title"
