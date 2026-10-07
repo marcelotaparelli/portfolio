@@ -32,21 +32,37 @@ const steps = [
     <p class="eyebrow">{text.eyebrow}</p>
     <h2 id="method-title">{text.title}</h2>
     <p class="section-description">{text.description}</p>
-    <p class="section-description">{text.scope}</p>
+    <p class="section-description method-scope">{text.scope}</p>
   </div>
-  <ol class="method-flow" lang="en">
+  <ol class="method-flow" role="list" lang="en">
     {steps.map((step, index) => (
-      <li>
-        <span class="method-step">
-          <span class="method-number" aria-hidden="true">
-            {String(index + 1).padStart(2, '0')}
-          </span>
-          <span>{step}</span>
+      <li class:list={['method-step', { 'method-step--ai': index === 4 }]}>
+        <span class="method-number" aria-hidden="true">
+          {String(index + 1).padStart(2, '0')}
         </span>
-        {index < steps.length - 1 && (
-          <span class="method-arrow" aria-hidden="true">
-            ↓
-          </span>
+        <span class="method-node" aria-hidden="true" />
+        <span class="method-label">
+          {step === 'AI / AGENT ORCHESTRATION' ? (
+            <>
+              AI / AGENT <wbr />
+              ORCHESTRATION
+            </>
+          ) : (
+            step
+          )}
+        </span>
+        {index === 8 && (
+          <svg
+            class="method-feedback"
+            width="32"
+            height="116"
+            viewBox="0 0 32 116"
+            fill="none"
+            aria-hidden="true"
+            focusable="false"
+          >
+            <path d="M4 87H20Q28 87 28 79V37Q28 29 20 29H4M9 24L4 29L9 34" />
+          </svg>
         )}
       </li>
     ))}
@@ -56,122 +72,153 @@ const steps = [
 <style>
   .engineering-method {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 72px;
+    grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+    align-items: center;
+    gap: clamp(48px, 6vw, 88px);
     border-top: 1px solid var(--color-line);
+  }
+  .engineering-method--about {
+    padding-block: 64px;
+  }
+  .method-intro {
+    min-width: 0;
   }
   .method-intro .eyebrow {
     margin-bottom: 24px;
   }
+  .method-intro h2 {
+    max-width: 460px;
+    font-size: clamp(32px, 3vw, 42px);
+    line-height: 1.18;
+    text-wrap: balance;
+  }
   .method-intro p.section-description {
+    max-width: 440px;
+    margin-top: 28px;
+    font-size: 16px;
+    line-height: 1.85;
+  }
+  .method-intro p.method-scope {
     margin-top: 24px;
+    padding-left: 18px;
+    border-left: 1px solid var(--color-line);
+    font-size: 14px;
+    line-height: 1.8;
   }
   .method-flow {
+    position: relative;
     list-style: none;
     padding: 0;
     margin: 0;
     min-width: 0;
   }
-  .method-step {
-    display: flex;
-    gap: 20px;
-    align-items: baseline;
-    padding: 10px 16px;
-    border: 1px solid var(--color-line);
-    background: var(--color-surface);
-    font-size: 13px;
-    font-weight: 600;
-    letter-spacing: 0.04em;
-  }
-  .method-number {
-    color: var(--color-accent);
-    font-variant-numeric: tabular-nums;
-  }
-  .method-arrow {
-    display: block;
-    margin-left: 24px;
-    color: var(--color-accent);
-    line-height: 1.4;
-  }
-  .engineering-method--about {
-    grid-template-columns: 1fr 1.65fr;
-    gap: 90px;
-    padding-block: 64px;
-  }
-  .engineering-method--about h2 {
-    max-width: 320px;
-    font-size: 28px;
-    line-height: 1.25;
-  }
-  .engineering-method--about .eyebrow {
-    margin-bottom: 16px;
-  }
-  .engineering-method--about .section-description {
-    margin-top: 20px;
-    font-size: 15px;
-    line-height: 1.8;
-  }
-  .engineering-method--about .method-flow li {
-    position: relative;
-  }
-  .engineering-method--about .method-flow li + li {
-    margin-top: 12px;
-  }
-  .engineering-method--about .method-flow li:not(:last-child)::before {
+  .method-flow::before {
     content: '';
     position: absolute;
-    left: 14px;
-    top: 28px;
-    bottom: -12px;
-    border-left: 1px solid var(--color-line);
+    top: 29px;
+    bottom: 29px;
+    left: 53.5px;
+    width: 1px;
+    background: var(--color-line);
   }
-  .engineering-method--about .method-step {
+  .method-step {
     position: relative;
-    align-items: center;
-    gap: 20px;
-    min-height: 28px;
-    padding: 0;
-    border: 0;
-    background: transparent;
-    font-size: 13px;
-    letter-spacing: 0.06em;
-  }
-  .engineering-method--about .method-number {
     display: grid;
-    place-items: center;
-    width: 29px;
-    height: 29px;
-    flex-shrink: 0;
-    border: 1px solid var(--color-line);
+    grid-template-columns: 28px 12px minmax(0, 1fr);
+    column-gap: 20px;
+    align-items: center;
+    min-height: 58px;
+  }
+  .method-step:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 80px;
+    right: 0;
+    height: 1px;
+    background: var(--color-line);
+    opacity: 0.5;
+  }
+  .method-number {
+    color: var(--color-muted);
+    font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    font-size: 11px;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.04em;
+  }
+  .method-node {
+    justify-self: center;
+    width: 6px;
+    height: 6px;
+    border: 1px solid var(--color-muted);
     border-radius: 50%;
     background: var(--color-navy);
-    color: var(--color-muted);
-    font-size: 10px;
-    letter-spacing: 0;
   }
-  .engineering-method--about .method-flow li:nth-child(5) .method-step,
-  .engineering-method--about .method-flow li:nth-child(9) .method-step {
+  .method-label {
+    padding-block: 16px;
+    padding-right: 40px;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.8;
+    letter-spacing: 0.035em;
+  }
+  .method-step--ai .method-label {
+    color: var(--color-accent);
+    font-weight: 650;
+  }
+  .method-step--ai .method-node {
+    width: 10px;
+    height: 10px;
+    border-color: var(--color-accent);
+    border-radius: 2px;
+    background: var(--color-accent);
+  }
+  .method-step--ai .method-number {
     color: var(--color-accent);
   }
-  .engineering-method--about .method-arrow {
-    display: none;
+  .method-feedback {
+    position: absolute;
+    right: 0;
+    top: 0;
+    color: var(--color-accent);
+    stroke: currentColor;
+    stroke-width: 1;
+    stroke-linecap: round;
+    stroke-linejoin: round;
   }
-  @media (max-width: 760px) {
+  @media (max-width: 900px) {
     .engineering-method {
       grid-template-columns: 1fr;
-      gap: 36px;
+      gap: 40px;
     }
-    .method-step {
-      gap: 12px;
-      padding-inline: 12px;
-      font-size: 12px;
+    .method-intro h2,
+    .method-intro p.section-description {
+      max-width: 560px;
     }
+  }
+  @media (max-width: 760px) {
     .engineering-method--about {
-      gap: 28px;
       padding-block: 42px;
     }
-    .engineering-method--about .method-step {
-      gap: 16px;
+    .method-intro .eyebrow {
+      margin-bottom: 20px;
+    }
+    .method-intro p.section-description {
+      margin-top: 24px;
+    }
+    .method-step {
+      grid-template-columns: 24px 12px minmax(0, 1fr);
+      column-gap: 14px;
+    }
+    .method-flow::before {
+      left: 43.5px;
+    }
+    .method-step:not(:last-child)::after {
+      left: 64px;
+    }
+    .method-label {
+      letter-spacing: 0.01em;
+      padding-right: 32px;
     }
   }
 </style>

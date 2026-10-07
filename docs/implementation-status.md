@@ -1,5 +1,32 @@
 # Implementation status
 
+## Shared AI engineering pipeline design (2026-10-07)
+
+- Reworked the existing `EngineeringMethod.astro` visualization on Home and
+  Sobre/About PT/EN. Kept both introductory paragraphs, all ten English step
+  names and their order unchanged; translations and methodology did not change.
+- Replaced boxed Home rows and the compact About list with a shared editorial
+  pipeline: separate monospace numbers, continuous rail, small outlined nodes,
+  restrained horizontal rules and an emphasized square node at step 05.
+  An inline decorative SVG connects Improvement back to Measurement. Existing
+  theme tokens and typography remain; no dependencies or client JavaScript.
+- Desktop uses two balanced columns (flow measured at 49% of section width at
+  1440px). At 900px and below the introduction precedes the vertical pipeline.
+  Step labels remain 14px; step 05 fits one line at 390px and wraps between
+  AGENT and ORCHESTRATION at 320px without splitting either word.
+- Reviewed rendered Home/About in both languages. Browser checks covered 24
+  configurations at 320, 390, 768, 1024, 1440 and 1920px: exact step order,
+  no horizontal overflow and zero axe WCAG-tagged violations. All four routes
+  retained the method without JavaScript. Captures and checks are ignored under
+  `reports/method-pipeline/`; earlier captures remain in `reports/method-design/`.
+- Ordered-list semantics are explicit; numbers, nodes and the feedback SVG
+  are decorative. Step 05 differs by shape and weight as well as color. No
+  animation is introduced. Existing E2E suite passed all 24 tests; format,
+  typecheck (0 errors, 0 warnings, 20 existing hints), lint, unit tests and
+  preview/production builds (38 pages each) passed. Both artifact validators
+  checked 38 HTML documents; release and Git whitespace checks passed.
+  `dist/` holds the final local production build. No push or deploy.
+
 ## About engineering method visual refinement (2026-10-07)
 
 - At the author's request, refined the method section on Sobre/About PT/EN
