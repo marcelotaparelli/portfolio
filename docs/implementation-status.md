@@ -1,5 +1,45 @@
 # Implementation status
 
+## Engineering system map and Home information architecture (2026-10-07)
+
+- Replaced the desktop vertical timeline with a full-width system map in the
+  existing `EngineeringMethod.astro`. The ten labels and their order are intact:
+  01–04 share the framing line, which feeds central 05 through a technical
+  bracket; its output feeds 06–08 and then 09–10. A dashed return from 10 to 01
+  closes the iteration loop. SVG connectors are native and decorative.
+- Audited reuse before removing the Home-only `thinking-section`, its PT/EN
+  translations and exclusive desktop/mobile styles. Home now reads Hero →
+  Selected Work → Engineering Method → Experience → Writing → Contact.
+  Method occupies section 02; existing 01, 03 and 04 remain sequential. About
+  reuses the same markup and map with compact section padding.
+- Applied the author's new PT description/scope and natural EN equivalents.
+  Desktop descriptions occupy two lines at 1440/1920px. No other positioning
+  copy, case evidence, project ordering, CVs, metadata or dependencies changed.
+- At 900px and below, geometry switches to a vertical grouped flow with a
+  distinct bracket/node for 05 and a compact measurement/improvement return.
+  Step labels are at least 14px. HTML remains one ordered list of ten items;
+  numbers, phase captions, nodes and SVG paths do not enter its accessible text.
+  No client JavaScript, canvas, animation or new dependency is used.
+- Rendered and visually assessed PT Home at 1440 and 1920px, EN Home at 1440px,
+  mobile at 390px and About PT/EN desktop. Full-width distribution eliminates
+  the empty side column. Consistent row heights and aligned nodes control
+  density; negative space exposes the convergence and output of 05. Iterated
+  after screenshots showed the phase-2 caption crossing its entry connector:
+  moved it beside that connector and separated the return arrowhead from the
+  dashed path. The final return visibly leads from Improvement to Business
+  Problem without obscuring any label.
+- Browser checks covered all four routes at 320, 390, 768, 1024, 1440 and 1920px:
+  24 configurations, exact label order, aligned SVG/node geometry (within 1px),
+  no horizontal overflow and zero axe WCAG-tagged violations. All four routes
+  also retain the component with JavaScript disabled. Final local screenshots
+  and measurements are ignored under `reports/system-map/`.
+- Passed format, format check, typecheck (0 errors, 0 warnings, 20 existing
+  hints), lint, 42 unit tests (112 assertions), 24 E2E, preview/production builds
+  (38 pages each), both artifact validators (38 HTML documents each), release
+  checker and Git whitespace validation. `dist/` holds the final local
+  production artifact. One local commit is requested; no push, deploy or
+  external distribution is performed.
+
 ## Shared AI engineering pipeline design (2026-10-07)
 
 - Reworked the existing `EngineeringMethod.astro` visualization on Home and

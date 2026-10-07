@@ -100,31 +100,6 @@ const articles = await articlesFor(locale);
     </div>
     <ProjectList entries={projects} locale={locale} />
   </section>
-  <section class="thinking-section" aria-labelledby="thinking-title">
-    <div class="container section">
-      <div class="section-heading">
-        <div>
-          <p class="eyebrow">{text.thinking.eyebrow}</p>
-          <h2 id="thinking-title" class="preserve-lines">
-            {text.thinking.title}
-          </h2>
-        </div>
-        <p class="section-description">{text.thinking.description}</p>
-      </div>
-      <ol class="thinking-grid">
-        {text.thinking.items.map((item, index) => (
-          <li>
-            <span class="thinking-number" aria-hidden="true">
-              0{index + 1}
-              <span></span>
-            </span>
-            <h3>{item.title}</h3>
-            <p>{item.text}</p>
-          </li>
-        ))}
-      </ol>
-    </div>
-  </section>
   <EngineeringMethod locale={locale} />
   <section
     class="section container experience-section"

@@ -54,26 +54,6 @@ const pt = {
     description:
       'RAG e agentes com controles de execução, avaliação e adaptação de modelos, backend resiliente e automação. Cada case apresenta evidências e limites explícitos.',
   },
-  thinking: {
-    eyebrow: '02 / COMO TOMO DECISÕES',
-    title: 'O problema vem\nantes do código.',
-    description:
-      'Entender o que precisa mudar é parte do trabalho de engenharia.',
-    items: [
-      {
-        title: 'Entender o contexto',
-        text: 'Quem usa, o que precisa resolver e quais restrições importam. A solução começa nessas perguntas.',
-      },
-      {
-        title: 'Escolher com critério',
-        text: 'Tecnologia e IA precisam justificar sua complexidade e gerar valor suficiente. Explicito trade-offs de segurança, confiabilidade, custo, latência e operação.',
-      },
-      {
-        title: 'Examinar o resultado',
-        text: 'Testar as regras críticas, observar falhas e latência, reconhecer os limites e medir o que importa.',
-      },
-    ],
-  },
   experience: {
     eyebrow: '03 / EXPERIÊNCIA E COMPETÊNCIAS',
     title: 'Engenharia com\nvisão do todo.',
@@ -113,9 +93,9 @@ const pt = {
     eyebrow: 'MÉTODO DE ENGENHARIA',
     title: 'Como construo sistemas de IA.',
     description:
-      'Do problema de negócio à produção: domínio, arquitetura e restrições orientam a orquestração de IA, a verificação e a segurança. Medição orienta a melhoria.',
+      'Do problema de negócio à produção: domínio, arquitetura e restrições definem onde a IA entra. Verificação, segurança e medição tornam o sistema confiável e evolutivo.',
     scope:
-      'Cada case mostra até onde esse método foi exercitado: experimentos, laboratórios e integrações têm limites explícitos.',
+      'Cada case mostra até onde esse método foi exercitado, com limites e evidências explícitos.',
   },
   about: {
     eyebrow: 'SOBRE',
@@ -213,25 +193,6 @@ const en: Translations = {
     description:
       'RAG and agents with execution controls, model evaluation and adaptation, resilient backend systems, and automation. Each case presents explicit evidence and limitations.',
   },
-  thinking: {
-    eyebrow: '02 / HOW I MAKE DECISIONS',
-    title: 'The problem comes\nbefore the code.',
-    description: 'Understanding what needs to change is part of engineering.',
-    items: [
-      {
-        title: 'Understand the context',
-        text: 'Who uses it, what they need to solve, and which constraints matter. The solution starts with these questions.',
-      },
-      {
-        title: 'Choose deliberately',
-        text: 'Technology and AI must justify their complexity and deliver enough value. I make trade-offs in security, reliability, cost, latency, and operability explicit.',
-      },
-      {
-        title: 'Examine the outcome',
-        text: 'Test critical rules, observe failures and latency, acknowledge limits, and measure what matters.',
-      },
-    ],
-  },
   experience: {
     eyebrow: '03 / EXPERIENCE & CAPABILITIES',
     title: 'Engineering with\nthe whole picture.',
@@ -270,9 +231,9 @@ const en: Translations = {
     eyebrow: 'ENGINEERING METHOD',
     title: 'How I build AI systems.',
     description:
-      'From business problem to production: domain, architecture, and constraints guide AI orchestration, verification, and security. Measurement guides improvement.',
+      'From business problem to production: domain, architecture, and constraints define where AI fits. Verification, security, and measurement make the system reliable and able to evolve.',
     scope:
-      'Each case shows how far this method was exercised: experiments, labs, and integrations have explicit limits.',
+      'Each case shows how far this method was exercised, with explicit evidence and limitations.',
   },
   about: {
     eyebrow: 'ABOUT',

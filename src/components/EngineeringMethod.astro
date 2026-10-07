@@ -19,6 +19,11 @@ const steps = [
   'MEASUREMENT',
   'IMPROVEMENT',
 ];
+const phases: Record<number, string> = {
+  0: 'PHASE 1 / FRAME THE SYSTEM',
+  5: 'PHASE 2 / MAKE IT RELIABLE & OPERABLE',
+  8: 'PHASE 3 / LEARN',
+};
 ---
 
 <section
@@ -29,196 +34,380 @@ const steps = [
   aria-labelledby="method-title"
 >
   <div class="method-intro">
-    <p class="eyebrow">{text.eyebrow}</p>
+    <p class="eyebrow">
+      {variant === 'default' && <span>02 / </span>}
+      {text.eyebrow}
+    </p>
     <h2 id="method-title">{text.title}</h2>
     <p class="section-description">{text.description}</p>
-    <p class="section-description method-scope">{text.scope}</p>
   </div>
-  <ol class="method-flow" role="list" lang="en">
-    {steps.map((step, index) => (
-      <li class:list={['method-step', { 'method-step--ai': index === 4 }]}>
-        <span class="method-number" aria-hidden="true">
-          {String(index + 1).padStart(2, '0')}
-        </span>
-        <span class="method-node" aria-hidden="true" />
-        <span class="method-label">
-          {step === 'AI / AGENT ORCHESTRATION' ? (
-            <>
-              AI / AGENT <wbr />
-              ORCHESTRATION
-            </>
-          ) : (
-            step
+  <div class="method-map">
+    <svg
+      class="method-connectors"
+      viewBox="0 0 1000 460"
+      preserveAspectRatio="none"
+      fill="none"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <path
+        class="method-route"
+        d="M125 114H875V134Q875 142 867 142H508Q500 142 500 150V167M495 162L500 167L505 162"
+      />
+      <path
+        class="method-route"
+        d="M500 255V272Q500 280 492 280H108Q100 280 100 288V361H900M96 346L100 351L104 346"
+      />
+      <path
+        class="method-return"
+        d="M900 361H968Q980 361 980 373V440Q980 452 968 452H32Q20 452 20 440V126Q20 114 32 114H113"
+      />
+      <path class="method-return-head" d="M107 109L113 114L107 119" />
+    </svg>
+    <ol class="method-flow" role="list" lang="en">
+      {steps.map((step, index) => (
+        <li
+          class:list={[
+            'method-step',
+            `method-step--${index + 1}`,
+            { 'method-step--ai': index === 4 },
+          ]}
+        >
+          {phases[index] && (
+            <span class="method-phase" aria-hidden="true">
+              {phases[index]}
+            </span>
           )}
-        </span>
-        {index === 8 && (
-          <svg
-            class="method-feedback"
-            width="32"
-            height="116"
-            viewBox="0 0 32 116"
-            fill="none"
-            aria-hidden="true"
-            focusable="false"
-          >
-            <path d="M4 87H20Q28 87 28 79V37Q28 29 20 29H4M9 24L4 29L9 34" />
-          </svg>
-        )}
-      </li>
-    ))}
-  </ol>
+          <span class="method-number" aria-hidden="true">
+            {String(index + 1).padStart(2, '0')}
+          </span>
+          <span class="method-label">
+            {index === 4 ? (
+              <>
+                AI / AGENT <wbr />
+                ORCHESTRATION
+              </>
+            ) : (
+              step
+            )}
+          </span>
+          <span class="method-node" aria-hidden="true" />
+          {index === 8 && (
+            <svg
+              class="method-mobile-return"
+              width="32"
+              height="116"
+              viewBox="0 0 32 116"
+              fill="none"
+              aria-hidden="true"
+              focusable="false"
+            >
+              <path d="M4 87H20Q28 87 28 79V37Q28 29 20 29H4M9 24L4 29L9 34" />
+            </svg>
+          )}
+        </li>
+      ))}
+    </ol>
+  </div>
+  <p class="method-scope">{text.scope}</p>
 </section>
 
 <style>
   .engineering-method {
-    display: grid;
-    grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
-    align-items: center;
-    gap: clamp(48px, 6vw, 88px);
     border-top: 1px solid var(--color-line);
   }
   .engineering-method--about {
     padding-block: 64px;
   }
-  .method-intro {
-    min-width: 0;
-  }
   .method-intro .eyebrow {
-    margin-bottom: 24px;
+    margin-bottom: 20px;
   }
   .method-intro h2 {
-    max-width: 460px;
-    font-size: clamp(32px, 3vw, 42px);
+    font-size: clamp(32px, 3.5vw, 48px);
     line-height: 1.18;
     text-wrap: balance;
   }
   .method-intro p.section-description {
-    max-width: 440px;
-    margin-top: 28px;
-    font-size: 16px;
-    line-height: 1.85;
-  }
-  .method-intro p.method-scope {
+    max-width: 960px;
     margin-top: 24px;
-    padding-left: 18px;
-    border-left: 1px solid var(--color-line);
-    font-size: 14px;
+    font-size: 16px;
     line-height: 1.8;
   }
-  .method-flow {
+  .method-map {
     position: relative;
+    margin-top: 52px;
+  }
+  .method-connectors {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 460px;
+    pointer-events: none;
+    stroke: var(--color-line);
+    stroke-width: 1;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+  }
+  .method-connectors path {
+    vector-effect: non-scaling-stroke;
+  }
+  .method-route {
+    stroke: var(--color-muted);
+    opacity: 0.45;
+  }
+  .method-return {
+    stroke: var(--color-accent);
+    stroke-dasharray: 3 6;
+    opacity: 0.35;
+  }
+  .method-return-head {
+    stroke: var(--color-accent);
+    opacity: 0.6;
+  }
+  .method-flow {
+    display: grid;
+    grid-template-columns: repeat(20, minmax(0, 1fr));
+    grid-template-rows: 148px 160px 152px;
     list-style: none;
     padding: 0;
     margin: 0;
-    min-width: 0;
-  }
-  .method-flow::before {
-    content: '';
-    position: absolute;
-    top: 29px;
-    bottom: 29px;
-    left: 53.5px;
-    width: 1px;
-    background: var(--color-line);
   }
   .method-step {
     position: relative;
-    display: grid;
-    grid-template-columns: 28px 12px minmax(0, 1fr);
-    column-gap: 20px;
+    display: flex;
+    flex-direction: column;
     align-items: center;
-    min-height: 58px;
+    min-width: 0;
+    padding-top: 46px;
   }
-  .method-step:not(:last-child)::after {
-    content: '';
+  .method-step--1 {
+    grid-area: 1 / 1 / 2 / 6;
+  }
+  .method-step--2 {
+    grid-area: 1 / 6 / 2 / 11;
+  }
+  .method-step--3 {
+    grid-area: 1 / 11 / 2 / 16;
+  }
+  .method-step--4 {
+    grid-area: 1 / 16 / 2 / 21;
+  }
+  .method-step--5 {
+    grid-area: 2 / 5 / 3 / 17;
+  }
+  .method-step--6 {
+    grid-area: 3 / 1 / 4 / 5;
+  }
+  .method-step--7 {
+    grid-area: 3 / 5 / 4 / 9;
+  }
+  .method-step--8 {
+    grid-area: 3 / 9 / 4 / 13;
+  }
+  .method-step--9 {
+    grid-area: 3 / 13 / 4 / 17;
+  }
+  .method-step--10 {
+    grid-area: 3 / 17 / 4 / 21;
+  }
+  .method-phase {
     position: absolute;
-    bottom: 0;
-    left: 80px;
-    right: 0;
-    height: 1px;
-    background: var(--color-line);
-    opacity: 0.5;
+    top: 0;
+    left: 40px;
+    white-space: nowrap;
+    color: var(--color-muted);
+    font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    font-size: 10px;
+    line-height: 18px;
+    letter-spacing: 0.045em;
+  }
+  .method-step--6 .method-phase {
+    left: calc(50% + 24px);
   }
   .method-number {
+    height: 18px;
     color: var(--color-muted);
     font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
     font-size: 11px;
+    line-height: 18px;
     font-variant-numeric: tabular-nums;
     letter-spacing: 0.04em;
   }
+  .method-label {
+    position: relative;
+    margin-top: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 22px;
+    letter-spacing: 0.025em;
+    text-align: center;
+  }
   .method-node {
-    justify-self: center;
-    width: 6px;
-    height: 6px;
+    margin-top: 16px;
+    width: 7px;
+    height: 7px;
+    flex-shrink: 0;
     border: 1px solid var(--color-muted);
     border-radius: 50%;
     background: var(--color-navy);
   }
-  .method-label {
-    padding-block: 16px;
-    padding-right: 40px;
-    font-size: 14px;
-    font-weight: 500;
-    line-height: 1.8;
-    letter-spacing: 0.035em;
+  .method-step--ai {
+    padding-top: 30px;
   }
   .method-step--ai .method-label {
     color: var(--color-accent);
-    font-weight: 650;
+    font-size: 20px;
+    line-height: 28px;
+    letter-spacing: 0.035em;
+  }
+  .method-step--ai .method-label::before,
+  .method-step--ai .method-label::after {
+    content: '';
+    position: absolute;
+    top: -4px;
+    bottom: -4px;
+    width: 8px;
+    border-block: 1px solid var(--color-line);
+  }
+  .method-step--ai .method-label::before {
+    left: -24px;
+    border-left: 1px solid var(--color-accent);
+  }
+  .method-step--ai .method-label::after {
+    right: -24px;
+    border-right: 1px solid var(--color-accent);
   }
   .method-step--ai .method-node {
+    margin-top: 18px;
     width: 10px;
     height: 10px;
     border-color: var(--color-accent);
     border-radius: 2px;
     background: var(--color-accent);
   }
-  .method-step--ai .method-number {
-    color: var(--color-accent);
+  .method-step:nth-child(n + 6) {
+    padding-top: 50px;
   }
-  .method-feedback {
-    position: absolute;
-    right: 0;
-    top: 0;
-    color: var(--color-accent);
-    stroke: currentColor;
-    stroke-width: 1;
-    stroke-linecap: round;
-    stroke-linejoin: round;
+  .method-step:nth-child(n + 6) .method-node {
+    order: -1;
+    margin-top: 0;
+    margin-bottom: 16px;
+  }
+  .method-mobile-return {
+    display: none;
+  }
+  .method-scope {
+    max-width: 960px;
+    margin-top: 28px;
+    color: var(--color-muted);
+    font-size: 14px;
+    line-height: 1.8;
   }
   @media (max-width: 900px) {
-    .engineering-method {
-      grid-template-columns: 1fr;
-      gap: 40px;
-    }
-    .method-intro h2,
     .method-intro p.section-description {
-      max-width: 560px;
+      max-width: 640px;
+    }
+    .method-map {
+      margin-top: 40px;
+    }
+    .method-connectors {
+      display: none;
+    }
+    .method-flow {
+      position: relative;
+      display: block;
+      padding-top: 32px;
+    }
+    .method-flow::before {
+      content: '';
+      position: absolute;
+      top: 61px;
+      bottom: 29px;
+      left: 43.5px;
+      width: 1px;
+      background: var(--color-line);
+    }
+    .method-step,
+    .method-step:nth-child(n + 6) {
+      display: grid;
+      grid-template-columns: 24px 12px minmax(0, 1fr);
+      column-gap: 14px;
+      align-items: center;
+      min-height: 58px;
+      padding: 0;
+    }
+    .method-step--6,
+    .method-step--9 {
+      margin-top: 48px;
+    }
+    .method-phase {
+      top: -32px;
+      left: 64px;
+      max-width: calc(100% - 64px);
+      white-space: normal;
+      font-size: 10px;
+      line-height: 16px;
+    }
+    .method-step--6 .method-phase {
+      left: 64px;
+    }
+    .method-label {
+      grid-column: 3;
+      grid-row: 1;
+      margin: 0;
+      padding-block: 16px;
+      padding-right: 32px;
+      font-size: 14px;
+      line-height: 26px;
+      text-align: left;
+      letter-spacing: 0.01em;
+    }
+    .method-node,
+    .method-step:nth-child(n + 6) .method-node,
+    .method-step--ai .method-node {
+      grid-column: 2;
+      grid-row: 1;
+      justify-self: center;
+      order: 0;
+      margin: 0;
+    }
+    .method-step--ai {
+      margin-block: 24px;
+    }
+    .method-step--ai .method-label {
+      font-size: 16px;
+      line-height: 26px;
+      padding-right: 20px;
+    }
+    .method-step--ai .method-label::before {
+      left: -8px;
+      top: 8px;
+      bottom: 8px;
+      width: 4px;
+    }
+    .method-step--ai .method-label::after {
+      right: 8px;
+      top: 8px;
+      bottom: 8px;
+      width: 4px;
+    }
+    .method-mobile-return {
+      display: block;
+      position: absolute;
+      right: 0;
+      top: 0;
+      stroke: var(--color-accent);
+      stroke-width: 1;
+      stroke-linecap: round;
+      stroke-linejoin: round;
     }
   }
   @media (max-width: 760px) {
     .engineering-method--about {
       padding-block: 42px;
     }
-    .method-intro .eyebrow {
-      margin-bottom: 20px;
-    }
     .method-intro p.section-description {
-      margin-top: 24px;
-    }
-    .method-step {
-      grid-template-columns: 24px 12px minmax(0, 1fr);
-      column-gap: 14px;
-    }
-    .method-flow::before {
-      left: 43.5px;
-    }
-    .method-step:not(:last-child)::after {
-      left: 64px;
-    }
-    .method-label {
-      letter-spacing: 0.01em;
-      padding-right: 32px;
+      font-size: 15px;
     }
   }
 </style>
