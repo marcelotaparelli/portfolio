@@ -84,13 +84,11 @@ const articles = await articlesFor(locale);
     class="section container"
     aria-labelledby="work-title"
   >
-    <div class="section-heading">
-      <div>
-        <p class="eyebrow">{text.work.eyebrow}</p>
-        <h2 id="work-title" class="preserve-lines">
-          {text.work.title}
-        </h2>
-      </div>
+    <div class="section-heading section-heading--split">
+      <p class="eyebrow">{text.work.eyebrow}</p>
+      <h2 id="work-title" class="preserve-lines">
+        {text.work.title}
+      </h2>
       <div class="section-heading-aside">
         <p class="section-description">{text.work.description}</p>
         <a class="text-link" href={pathFor('projects', locale)}>

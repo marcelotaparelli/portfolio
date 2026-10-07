@@ -1,5 +1,24 @@
 # Implementation status
 
+## Selected Work heading hierarchy (2026-10-07)
+
+- Replaced Selected Work's bottom-aligned heading composition with a scoped
+  `section-heading--split` grid: the eyebrow spans the first row; title and
+  description/CTA occupy the second row and align at their top. Reused the
+  existing 24px/56px spacing and 350px aside width, without positional offsets.
+  Mobile keeps DOM order: eyebrow, title, description, CTA.
+- Audited both `section-heading` instances. Writing retains its existing flex
+  composition and was visually reviewed alongside Selected Work. PT/EN copy,
+  Home section order, methodology and project order are unchanged.
+- Inspected eight PT/EN configurations at 1440, 1920, 768 and 390px. Browser
+  measurements confirmed the full-width eyebrow, equal desktop title/description
+  top coordinates, correct mobile order and no horizontal overflow. Axe reported
+  zero WCAG-tagged violations. Local captures and measurements are ignored under
+  `reports/section-heading/`.
+- Passed format, typecheck (0 errors, 0 warnings, 20 existing hints), lint,
+  42 unit tests, 24 E2E, preview/production builds (38 pages each), both artifact
+  validators and release checker. No push, deploy or distribution.
+
 ## Home method immediately after Hero (2026-10-07)
 
 - Moved Engineering Method directly after Hero in the shared PT/EN Home.
