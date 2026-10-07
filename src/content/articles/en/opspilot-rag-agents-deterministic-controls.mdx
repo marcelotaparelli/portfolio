@@ -1,0 +1,234 @@
+---
+translationKey: opspilot-rag-agents-deterministic-controls
+locale: en
+slug: opspilot-rag-agents-deterministic-controls
+title: 'OpsPilot AI: Building RAG and Agents Without Giving the LLM Authority'
+description: 'The decisions behind OpsPilot AI: evidence-grounded retrieval, deterministic authorization, approval bound to the exact action, and reconciliation of ambiguous external writes.'
+status: draft
+reviewed: false
+category: AI Engineering · Systems
+distribution:
+  devto:
+    tags:
+      - ai
+      - python
+      - rag
+      - programming
+---
+
+An operator finds context in runbooks and documentation, interprets what is happening, and turns some of that information into tracked work. Finding an instruction and opening an issue seem closely related. The second task, however, crosses a boundary: it produces an effect in another system.
+
+That was my starting point for [OpsPilot AI](/en/projects/opspilot-ai/). I wanted to search tenant-owned operational knowledge, answer with references, and prepare a GitLab issue for another person to approve. The interesting question emerged when I stopped treating all of this as “the agent's response.”
+
+**Did the AI find enough evidence? Should it have authority to execute an external action?** Those are different questions. A proposal can satisfy the schema, have a convincing title, and still fall outside the user's permissions.
+
+I chose to keep probabilistic interpretation inside deterministic boundaries. The model proposes; the system authenticates, authorizes, records approval, and controls execution. This article explains why I built those boundaries and what the current evidence actually supports.
+
+## Define the system before adding the model
+
+I modeled the authenticated principal, tenant knowledge, proposal, approval, and execution separately. Combining them into one “agent state” object would make it easy to confuse generated information with granted authority.
+
+The principal carries tenant, subject, and roles derived from configured credentials. The proposal holds suggested work. Approval records who accepted which action. Execution records attempts and external outcomes. PostgreSQL persists this lifecycle; it does not depend solely on the process remaining alive.
+
+I used Python/FastAPI at the HTTP boundary, domain values and Protocols for contracts, and adapters for the database, OpenAI, and GitLab. This separation lets me exercise broken planner behavior without paying for a model call to discover whether policy enforcement works.
+
+The domain also constrains the product: each run can prepare at most one issue proposal. I did not give the agent a shell, arbitrary SQL, or permission to call any URL. Restricting the action space reduces what I need to authorize, observe, and recover. Adding tools would require revisiting the authority model, rather than just adding names to a prompt.
+
+## Retrieval must respect the access boundary
+
+Before generating an answer, I needed to decide which documents could enter its context. Tenant identity is not an argument the model chooses. It comes from the authenticated principal and follows the transaction into the database.
+
+Ingestion normalizes text, splits it into overlapping chunks, and stores text and embeddings atomically after external calls complete. Retrieval combines exact cosine vector search in pgvector with PostgreSQL full-text search. Reciprocal rank fusion combines ranking positions instead of assuming that scores from different retrieval methods are directly comparable. Embedding-space identifiers prevent comparisons between incompatible vectors.
+
+Tenant filters apply before ranking and limits. Searching globally and filtering only the top-k would be a different architecture: other tenants' documents could consume the result budget, as well as expanding the opportunity for leakage.
+
+I also configured transaction-local tenant context and forced row-level security. Tests against real PostgreSQL exercise missing predicates and connection-pool reuse. The limit matters: the runtime role can set tenant context, so RLS does not protect against arbitrary SQL executed as that role. It also does not provide document ACLs within a tenant.
+
+## RAG does not end when chunks are found
+
+I separate the path into boundaries that can fail independently:
+
+```text
+query → retriever → ranked evidence
+                         ↓
+                     generation
+                         ↓
+                 citation validation
+                         ↓
+                 answer or abstention
+```
+
+The adapter requests structured output. The application checks it again: fabricated or duplicate IDs are rejected, citations must belong to authorized retrieved chunks, and metadata comes from the database. Uncited output becomes a fixed abstention. When retrieval returns nothing, there is no reason to call generation.
+
+This controls ID provenance, not the truth of every statement. A chunk can be authorized while an answer misinterprets its content. **Citation membership does not establish entailment**: citing an existing document does not prove that the conclusion follows from it.
+
+That distinction changes diagnosis. Retrieval may miss the right document; generation may fail despite receiving the right context; or a formally valid citation may not support the claim. Measuring only the final answer would hide which part needs improvement.
+
+I do not extend this control into a universal guarantee about issues either. An authorized proposal does not become semantically correct because it exists in the database. Human review still needs to assess its content.
+
+## Measure retrieval without mistaking ranking for an answer
+
+The first retrieval dataset was too easy to distinguish strategies. Retrieval-v2 introduced synthetic documents and questions covering paraphrases, identifiers, ambiguity, multiple relevant documents, and hard negatives. I separated **24 development queries from 36 held-out queries**, with labels defined before running the retrievers.
+
+MRR@5 measures how early the first relevant document appears. A first-place result receives 1 for that query; second place receives 1/2; no relevant document within the five considered positions receives 0. The mean summarizes that behavior. The protocol deduplicates documents from retrieved chunks; several chunks from one document can still consume part of the retrieval budget.
+
+| Held-out strategy         |  MRR@5 |
+| ------------------------- | -----: |
+| Lexical                   | 0.7532 |
+| Vector with fake embedder | 0.4375 |
+| Hybrid with fake embedder | 0.6306 |
+
+Lexical retrieval outperformed hybrid retrieval in this experiment. The vector branch used deterministic word hashing, **not a semantic model**. RRF does not automatically repair a weak ranking: documents appearing in both branches can outrank a relevant result found only by the lexical branch.
+
+The <a href="https://github.com/marcelotaparelli/opspilot-ai/blob/cacf611c1e7e31effe04895ec383673c76568876/docs/evaluation/retrieval-v2.md" target="_blank" rel="noopener noreferrer">retrieval-v2 report</a> attributes the result to commit `7ba3378`. The held-out set was run once and is now consumed; CI uses development queries. Subsequent readiness changes altered the fingerprint, and the guard refuses to rerun the held-out on current code.
+
+This does not show that hybrid search is generally worse. It does not measure real embeddings, groundedness, or answer quality. Evaluating another configuration would require a new frozen protocol and a fresh held-out set. That is the same concern about measurement scope I discussed in [evals: stop guessing, start measuring](/en/articles/evals-stop-guessing-start-measuring/).
+
+## The planner proposes; application code decides what is allowed
+
+LangGraph orchestrates the workflow. It does not define the authority model.
+
+The planner can select `search_knowledge`, `prepare_gitlab_issue`, or `final_answer`. `create_gitlab_issue` is not a model tool. The graph has no path from planning nodes to execution; entering execution depends on persisted state after approval.
+
+I bounded steps, deadlines, and invalid-output attempts. These limits contain loops and protocol failures, but do not make a decision useful. A planner can finish within its budget and still propose work nobody needs.
+
+During preparation, policy resolves the project alias within the tenant's configuration, checks labels, and maps permitted assignees to configured IDs. The model cannot supply an arbitrary project ID or choose its own permissions.
+
+Imagine a client submitting this as supposed proof of authority:
+
+```json
+{ "allowed_project": "secret-admin" }
+```
+
+This is an antipattern, not an OpsPilot contract. Valid JSON or a client assertion that something is “allowed” does not grant access. Authority must come from authenticated identity and application policy. The project's contracts reject extra fields; planner schemas contain no tenant, approval, or authorization flag.
+
+## Approve the exact action, not just the intention
+
+“A human approved it” is incomplete. What was approved? Is that still the object about to be executed? Has policy changed in the meantime?
+
+I persist the canonical action with tenant, requester, resolved project, title, description, labels, and assignees. A SHA-256 hash of canonical JSON binds the decision to that content. Normalization and ordering prevent equivalent representations of labels or assignees from producing different identities.
+
+The approver must hold the appropriate role, belong to the same tenant, and be a different subject from the requester. The transaction checks the supplied hash and recomputes the stored action's hash. The runtime role has no UPDATE permission on proposals or approvals.
+
+Before producing the external effect, execution checks approval, hash, and current policy again. If the project was removed from the allowlist, the action fails closed. If the action changed outside the normal workflow, the approval no longer applies. A changed action requires a new run and approval.
+
+```text
+interpretation → structured proposal → deterministic policy
+                                              ↓
+                                  exact-action approval
+                                              ↓
+                                 revalidation → execution
+                                              ↓
+                                    reconciliation / audit
+```
+
+The hash protects the link between content and decision. It does not evaluate whether the issue makes sense and does not replace authorization. Human review adds operational work. I accepted that cost to control a consequential external action.
+
+## GitLab's response was lost. Can I send the POST again?
+
+This failure mode connected the agent most clearly to familiar distributed-systems problems: GitLab receives the create request, stores the issue, and loses the response. The client observes a timeout. The issue may already exist.
+
+Immediately repeating the POST can duplicate work. I distinguish failure before sending, terminal rejection, and an ambiguous outcome. A timeout after possible transmission, a 5xx, or a malformed 2xx response can conceal a completed write. None necessarily means “nothing happened.”
+
+Each approved action gets a stable key derived from tenant, run, and hash. The adapter includes a marker in the issue description. When an outcome is ambiguous, an explicit `/resume` request searches for that marker before considering another send.
+
+If the issue is found, the system records success without creating another. If lookup fails, ambiguity remains. If nothing is found, a grace period must elapse before a resend is allowed, within the attempt budget. There is no automatic recovery worker.
+
+PostgreSQL uses a lock, owner, and lease to control execution claims and prevent a late owner from overwriting a newer owner's records. A lease cannot cancel an HTTP request already in flight. Delayed search visibility or removal of the marker can also lead to duplicates. **This is not an exactly-once guarantee.**
+
+Tests with real PostgreSQL and fake GitLab exercise lost responses, database failure after the external effect, and process death after creation. They establish recovery in those controlled scenarios. The real GitLab smoke validated creation, lookup, and resume of a successful run; it did not measure real lost-response recovery or indexing delays.
+
+## Security belongs outside the prompt
+
+The most useful adversarial test assumes that the planner has already been compromised. Documents tell it to skip approval and use a forbidden project. The scripted planner obeys, requests direct creation, tries the forbidden project, and emits an approval decision.
+
+In the exercised cases, application code refuses forbidden tools and projects. The only permitted proposal still waits for a human, with zero requests to GitLab. This tests the authority boundary even when interpretation fails.
+
+Prompts that label evidence “untrusted data” and strict schemas help organize the interface. They do not replace authentication or authorization. They also do not eliminate answer poisoning within a tenant: the model can receive malicious information it is authorized to read.
+
+I therefore make no “fully secure” claim. The controls address specific threats with explicit limits: tenant isolation, permitted tools, human decisions, runtime validation, and an audit trail. Adversarial regression verifies defined behaviors; it does not establish resistance to every prompt injection.
+
+## Observability follows the boundaries
+
+A log saying “agent failed” would be insufficient. I need to distinguish missing evidence, model timeout, policy denial, time spent awaiting approval, and an ambiguous external effect.
+
+I instrumented boundaries with OpenTelemetry: HTTP requests, retrieval and its branches, AI calls, planning, authorization, approval, execution, GitLab, and reconciliation. Request IDs, run IDs, and trace IDs relate logs, spans, and audit events.
+
+Approval and resume are new requests. I do not claim that the entire human wait lives inside one continuous trace. The run and trace IDs recorded in the audit connect those entries. This lets me reconstruct the lifecycle without recording full prompts or documents.
+
+Allowlists restrict attributes, and request, tenant, or document IDs do not become metric labels. That reduces content exposure and uncontrolled cardinality. Configured and served models are distinct facts; missing usage or cost remains unknown, rather than zero.
+
+Telemetry export can lose signals and fails open so that it does not govern product availability. Authorization and approval remain fail-closed. Persisted state and the audit trail are authoritative; a successful span does not decide whether execution completed. The <a href="https://github.com/marcelotaparelli/opspilot-ai/blob/cacf611c1e7e31effe04895ec383673c76568876/docs/observability.md" target="_blank" rel="noopener noreferrer">observability record</a> documents these signals and local collector-failure tests.
+
+## Different evals answer different questions
+
+The agent evaluation passed **16/16 cases** with scripted/offline planners, real PostgreSQL, and fake GitLab. It measures controls under defined sequences, including adversarial behavior. It does not measure a real LLM's ability to select tools.
+
+- **Retrieval-v2:** exercises synthetic held-out ranking with fake embeddings. It does not establish real semantic retrieval or correct answers.
+- **Agent eval:** exercises offline policy, approval, states, and recovery. It does not establish real LLM decision quality.
+- **OpenAI smoke:** exercises the real API, schemas, embeddings, and small database-backed RAG. It does not establish quality, entailment, or measured cost.
+- **GitLab smoke:** exercises sandbox approval, creation, confirmation, and resume. It does not establish recovery from real faults or exactly-once.
+
+The OpenAI record from **October 4, 2026** confirms real 256-dimensional embeddings, answer and planner schemas, citations belonging to context, usage, served-model records, and a bounded timeout. The GitLab record from **October 5** confirms no request before approval, creation and GET, a second approval returning 409, resume with one matching issue and one create POST, and confirmed closure.
+
+**These were separate runs**, and the GitLab smoke uses an offline planner. There was no single live OpenAI + GitLab E2E. OpenAI pricing was unconfigured: passing a conditional cost check does not establish measured cost.
+
+Release `v0.1.0` is published on GitHub. Its local record documents **241 unit and 72 integration tests**, clean-room reproduction, and subsequently a reported hosted CI pass. Those counts describe that validation, not performance under production traffic. The <a href="https://github.com/marcelotaparelli/opspilot-ai/blob/cacf611c1e7e31effe04895ec383673c76568876/docs/evidence/release/live-provider-status.md" target="_blank" rel="noopener noreferrer">live records</a> retain each run's scope.
+
+## What remains unproven
+
+The held-out is small, synthetic, English-only, and authored by one person. The fake embedder does not test semantic understanding. There is no real-model quality evaluation, measured cost, or validation of the combined system against real operational traffic.
+
+Static tokens provide neither SSO nor identity lifecycle management. There are no within-tenant ACLs. Exact vector search scales linearly; a small corpus does not establish scale. Recovery requires explicit resume, and search-based reconciliation retains its visibility and in-flight-request limits.
+
+Terraform describes an AWS blueprint validated with offline plans. **No AWS deployment was performed**; cloud runtime, restore, and the AWS telemetry path remain unvalidated. Passing configuration validation does not establish operation in that environment.
+
+The release-image scan retained **44 HIGH findings without reported fixes**, with zero fixable HIGH/CRITICAL findings. The gate blocks fixable findings; passing it does not mean zero vulnerabilities. Four classified IaC risks also remain documented. These are historical results, not a new scan performed for this article.
+
+My main lesson was to make the contract between interpretation and effect explicit. RAG needs to expose evidence; the agent needs to stay within granted authority; and external failures need recoverable states. The next improvement should address a measured gap — real embeddings under a new protocol, answer quality, or live recovery — without stretching a smoke test into broader proof.
+
+## Evidence and code
+
+I inspected the <a href="https://github.com/marcelotaparelli/opspilot-ai" target="_blank" rel="noopener noreferrer">public OpsPilot AI repository</a> at snapshot `cacf611`. Links pin that state; the retrieval-v2 benchmark belongs to the historical freeze identified in its report.
+
+- <a
+    href="https://github.com/marcelotaparelli/opspilot-ai/blob/cacf611c1e7e31effe04895ec383673c76568876/docs/CURRENT-STATE.md"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    Current state and validation provenance
+  </a>
+  .
+- <a
+    href="https://github.com/marcelotaparelli/opspilot-ai/blob/cacf611c1e7e31effe04895ec383673c76568876/docs/architecture/agent-workflow.md"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    Workflow, approval, recovery, and adversarial tests
+  </a>
+  .
+- <a
+    href="https://github.com/marcelotaparelli/opspilot-ai/blob/cacf611c1e7e31effe04895ec383673c76568876/src/opspilot/agent/policy.py"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    Deterministic policy in code
+  </a>
+  .
+- <a
+    href="https://github.com/marcelotaparelli/opspilot-ai/blob/cacf611c1e7e31effe04895ec383673c76568876/docs/adr/002-isolation-and-untrusted-evidence.md"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    Isolation, untrusted evidence, and RLS limits
+  </a>
+  .
+- <a
+    href="https://github.com/marcelotaparelli/opspilot-ai/blob/cacf611c1e7e31effe04895ec383673c76568876/docs/evidence/release/vulnerability-summary.md"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    Image scan and gate scope
+  </a>
+  .
+- [OpsPilot AI case](/en/projects/opspilot-ai/) for the project overview.

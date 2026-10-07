@@ -1,5 +1,35 @@
 # Implementation status
 
+## OpsPilot AI bilingual engineering article draft (2026-10-07)
+
+- Audited existing PT/EN articles, content schema, publication filters, release
+  gates and distribution code before writing. Read OpsPilot public main at
+  `cacf611c1e7e31effe04895ec383673c76568876` in an isolated source clone.
+  Recorded historical/current source divergences and a claim/source/evidence/
+  limitation matrix in `docs/editorial/opspilot-rag-agents-review.md`.
+- Added PT/EN `opspilot-rag-agents-deterministic-controls` articles about evidence
+  versus authority: retrieval, deterministic policy, exact-action approval,
+  ambiguous GitLab writes, reconciliation, observability and evaluation scope.
+  Both remain `draft`, `reviewed: false`, without `publishedAt`.
+- Prepared one PT-first bilingual LinkedIn post (1,619 characters, both future
+  canonicals) and EN DEV.to tags `ai`, `python`, `rag`, `programming`. Local
+  metadata checks passed; the distribution resolver rejected the actual draft.
+  No distribution workflow or external write was performed.
+- Passed format, typecheck (0 errors/warnings, 20 existing hints), lint, 42 unit
+  tests/112 assertions, preview build/artifact validation (40 pages), final
+  24 E2E, production build/artifact validation (38 pages). Production HTML/XML
+  contains neither draft pages nor slug references. `check:release` deliberately
+  blocks both drafts for missing editorial approval/date; the checker is intact.
+- Reviewed eight PT/EN browser configurations at 1440/768/390/320px: no overflow,
+  no axe WCAG-tagged violations, reciprocal SEO/navigation, intact TOC and code.
+  Simplified the evaluation comparison into readable items after inspecting
+  mobile screenshots; no shared layout/CSS/dependency changes. Screenshots,
+  measurements and a saved preview are ignored in `reports/opspilot-article/`.
+  Nine distinct public evidence links returned HTTP 200. Reading estimates
+  follow the site's MDX count: PT 13 minutes, EN 12 minutes.
+- `dist/` retains production output. No push, deploy, publication, external
+  distribution, live provider call or OpsPilot source modification.
+
 ## Selected Work heading hierarchy (2026-10-07)
 
 - Replaced Selected Work's bottom-aligned heading composition with a scoped
