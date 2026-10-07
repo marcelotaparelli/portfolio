@@ -1,5 +1,38 @@
 # Implementation status
 
+## AI Engineering career, Software foundation, Product lens (2026-10-07)
+
+- Audited Home/About PT/EN, skills, shared hero/identity/metadata/SEO/JSON-LD,
+  footer, OG, README, both CVs and print pipeline, seven bilingual cases,
+  learning/education, article/index copy, publication rules and quality gates
+  before editing. Initial tree was clean at `055ff5e`. The audit and classified
+  old-positioning occurrences are in `docs/editorial/brand-ai-engineering-review.md`.
+- Preserved Home headlines and FROM REAL PROBLEMS TO AI PRODUCTS. Made AI
+  Engineering the career, Software Engineering the foundation, and Product
+  the perspective in shared copy, About, CVs, README and derived metadata.
+  Split skills into AI, Software, Production/security/reliability, and Product.
+  Added the ten-step business-problem-to-improvement method to Home/About in
+  both languages with a static, responsive Astro component and to README.
+- Removed the old author-development narrative and intelligent-products brand
+  signature from the portfolio article pair and its local distribution input.
+  Preserved technical Applied AI categories and dated internal records; marked
+  the earlier editorial review as historical. Cases, metrics, limitations,
+  professional roles and project order remain unchanged. CV institutions now
+  use Cruzeiro do Sul and UniBF as requested; existing education dates remain.
+- Generated and visually inspected both one-page A4 PDFs with the unchanged
+  9.5pt font/CSS: 34.4px PT and 1.5px EN measured bottom headroom. Verified PDF
+  text and raster output. Reviewed Home/About and methodology PT/EN at desktop
+  and mobile; 12 configurations at 1440/390/320px had no horizontal overflow.
+  Reviewed regenerated OG cards. Local evidence is ignored under
+  `reports/brand-review/`.
+- Passed format/format check, typecheck (0 errors, 0 warnings, 20 existing
+  hints), lint, 42 unit tests, CV generation, release checker, preview and
+  production builds (38 pages each), both artifact validators (38 documents
+  each), 24 E2E against the final preview, and Git whitespace validation.
+  `dist/` contains the validated local production artifact. No dependency,
+  stack, workflow, validator, secret, source-project or profile-repo changes.
+  One local commit is requested; no push, deploy or external distribution.
+
 ## Named Software Engineering training (2026-10-05)
 
 - Replaced the generic third education item in PT/EN About and CVs with

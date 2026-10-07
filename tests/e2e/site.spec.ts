@@ -314,12 +314,13 @@ test('AI and software positioning, metadata and project priority agree in both l
   page,
 }) => {
   for (const [home, about, projects, headline] of [
-    ['/', '/sobre/', '/projetos/', 'Engenheiro de IA & Engenheiro de Software'],
-    ['/en/', '/en/about/', '/en/projects/', 'AI Engineer & Software Engineer'],
+    ['/', '/sobre/', '/projetos/', 'Engenheiro de IA | Engenheiro de Software'],
+    ['/en/', '/en/about/', '/en/projects/', 'AI Engineer | Software Engineer'],
   ]) {
     for (const path of [home!, about!]) {
       await page.goto(path);
-      await expect(page).toHaveTitle(new RegExp(headline!));
+      const title = `${path === about ? (home === '/' ? 'Sobre — ' : 'About — ') : ''}${headline} — Marcelo Taparelli`;
+      await expect(page).toHaveTitle(title);
       const graph = JSON.parse(
         await page.locator('script[type="application/ld+json"]').innerText(),
       )['@graph'] as Array<{ '@type': string; jobTitle?: string }>;
@@ -329,7 +330,7 @@ test('AI and software positioning, metadata and project priority agree in both l
       for (const name of ['og:title', 'twitter:title']) {
         await expect(
           page.locator(`meta[property="${name}"], meta[name="${name}"]`),
-        ).toHaveAttribute('content', new RegExp(headline!));
+        ).toHaveAttribute('content', title);
       }
       const body = await page.locator('main').innerText();
       expect(body).not.toMatch(
@@ -349,23 +350,23 @@ test('AI and software positioning, metadata and project priority agree in both l
         );
         await expect(page.locator('.hero-positioning')).toHaveCount(0);
         await expect(page.locator('.hero-eyebrow')).toContainText(
-          headline!.toUpperCase(),
+          headline!.replace(' | ', ' & ').toUpperCase(),
         );
         await expect(page.locator('.hero-intro p')).toHaveText(
           path === '/'
             ? [
-                'Construo produtos de IA e sistemas de software confiáveis, do problema real à produção, com foco em valor, segurança, desempenho e operação.',
+                'Construo sistemas de IA do problema de negócio à produção, combinando Engenharia de IA, Engenharia de Software, verificação, segurança, observabilidade e medição.',
                 'RAG, agentes, avaliação, guardrails e observabilidade sobre uma base sólida de engenharia de software.',
               ]
             : [
-                'I build reliable AI products and software systems from real-world problems to production, with a focus on value, security, performance, and operability.',
+                'I build AI systems from the business problem to production — combining AI Engineering, Software Engineering, verification, security, observability and measurement.',
                 'RAG, agents, evaluation, guardrails and observability on a solid software engineering foundation.',
               ],
         );
         await expect(page.locator('.hero-bottom')).toContainText(
           path === '/'
-            ? 'Engenharia de IA · Engenharia de Software · Produto'
-            : 'AI Engineering · Software Engineering · Product',
+            ? 'Engenharia de IA · Base em Software · Visão de Produto'
+            : 'AI Engineering · Software foundation · Product lens',
         );
         await expect(
           page.locator('.hero-actions .button-primary'),
@@ -448,7 +449,7 @@ test('education has the required order and institution exposure in both language
     await expect(page.locator('h2').nth(4)).toHaveText(locale.heading);
     const education = page.locator('.education');
     await expect(education.locator('strong')).toHaveText([
-      `${locale.postgraduate} — Cruzeiro do Sul Virtual`,
+      `${locale.postgraduate} — Cruzeiro do Sul`,
       `${locale.degree} — UniBF`,
       locale.coursework,
     ]);

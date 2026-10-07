@@ -1,0 +1,103 @@
+---
+import type { Locale } from '../i18n/routes';
+import { t } from '../i18n/translations';
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const text = t(locale).method;
+const steps = [
+  'BUSINESS PROBLEM',
+  'DOMAIN MODEL',
+  'ARCHITECTURE',
+  'CONSTRAINTS',
+  'AI / AGENT ORCHESTRATION',
+  'VERIFICATION',
+  'SECURITY',
+  'PRODUCTION',
+  'MEASUREMENT',
+  'IMPROVEMENT',
+];
+---
+
+<section
+  class="container section engineering-method"
+  aria-labelledby="method-title"
+>
+  <div class="method-intro">
+    <p class="eyebrow">{text.eyebrow}</p>
+    <h2 id="method-title">{text.title}</h2>
+    <p class="section-description">{text.description}</p>
+    <p class="section-description">{text.scope}</p>
+  </div>
+  <ol class="method-flow" lang="en">
+    {steps.map((step, index) => (
+      <li>
+        <span class="method-step">
+          <span class="method-number" aria-hidden="true">
+            {String(index + 1).padStart(2, '0')}
+          </span>
+          <span>{step}</span>
+        </span>
+        {index < steps.length - 1 && (
+          <span class="method-arrow" aria-hidden="true">
+            ↓
+          </span>
+        )}
+      </li>
+    ))}
+  </ol>
+</section>
+
+<style>
+  .engineering-method {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 72px;
+    border-top: 1px solid var(--color-line);
+  }
+  .method-intro .eyebrow {
+    margin-bottom: 24px;
+  }
+  .method-intro p.section-description {
+    margin-top: 24px;
+  }
+  .method-flow {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    min-width: 0;
+  }
+  .method-step {
+    display: flex;
+    gap: 20px;
+    align-items: baseline;
+    padding: 10px 16px;
+    border: 1px solid var(--color-line);
+    background: var(--color-surface);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+  }
+  .method-number {
+    color: var(--color-accent);
+    font-variant-numeric: tabular-nums;
+  }
+  .method-arrow {
+    display: block;
+    margin-left: 24px;
+    color: var(--color-accent);
+    line-height: 1.4;
+  }
+  @media (max-width: 760px) {
+    .engineering-method {
+      grid-template-columns: 1fr;
+      gap: 36px;
+    }
+    .method-step {
+      gap: 12px;
+      padding-inline: 12px;
+      font-size: 12px;
+    }
+  }
+</style>

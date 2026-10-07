@@ -1,10 +1,18 @@
 # Marcelo Taparelli — Professional Portfolio
 
-Professional engineering portfolio focused on AI Engineering, Software Engineering and Product.
+AI Engineer with a strong Software Engineering foundation and a Product mindset.
 
 Built around a simple principle:
 
-> From real problems to intelligent products.
+> From real problems to AI products.
+
+## How I work
+
+I build AI systems from the business problem to production — combining AI Engineering, Software Engineering, verification, security, observability and measurement.
+
+Business Problem → Domain Model → Architecture → Constraints → AI / Agent Orchestration → Verification → Security → Production → Measurement → Improvement
+
+AI Engineering is my primary career, Software Engineering is the foundation, and Product is the lens for deciding what is worth building. Public cases document the evidence and limits of experiments, labs, and integrations; this method does not imply every project has been deployed to production.
 
 ## Stack
 
@@ -101,7 +109,7 @@ dist/
 
 **Marcelo Taparelli**
 
-AI Engineer & Software Engineer | Python, RAG, Agents, Evals | TypeScript, Bun, Node.js | Product-minded
+AI Engineer | Software Engineer | Product-minded
 
 - Portfolio: https://marcelotaparelli.com.br
 - LinkedIn: https://www.linkedin.com/in/marcelo-taparelli/

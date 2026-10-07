@@ -5,6 +5,7 @@ import BaseLayout from './BaseLayout.astro';
 import ExperienceList from '../components/ExperienceList.astro';
 import CvLink from '../components/CvLink.astro';
 import ContactBlock from '../components/ContactBlock.astro';
+import EngineeringMethod from '../components/EngineeringMethod.astro';
 import { skills } from '../data/skills';
 import { pathFor, otherLocale, type Locale } from '../i18n/routes';
 import { t } from '../i18n/translations';
@@ -47,6 +48,7 @@ const text = t(locale).about;
       <figcaption>{t(locale).identity.pillars}</figcaption>
     </figure>
   </section>
+  <EngineeringMethod locale={locale} />
   <section class="container about-section">
     <h2>{text.journey}</h2>
     <p>{text.journeyText}</p>

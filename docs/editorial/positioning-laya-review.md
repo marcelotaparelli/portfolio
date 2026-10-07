@@ -1,5 +1,9 @@
 # Revisão institucional — Engenharia de IA e evidência Laya
 
+Registro histórico de 2026-10-02; não define o posicionamento atual. A direção
+vigente e o audit de 2026-10-07 estão em
+[brand-ai-engineering-review.md](brand-ai-engineering-review.md).
+
 Data editorial: 2026-10-02. Escopo: atualização local do portfolio; sem push,
 deploy, distribuição externa ou novos benchmarks.
 

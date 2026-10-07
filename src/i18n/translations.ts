@@ -2,12 +2,12 @@ import type { Locale } from './routes';
 
 const pt = {
   identity: {
-    headline: 'Engenheiro de IA & Engenheiro de Software',
+    headline: 'Engenheiro de IA | Engenheiro de Software',
     supporting:
       'Python, RAG, Agentes, Evals | TypeScript, Bun, Node.js | Foco em Produto',
     description:
-      'Engenheiro de IA e de Software com foco em Produto. Sistemas de IA e backend com Python, RAG, agentes, evals, TypeScript, Bun e Node.js.',
-    pillars: 'Engenharia de IA · Engenharia de Software · Produto',
+      'Engenheiro de IA com base sólida em Engenharia de Software e visão de Produto. Do problema de negócio à produção, com verificação, segurança e medição.',
+    pillars: 'Engenharia de IA · Base em Software · Visão de Produto',
   },
   nav: {
     projects: 'Projetos',
@@ -42,7 +42,7 @@ const pt = {
       second: 'A PRODUTOS DE IA.',
     },
     intro:
-      'Construo produtos de IA e sistemas de software confiáveis, do problema real à produção, com foco em valor, segurança, desempenho e operação.',
+      'Construo sistemas de IA do problema de negócio à produção, combinando Engenharia de IA, Engenharia de Software, verificação, segurança, observabilidade e medição.',
     body: 'RAG, agentes, avaliação, guardrails e observabilidade sobre uma base sólida de engenharia de software.',
     work: 'Ver projetos',
     contact: 'Vamos conversar',
@@ -109,12 +109,20 @@ const pt = {
       'Decisões de Engenharia de IA, software e produto, com contexto, trade-offs e evidências. Artigos preservam o registro de cada experimento.',
     empty: 'Novos artigos estão em preparação.',
   },
+  method: {
+    eyebrow: 'MÉTODO DE ENGENHARIA',
+    title: 'Como construo sistemas de IA.',
+    description:
+      'Do problema de negócio à produção: domínio, arquitetura e restrições orientam a orquestração de IA, a verificação e a segurança. Medição orienta a melhoria.',
+    scope:
+      'Cada case mostra até onde esse método foi exercitado: experimentos, laboratórios e integrações têm limites explícitos.',
+  },
   about: {
     eyebrow: 'SOBRE',
-    title: 'IA, software\ne foco em Produto.',
+    title: 'Engenharia de IA.\nBase em Software.\nVisão de Produto.',
     intro:
-      'Sou Marcelo Taparelli, Engenheiro de IA e Engenheiro de Software com foco em Produto. Minha engenharia combina sistemas de IA com fundamentos fortes de backend: parto do problema, defino o comportamento esperado e construo uma solução que possa ser testada, observada e operada.',
-    body: 'Componentes probabilísticos de IA precisam de controles determinísticos ao redor. Uso contratos tipados e schemas para validar saídas, políticas para limitar ações e testes e evals para verificar comportamento. Observabilidade, guardrails, fallbacks e aprovação humana tornam falhas visíveis e controláveis. Produto guia as decisões: confiabilidade, segurança, custo, latência e operação precisam fazer sentido para quem usa a solução.',
+      'Sou Marcelo Taparelli, Engenheiro de IA com uma base sólida em Engenharia de Software e experiência em produto. Parto do problema de negócio, modelo o domínio e defino arquitetura e restrições antes de escolher RAG, modelos de decisão ou agentes, quando fazem sentido.',
+    body: 'Verificação, segurança e operação orientam o caminho à produção. Cerco componentes probabilísticos com contratos tipados, políticas determinísticas, testes, evals, fallbacks e aprovação humana. Observabilidade e medição orientam melhorias dentro dos limites de cada avaliação. Produto é a visão para decidir por que construir, para quem, qual valor importa e quais trade-offs aceitar.',
     journey: 'Uma trajetória de conexões',
     journeyText:
       'Antes e ao longo do trabalho com software, vendas, negociação e ensino de inglês ampliaram meu repertório de comunicação. Na atuação como Product Owner, trabalhei com briefing, requisitos, priorização e o ciclo de entrega de websites.',
@@ -152,12 +160,12 @@ const pt = {
 type Translations = typeof pt;
 const en: Translations = {
   identity: {
-    headline: 'AI Engineer & Software Engineer',
+    headline: 'AI Engineer | Software Engineer',
     supporting:
       'Python, RAG, Agents, Evals | TypeScript, Bun, Node.js | Product-minded',
     description:
-      'Product-minded AI Engineer & Software Engineer building AI and backend systems with Python, RAG, agents, evals, TypeScript, Bun and Node.js.',
-    pillars: 'AI Engineering · Software Engineering · Product',
+      'AI Engineer with a strong Software Engineering foundation and a Product mindset. From business problem to production, with verification, security and measurement.',
+    pillars: 'AI Engineering · Software foundation · Product lens',
   },
   nav: {
     projects: 'Projects',
@@ -193,7 +201,7 @@ const en: Translations = {
       second: 'TO AI PRODUCTS.',
     },
     intro:
-      'I build reliable AI products and software systems from real-world problems to production, with a focus on value, security, performance, and operability.',
+      'I build AI systems from the business problem to production — combining AI Engineering, Software Engineering, verification, security, observability and measurement.',
     body: 'RAG, agents, evaluation, guardrails and observability on a solid software engineering foundation.',
     work: 'View projects',
     contact: 'Let’s talk',
@@ -258,12 +266,20 @@ const en: Translations = {
       'AI Engineering, software, and product decisions with context, trade-offs, and evidence. Articles preserve the record of each experiment.',
     empty: 'New articles are in preparation.',
   },
+  method: {
+    eyebrow: 'ENGINEERING METHOD',
+    title: 'How I build AI systems.',
+    description:
+      'From business problem to production: domain, architecture, and constraints guide AI orchestration, verification, and security. Measurement guides improvement.',
+    scope:
+      'Each case shows how far this method was exercised: experiments, labs, and integrations have explicit limits.',
+  },
   about: {
     eyebrow: 'ABOUT',
-    title: 'AI, software,\nand product thinking.',
+    title: 'AI Engineering.\nSoftware foundation.\nProduct lens.',
     intro:
-      'I’m Marcelo Taparelli, an AI Engineer & Software Engineer with a product mindset. My engineering combines AI systems with strong backend foundations: I start with the problem, define the expected behavior, and build a solution that can be tested, observed, and operated.',
-    body: 'Probabilistic AI components need deterministic engineering controls around them. I use typed contracts and schemas to validate outputs, policies to bound actions, and tests and evals to verify behavior. Observability, guardrails, fallbacks, and human approval make failures visible and manageable. Product thinking guides the decisions: reliability, security, cost, latency, and operability must serve the people using the solution.',
+      'I’m Marcelo Taparelli, an AI Engineer with a strong Software Engineering foundation and a Product mindset. I start with the business problem, model the domain, and define architecture and constraints before choosing RAG, decision models, or agents where they add value.',
+    body: 'Verification, security, and operability guide the path to production. I surround probabilistic components with typed contracts, deterministic policies, tests, evals, fallbacks, and human approval. Observability and measurement support improvements within the limits of each evaluation. Product is my lens for deciding why to build, who it serves, which value matters, and which trade-offs to accept.',
     journey: 'A path of connections',
     journeyText:
       'Before and alongside software, sales, negotiation, and teaching English broadened my communication skills. As a Product Owner, I worked on briefs, requirements, prioritization, and the website delivery lifecycle.',
