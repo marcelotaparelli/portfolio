@@ -3,8 +3,9 @@ import type { Locale } from '../i18n/routes';
 import { t } from '../i18n/translations';
 interface Props {
   locale: Locale;
+  variant?: 'default' | 'about';
 }
-const { locale } = Astro.props;
+const { locale, variant = 'default' } = Astro.props;
 const text = t(locale).method;
 const steps = [
   'BUSINESS PROBLEM',
@@ -21,7 +22,10 @@ const steps = [
 ---
 
 <section
-  class="container section engineering-method"
+  class:list={[
+    'container section engineering-method',
+    { 'engineering-method--about': variant === 'about' },
+  ]}
   aria-labelledby="method-title"
 >
   <div class="method-intro">
@@ -89,6 +93,69 @@ const steps = [
     color: var(--color-accent);
     line-height: 1.4;
   }
+  .engineering-method--about {
+    grid-template-columns: 1fr 1.65fr;
+    gap: 90px;
+    padding-block: 64px;
+  }
+  .engineering-method--about h2 {
+    max-width: 320px;
+    font-size: 28px;
+    line-height: 1.25;
+  }
+  .engineering-method--about .eyebrow {
+    margin-bottom: 16px;
+  }
+  .engineering-method--about .section-description {
+    margin-top: 20px;
+    font-size: 15px;
+    line-height: 1.8;
+  }
+  .engineering-method--about .method-flow li {
+    position: relative;
+  }
+  .engineering-method--about .method-flow li + li {
+    margin-top: 12px;
+  }
+  .engineering-method--about .method-flow li:not(:last-child)::before {
+    content: '';
+    position: absolute;
+    left: 14px;
+    top: 28px;
+    bottom: -12px;
+    border-left: 1px solid var(--color-line);
+  }
+  .engineering-method--about .method-step {
+    position: relative;
+    align-items: center;
+    gap: 20px;
+    min-height: 28px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    font-size: 13px;
+    letter-spacing: 0.06em;
+  }
+  .engineering-method--about .method-number {
+    display: grid;
+    place-items: center;
+    width: 29px;
+    height: 29px;
+    flex-shrink: 0;
+    border: 1px solid var(--color-line);
+    border-radius: 50%;
+    background: var(--color-navy);
+    color: var(--color-muted);
+    font-size: 10px;
+    letter-spacing: 0;
+  }
+  .engineering-method--about .method-flow li:nth-child(5) .method-step,
+  .engineering-method--about .method-flow li:nth-child(9) .method-step {
+    color: var(--color-accent);
+  }
+  .engineering-method--about .method-arrow {
+    display: none;
+  }
   @media (max-width: 760px) {
     .engineering-method {
       grid-template-columns: 1fr;
@@ -98,6 +165,13 @@ const steps = [
       gap: 12px;
       padding-inline: 12px;
       font-size: 12px;
+    }
+    .engineering-method--about {
+      gap: 28px;
+      padding-block: 42px;
+    }
+    .engineering-method--about .method-step {
+      gap: 16px;
     }
   }
 </style>

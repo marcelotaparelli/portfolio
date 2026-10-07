@@ -1,5 +1,21 @@
 # Implementation status
 
+## About engineering method visual refinement (2026-10-07)
+
+- At the author's request, refined the method section on Sobre/About PT/EN
+  with the existing About column proportions, 28px heading, and section spacing.
+  Replaced wide filled boxes with a compact numbered vertical timeline; AI
+  orchestration and measurement have restrained accent emphasis. Preserved all
+  ten steps, copy, semantic reading order and the Home presentation through an
+  About-specific component variant. No new dependencies or client JavaScript.
+- Visually inspected PT/EN at 1440, 768, 390 and 320px. All eight configurations
+  retained ten steps, no horizontal overflow and zero axe WCAG-tagged violations.
+  Local captures and measurements are ignored under `reports/method-design/`.
+- Passed format/format check, typecheck (0 errors, 0 warnings, 20 existing
+  hints), lint, 42 unit tests, 24 E2E, release check, preview/production builds
+  (38 pages each), both artifact validators and Git whitespace validation.
+  CVs and public positioning copy were not changed. No push or deployment.
+
 ## AI Engineering career, Software foundation, Product lens (2026-10-07)
 
 - Audited Home/About PT/EN, skills, shared hero/identity/metadata/SEO/JSON-LD,

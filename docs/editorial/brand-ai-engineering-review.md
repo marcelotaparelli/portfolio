@@ -174,6 +174,17 @@ em inglês, como solicitado. README contém o mesmo método em How I work.
 
 ## Revisão visual verificada
 
+Refinamento solicitado após a primeira entrega: Sobre/About agora usa uma
+variante visual do componente com a escala de título e proporção de colunas
+das outras seções de About. Os blocos preenchidos deram lugar a uma linha
+vertical discreta, com dez etapas numeradas e destaque para orquestração de IA
+e medição. A Home mantém a apresentação original. Conteúdo e sequência foram
+preservados. Revisão PT/EN a 1440/768/390/320px: oito configurações sem overflow
+horizontal ou violações axe WCAG; capturas em `reports/method-design/`.
+Format/format check, typecheck, lint, 42 testes unitários, 24 E2E, release checker,
+os dois builds, validators e git diff --check passaram neste refinamento.
+Os PDFs não foram alterados nem regenerados neste ajuste visual.
+
 - Home e About PT/EN em 1440px, 390px e 320px: 12 configurações com HTTP 200,
   método completo e nenhum overflow horizontal; conteúdo disponível sem JS.
 - Inspecionados os screenshots das introduções PT/EN desktop/mobile, metodologia
