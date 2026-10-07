@@ -82,5 +82,19 @@
       "at": "2026-10-02T23:43:02.526Z",
       "canonicalUrl": "https://marcelotaparelli.com.br/artigos/laya-vs-jev-zero-shot-fine-tuning/"
     }
+  },
+  "opspilot-rag-agents-deterministic-controls": {
+    "devto": {
+      "id": "4814314",
+      "url": "https://dev.to/marcelotaparelli/opspilot-ai-building-rag-and-agents-without-giving-the-llm-authority-57jc",
+      "at": "2026-10-07T20:09:27.403Z",
+      "canonicalUrl": "https://marcelotaparelli.com.br/en/articles/opspilot-rag-agents-deterministic-controls/"
+    },
+    "linkedin": {
+      "id": "urn:li:share:7513691988584599553",
+      "url": "urn:li:share:7513691988584599553",
+      "at": "2026-10-07T20:09:28.320Z",
+      "canonicalUrl": "https://marcelotaparelli.com.br/artigos/opspilot-rag-agents-deterministic-controls/"
+    }
   }
 }
