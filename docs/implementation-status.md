@@ -1,5 +1,33 @@
 # Implementation status
 
+## OpsPilot AI final editorial approval for release (2026-10-07)
+
+- Reviewed the full PT/EN articles, cases, original claim matrix and current
+  OpsPilot evidence. Public main remains `cacf611c1e7e31effe04895ec383673c76568876`;
+  no factual blocker or new live evidence changed the documented scope.
+- Strengthened the thesis and conclusion, removed early stack inventory,
+  clarified stored immutable action/approval chronology and separated unmeasured
+  generation quality from ranking/workflow/smokes. Clarified hosted-CI provenance
+  and offline recovery limits in the bilingual LinkedIn text (1,728 characters).
+- Following explicit owner authorization, promoted both versions of
+  `opspilot-rag-agents-deterministic-controls` to `published`, `reviewed: true`,
+  `publishedAt: 2026-10-07`. Preserved all methodological/security/infrastructure
+  limits and DEV.to tags `ai`, `python`, `rag`, `programming`.
+- Passed format/check, typecheck (0 errors/warnings, 20 existing hints), lint,
+  42 unit tests/112 assertions, preview and production builds/artifact validation
+  (40 pages each), final 24 E2E and `check:release` with unchanged validators.
+  Production contains both approved routes and sitemap URLs; local distribution
+  resolution passes. There are zero source drafts; draft exclusion unit tests
+  continue to pass.
+- Checked PT/EN at 1440/768/390/320px in both builds: correct dates, canonicals,
+  hreflang, language navigation, TOC, code/table, zero document overflow and
+  zero axe WCAG-tagged violations. Inspected real desktop/mobile captures and
+  simplified the authority diagram to remove the long mobile row. Local evidence
+  and saved preview are ignored under `reports/opspilot-release/`.
+- Updated the editorial report with the final decision and retained the initial
+  draft validation as history. No push, deploy, workflow dispatch, external
+  publication/distribution, OpsPilot change or live provider execution occurred.
+
 ## OpsPilot AI bilingual engineering article draft (2026-10-07)
 
 - Audited existing PT/EN articles, content schema, publication filters, release

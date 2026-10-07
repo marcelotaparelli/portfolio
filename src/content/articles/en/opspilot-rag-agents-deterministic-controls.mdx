@@ -4,8 +4,9 @@ locale: en
 slug: opspilot-rag-agents-deterministic-controls
 title: 'OpsPilot AI: Building RAG and Agents Without Giving the LLM Authority'
 description: 'The decisions behind OpsPilot AI: evidence-grounded retrieval, deterministic authorization, approval bound to the exact action, and reconciliation of ambiguous external writes.'
-status: draft
-reviewed: false
+status: published
+reviewed: true
+publishedAt: 2026-10-07
 category: AI Engineering · Systems
 distribution:
   devto:
@@ -22,7 +23,7 @@ That was my starting point for [OpsPilot AI](/en/projects/opspilot-ai/). I wante
 
 **Did the AI find enough evidence? Should it have authority to execute an external action?** Those are different questions. A proposal can satisfy the schema, have a convincing title, and still fall outside the user's permissions.
 
-I chose to keep probabilistic interpretation inside deterministic boundaries. The model proposes; the system authenticates, authorizes, records approval, and controls execution. This article explains why I built those boundaries and what the current evidence actually supports.
+I chose to keep probabilistic interpretation inside deterministic boundaries. **A correctly generated action is still a proposal.** The system authenticates, authorizes, records approval, and controls execution.
 
 ## Define the system before adding the model
 
@@ -30,7 +31,7 @@ I modeled the authenticated principal, tenant knowledge, proposal, approval, and
 
 The principal carries tenant, subject, and roles derived from configured credentials. The proposal holds suggested work. Approval records who accepted which action. Execution records attempts and external outcomes. PostgreSQL persists this lifecycle; it does not depend solely on the process remaining alive.
 
-I used Python/FastAPI at the HTTP boundary, domain values and Protocols for contracts, and adapters for the database, OpenAI, and GitLab. This separation lets me exercise broken planner behavior without paying for a model call to discover whether policy enforcement works.
+I separated domain contracts from the database, model, and GitLab adapters. That lets me exercise a planner that proposes forbidden actions without paying for a model call to discover whether policy enforcement works.
 
 The domain also constrains the product: each run can prepare at most one issue proposal. I did not give the agent a shell, arbitrary SQL, or permission to call any URL. Restricting the action space reduces what I need to authorize, observe, and recover. Adding tools would require revisiting the authority model, rather than just adding names to a prompt.
 
@@ -106,20 +107,26 @@ This is an antipattern, not an OpsPilot contract. Valid JSON or a client asserti
 
 “A human approved it” is incomplete. What was approved? Is that still the object about to be executed? Has policy changed in the meantime?
 
-I persist the canonical action with tenant, requester, resolved project, title, description, labels, and assignees. A SHA-256 hash of canonical JSON binds the decision to that content. Normalization and ordering prevent equivalent representations of labels or assignees from producing different identities.
+I persist the canonical action with tenant, requester, resolved project, title, description, labels, and assignees before requesting approval. A SHA-256 hash of canonical JSON binds the decision to that content. Normalization and ordering prevent equivalent representations of labels or assignees from producing different identities. Execution uses the stored action; it does not ask the model to generate it again.
 
 The approver must hold the appropriate role, belong to the same tenant, and be a different subject from the requester. The transaction checks the supplied hash and recomputes the stored action's hash. The runtime role has no UPDATE permission on proposals or approvals.
 
 Before producing the external effect, execution checks approval, hash, and current policy again. If the project was removed from the allowlist, the action fails closed. If the action changed outside the normal workflow, the approval no longer applies. A changed action requires a new run and approval.
 
 ```text
-interpretation → structured proposal → deterministic policy
-                                              ↓
-                                  exact-action approval
-                                              ↓
-                                 revalidation → execution
-                                              ↓
-                                    reconciliation / audit
+probabilistic interpretation
+            ↓
+structured proposal
+            ↓
+deterministic policy
+            ↓
+human approval (action hash)
+            ↓
+approved immutable action
+            ↓
+revalidation → execution
+            ↓
+reconciliation / audit
 ```
 
 The hash protects the link between content and decision. It does not evaluate whether the issue makes sense and does not replace authorization. Human review adds operational work. I accepted that cost to control a consequential external action.
@@ -146,7 +153,7 @@ In the exercised cases, application code refuses forbidden tools and projects. T
 
 Prompts that label evidence “untrusted data” and strict schemas help organize the interface. They do not replace authentication or authorization. They also do not eliminate answer poisoning within a tenant: the model can receive malicious information it is authorized to read.
 
-I therefore make no “fully secure” claim. The controls address specific threats with explicit limits: tenant isolation, permitted tools, human decisions, runtime validation, and an audit trail. Adversarial regression verifies defined behaviors; it does not establish resistance to every prompt injection.
+The controls protect specific boundaries: tenant isolation, permitted tools, human decisions, runtime validation, and an audit trail. Adversarial regression verifies defined behaviors; it does not establish resistance to every prompt injection.
 
 ## Observability follows the boundaries
 
@@ -169,11 +176,13 @@ The agent evaluation passed **16/16 cases** with scripted/offline planners, real
 - **OpenAI smoke:** exercises the real API, schemas, embeddings, and small database-backed RAG. It does not establish quality, entailment, or measured cost.
 - **GitLab smoke:** exercises sandbox approval, creation, confirmation, and resume. It does not establish recovery from real faults or exactly-once.
 
+Generation quality asks a different question: is the answer correct, and do its claims follow from the evidence? The project does not yet evaluate that behavior with a real model. Ranking, workflow, and integration checks can pass without answering that question.
+
 The OpenAI record from **October 4, 2026** confirms real 256-dimensional embeddings, answer and planner schemas, citations belonging to context, usage, served-model records, and a bounded timeout. The GitLab record from **October 5** confirms no request before approval, creation and GET, a second approval returning 409, resume with one matching issue and one create POST, and confirmed closure.
 
 **These were separate runs**, and the GitLab smoke uses an offline planner. There was no single live OpenAI + GitLab E2E. OpenAI pricing was unconfigured: passing a conditional cost check does not establish measured cost.
 
-Release `v0.1.0` is published on GitHub. Its local record documents **241 unit and 72 integration tests**, clean-room reproduction, and subsequently a reported hosted CI pass. Those counts describe that validation, not performance under production traffic. The <a href="https://github.com/marcelotaparelli/opspilot-ai/blob/cacf611c1e7e31effe04895ec383673c76568876/docs/evidence/release/live-provider-status.md" target="_blank" rel="noopener noreferrer">live records</a> retain each run's scope.
+Release `v0.1.0` is published on GitHub. Its local record documents **241 unit and 72 integration tests**, plus clean-room reproduction. The current-state document records the owner's subsequent confirmation that hosted CI passed. Those counts describe that validation, not performance under production traffic. The <a href="https://github.com/marcelotaparelli/opspilot-ai/blob/cacf611c1e7e31effe04895ec383673c76568876/docs/evidence/release/live-provider-status.md" target="_blank" rel="noopener noreferrer">live records</a> retain each run's scope.
 
 ## What remains unproven
 
@@ -185,7 +194,11 @@ Terraform describes an AWS blueprint validated with offline plans. **No AWS depl
 
 The release-image scan retained **44 HIGH findings without reported fixes**, with zero fixable HIGH/CRITICAL findings. The gate blocks fixable findings; passing it does not mean zero vulnerabilities. Four classified IaC risks also remain documented. These are historical results, not a new scan performed for this article.
 
-My main lesson was to make the contract between interpretation and effect explicit. RAG needs to expose evidence; the agent needs to stay within granted authority; and external failures need recoverable states. The next improvement should address a measured gap — real embeddings under a new protocol, answer quality, or live recovery — without stretching a smoke test into broader proof.
+## What I take from this project
+
+My main lesson was to make the contract between interpretation and effect explicit. The model can retrieve context, interpret a request, and propose work. The software system must determine authority, verify approval and external outcomes, and retain recoverable states when those outcomes are uncertain.
+
+The next evaluations need to address the remaining gaps: real embeddings under a new protocol, answer quality, and live recovery. A passing smoke test does not answer those questions. Separating these responsibilities taught me more than simply getting an agent to call a tool.
 
 ## Evidence and code
 

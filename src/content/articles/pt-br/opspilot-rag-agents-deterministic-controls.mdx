@@ -4,8 +4,9 @@ locale: pt-BR
 slug: opspilot-rag-agents-deterministic-controls
 title: 'OpsPilot AI: como construí RAG e agentes sem entregar autoridade ao LLM'
 description: 'As decisões por trás do OpsPilot AI: retrieval com evidências, autorização determinística, aprovação vinculada à ação e reconciliação de efeitos externos ambíguos.'
-status: draft
-reviewed: false
+status: published
+reviewed: true
+publishedAt: 2026-10-07
 category: Engenharia de IA · Sistemas
 distribution:
   linkedin:
@@ -18,7 +19,9 @@ distribution:
 
       E quando o GitLab cria a issue, mas a resposta se perde? Retry cego pode duplicar trabalho. O sistema registra um resultado ambíguo e reconcilia por um marcador estável antes de considerar novo envio, com resume explícito. Isso não garante exactly-once.
 
-      No artigo, separo retrieval eval, testes de workflow e smokes live independentes. O aprendizado: interpretação pode ser probabilística; autorização, aprovação e execução continuam pertencendo ao sistema.
+      A recuperação foi exercitada offline com PostgreSQL real e GitLab fake. Os smokes live de OpenAI e GitLab foram separados; não houve um E2E combinado nem avaliação de qualidade do modelo.
+
+      O aprendizado: interpretação pode ser probabilística; autorização, aprovação e execução continuam pertencendo ao sistema.
 
       Artigo completo em português:
       https://marcelotaparelli.com.br/artigos/opspilot-rag-agents-deterministic-controls/
@@ -31,7 +34,7 @@ distribution:
 
       In OpsPilot AI, the model searches evidence and prepares an issue. Application code owns authorization; a distinct person approves the exact action. Ambiguous GitLab writes require marker reconciliation and explicit resume, not blind retries or an exactly-once claim.
 
-      The article explains these boundaries and separates retrieval evaluation, offline workflow tests, and independent live integration smokes.
+      Recovery was tested offline with fake GitLab. OpenAI and GitLab live smokes were separate, not a combined E2E or a model-quality evaluation.
 
       Read the full article in English:
       https://marcelotaparelli.com.br/en/articles/opspilot-rag-agents-deterministic-controls/
@@ -45,7 +48,7 @@ Foi desse problema que parti no [OpsPilot AI](/projetos/opspilot-ai/). Eu queria
 
 **A IA encontrou evidência suficiente? Ela deveria ter autoridade para executar uma ação externa?** São perguntas diferentes. Uma proposta pode respeitar o schema, ter um título convincente e ainda estar fora das permissões do usuário.
 
-Minha decisão foi deixar a interpretação probabilística dentro de fronteiras determinísticas. O modelo propõe; o sistema autentica, autoriza, registra a aprovação e controla a execução. Este artigo explica por que construí essas fronteiras e o que as evidências atuais permitem afirmar.
+Minha decisão foi deixar a interpretação probabilística dentro de fronteiras determinísticas. **Uma ação gerada corretamente continua sendo uma proposta.** O sistema autentica, autoriza, registra a aprovação e controla a execução.
 
 ## Primeiro, delimitar o sistema
 
@@ -53,7 +56,7 @@ Modelei separadamente o principal autenticado, o conhecimento do tenant, a propo
 
 O principal contém tenant, sujeito e papéis, derivados de credenciais configuradas. A proposta contém o trabalho sugerido. A aprovação registra quem aceitou qual ação. A execução registra tentativas e resultados externos. PostgreSQL persiste esse ciclo; ele não depende apenas da memória do processo.
 
-Usei Python/FastAPI nas fronteiras HTTP, valores de domínio e Protocols para os contratos, e adapters para banco, OpenAI e GitLab. Essa separação permite exercitar comportamento quebrado do planner sem depender de uma chamada paga para descobrir se a política funciona.
+Separei os contratos de domínio dos adapters de banco, modelo e GitLab. Assim consigo exercitar um planner que propõe ações proibidas sem depender de uma chamada paga para descobrir se a política funciona.
 
 O domínio também limita o produto: cada run prepara no máximo uma proposta de issue. Não construí um agente com shell, SQL arbitrário ou liberdade para chamar qualquer URL. Essa restrição reduz o espaço que preciso autorizar, observar e recuperar. Ampliar ferramentas exigiria rever o modelo de autoridade, não apenas adicionar nomes ao prompt.
 
@@ -129,20 +132,26 @@ Esse exemplo é um antipadrão, não um contrato do OpsPilot. Aceitar JSON váli
 
 “Um humano aprovou” é uma descrição incompleta. O que foi aprovado? O mesmo objeto ainda será executado? A política mudou entre esses momentos?
 
-Persisti a ação canônica com tenant, solicitante, projeto resolvido, título, descrição, labels e responsáveis. Um hash SHA-256 do JSON canônico vincula a decisão a esse conteúdo. A normalização e a ordenação evitam que representações equivalentes de labels ou responsáveis produzam identidades distintas.
+Persisti a ação canônica com tenant, solicitante, projeto resolvido, título, descrição, labels e responsáveis antes de solicitar aprovação. Um hash SHA-256 do JSON canônico vincula a decisão a esse conteúdo. A normalização e a ordenação evitam que representações equivalentes de labels ou responsáveis produzam identidades distintas. A execução usa a ação armazenada; não pede ao modelo que a gere outra vez.
 
 O aprovador precisa ter o papel adequado, pertencer ao mesmo tenant e ser um sujeito diferente do solicitante. A transação verifica o hash recebido e recalcula o hash da ação armazenada. A proposta e a aprovação não têm permissão de UPDATE para o papel de runtime.
 
 Antes do efeito externo, a execução confere novamente a aprovação, o hash e a política vigente. Se o projeto saiu da allowlist, a ação falha fechada. Se a ação mudou fora do fluxo normal, a aprovação não serve mais. Uma mudança exige outro run e outra aprovação.
 
 ```text
-interpretação → proposta estruturada → política determinística
-                                            ↓
-                                aprovação da ação exata
-                                            ↓
-                                revalidação → execução
-                                            ↓
-                                  reconciliação / audit
+interpretação probabilística
+            ↓
+proposta estruturada
+            ↓
+política determinística
+            ↓
+aprovação humana (hash)
+            ↓
+ação imutável aprovada
+            ↓
+revalidação → execução
+            ↓
+reconciliação / auditoria
 ```
 
 O hash protege o vínculo entre conteúdo e decisão. Não avalia se a issue faz sentido, e não substitui autorização. A revisão humana acrescenta trabalho operacional; aceitei esse custo para controlar uma ação externa relevante.
@@ -169,7 +178,7 @@ Nos casos exercitados, o código recusa ferramentas e projetos proibidos. A úni
 
 Prompts que chamam evidência de “untrusted data” e schemas estritos ajudam a organizar a interface. Não substituem autenticação nem autorização. Também não eliminam poisoning de uma resposta dentro do próprio tenant: o modelo pode receber informação maliciosa autorizada para leitura.
 
-Por isso, não chamo o sistema de “fully secure”. Os controles têm ameaças e limites específicos: isolamento de tenant, ferramentas permitidas, decisão humana, validação em runtime e audit trail. A regressão adversarial verifica comportamentos definidos; não prova resistência completa a qualquer prompt injection.
+Os controles protegem fronteiras específicas: isolamento de tenant, ferramentas permitidas, decisão humana, validação em runtime e audit trail. A regressão adversarial verifica comportamentos definidos; não prova resistência completa a qualquer prompt injection.
 
 ## Observabilidade atravessa as fronteiras
 
@@ -181,7 +190,7 @@ Aprovação e resume são novos requests; não afirmo que toda a espera humana f
 
 Allowlists restringem atributos, e IDs de request, tenant ou documento não viram labels de métricas. Isso reduz exposição de conteúdo e cardinalidade descontrolada. Modelo configurado e modelo servido são informações distintas; uso ou custo ausente permanece desconhecido, não zero.
 
-A exportação de telemetria pode perder sinais e falha aberta para não controlar a disponibilidade do produto. Autorização e aprovação continuam falhando fechadas. Estado persistido e audit trail são a autoridade; um span de sucesso não decide se a execução está concluída. O <a href="https://github.com/marcelotaparelli/opspilot-ai/blob/cacf611c1e7e31effe04895ec383673c76568876/docs/observability.md" target="_blank" rel="noopener noreferrer">registro de observabilidade</a> detalha os sinais e os testes locais de falha do collector.
+A exportação de telemetria pode perder sinais sem interromper o produto. Autorização e aprovação, em contraste, recusam a execução quando seus requisitos não são satisfeitos. Estado persistido e audit trail são a autoridade; um span de sucesso não decide se a execução está concluída. O <a href="https://github.com/marcelotaparelli/opspilot-ai/blob/cacf611c1e7e31effe04895ec383673c76568876/docs/observability.md" target="_blank" rel="noopener noreferrer">registro de observabilidade</a> detalha os sinais e os testes locais de falha do collector.
 
 ## Evals diferentes respondem perguntas diferentes
 
@@ -192,11 +201,13 @@ A avaliação de agentes passou em **16/16 casos** com planners scripted/offline
 - **Smoke OpenAI:** exercita API real, schemas, embeddings e pequeno RAG com banco. Não demonstra qualidade, entailment ou custo medido.
 - **Smoke GitLab:** exercita aprovação, criação, confirmação e resume no sandbox. Não demonstra recuperação de falhas reais ou exactly-once.
 
+Qualidade da geração é outra pergunta: a resposta está correta e suas afirmações decorrem das evidências? O projeto ainda não tem uma avaliação desse comportamento com modelo real. Ranking, workflow e integração podem passar sem responder a essa pergunta.
+
 O registro OpenAI de **4 de outubro de 2026** confirma embeddings reais de 256 dimensões, schemas de resposta e planner, citações pertencentes ao contexto, uso, modelo servido e timeout limitado. O de GitLab de **5 de outubro** confirma nenhum request antes da aprovação, criação e GET, segunda aprovação com 409, resume com uma issue encontrada e um POST de criação, e fechamento confirmado.
 
 **São execuções separadas**, e o smoke GitLab usa planner offline. Não houve um único E2E live OpenAI + GitLab. Pricing OpenAI estava ausente: passar no check condicional de custo não significa ter medido custo.
 
-O release `v0.1.0` está publicado no GitHub. Seu registro local documenta **241 testes unitários e 72 de integração**, reprodução em ambiente limpo e, posteriormente, CI hosted aprovado. Esses números descrevem aquela validação; não são desempenho em tráfego de produção. Os <a href="https://github.com/marcelotaparelli/opspilot-ai/blob/cacf611c1e7e31effe04895ec383673c76568876/docs/evidence/release/live-provider-status.md" target="_blank" rel="noopener noreferrer">registros live</a> mantêm os escopos de cada execução.
+O release `v0.1.0` está publicado no GitHub. Seu registro local documenta **241 testes unitários e 72 de integração**, além de reprodução em ambiente limpo. O estado atual registra a confirmação posterior do proprietário de que o CI hosted passou. Esses números descrevem aquela validação; não são desempenho em tráfego de produção. Os <a href="https://github.com/marcelotaparelli/opspilot-ai/blob/cacf611c1e7e31effe04895ec383673c76568876/docs/evidence/release/live-provider-status.md" target="_blank" rel="noopener noreferrer">registros live</a> mantêm os escopos de cada execução.
 
 ## O que continua não provado
 
@@ -208,7 +219,11 @@ Terraform descreve um blueprint AWS validado com planos offline. **Nenhum deploy
 
 O scan da imagem do release reteve **44 findings HIGH sem correção disponível**, com zero HIGH/CRITICAL corrigíveis. O gate bloqueia os corrigíveis; não significa zero vulnerabilidades. Os quatro riscos IaC classificados também continuam documentados. Esses resultados são históricos, não um novo scan feito para este artigo.
 
-Meu principal aprendizado foi tornar explícito o contrato entre interpretação e efeito. RAG precisa mostrar evidência; o agente precisa permanecer dentro da autoridade concedida; e falhas externas precisam de estados recuperáveis. A próxima melhoria deve responder a uma lacuna medida — embeddings reais em novo protocolo, qualidade das respostas ou recuperação live — sem transformar um smoke em prova mais ampla.
+## O que levo deste projeto
+
+Meu principal aprendizado foi tornar explícito o contrato entre interpretação e efeito. O modelo pode recuperar contexto, interpretar uma solicitação e propor trabalho. Cabe ao sistema de software determinar a autoridade, verificar a aprovação e o resultado dos efeitos externos, e manter estados que permitam recuperação quando esse resultado é incerto.
+
+As próximas avaliações precisam enfrentar as lacunas que permanecem: embeddings reais em novo protocolo, qualidade das respostas e recuperação live. Passar em um smoke não responde a essas perguntas. Foi a separação dessas responsabilidades que tornou o projeto mais útil para mim do que apenas fazer um agente chamar uma ferramenta.
 
 ## Evidências e código
 

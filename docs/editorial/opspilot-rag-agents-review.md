@@ -1,9 +1,13 @@
-# OpsPilot AI — draft editorial and factual review
+# OpsPilot AI — editorial and factual review
 
-Audited on 2026-10-07. This task creates a bilingual draft, not a release.
-Both entries must remain `status: draft`, `reviewed: false`, without
-`publishedAt`. Human editorial approval remains pending. No external publication,
-distribution, push or deployment is authorized.
+Audited and reviewed on 2026-10-07. The initial draft is commit
+`c7583adcae944a34a18ff44646137f38c69e9966`. The owner's subsequent instruction
+explicitly authorized final adversarial review and conditional local release
+approval. That review found no factual or editorial blocker after the revisions
+recorded below. Both entries are now `status: published`, `reviewed: true`, with
+`publishedAt: 2026-10-07`. External publication, distribution, push and deployment
+remain unauthorized and were not performed. The draft-stage record is retained
+as history below.
 
 ## Editorial decision
 
@@ -17,6 +21,102 @@ distribution, push or deployment is authorized.
   → adversarial controls → observability → evaluation scope → limitations.
 - First person, concrete engineering decisions, small evaluation tables and
   text diagrams. Avoid a stack inventory, framework tutorial or expanded case.
+
+## Final release review (2026-10-07)
+
+Read both articles in full again, both portfolio cases, existing published
+article examples, the original claim matrix and current OpsPilot documentation
+and relevant policy/workflow/persistence code. A read-only GitHub check confirmed
+that public main still points to `cacf611c1e7e31effe04895ec383673c76568876`.
+No new source snapshot supersedes the article's pinned evidence. The source
+divergences below remain historical/current distinctions, not release blockers.
+Retained evidence was inspected; OpsPilot tests, scanners and provider smokes
+were not independently rerun for this editorial review.
+
+Editorial assessment and changes:
+
+- Kept both titles: they identify the project and its authority boundary without
+  implying production deployment or a general LangGraph tutorial.
+- Made the opening thesis explicit: a correctly generated action remains a
+  proposal. Removed the introductory sentence announcing what the article does.
+- Replaced the early stack inventory with the reason for separate domain
+  contracts and adapters: forbidden proposals can be tested without live calls.
+- Clarified that canonical action storage precedes approval, and execution uses
+  that stored object rather than regenerating it. The diagram now explicitly
+  includes the approved immutable action and hash-bound human approval.
+- Used a vertical text diagram after a real mobile capture exposed a long row
+  requiring in-block horizontal scrolling. The final flow is readable at 390px.
+- Made unmeasured generation quality its own question, separate from retrieval
+  ranking, offline workflow controls and live integration smokes.
+- Separated the retained local test counts from the owner's subsequent hosted
+  CI confirmation, following CURRENT-STATE's provenance.
+- Removed repetitive security disclaimer wording while keeping the concrete
+  threat boundaries and the absence of universal injection resistance.
+- Added a dedicated conclusion: the model retrieves/interprets/proposes; software
+  owns authority, approval, external-outcome verification and recovery. The
+  unresolved evaluations remain explicit. PT/EN were checked for equivalence.
+- Revised the sole bilingual LinkedIn post to identify fake-GitLab offline
+  recovery, separate live runs, no combined live E2E and no model-quality eval.
+  Retained `ai`, `python`, `rag`, `programming`: they match the subject and existing
+  metadata conventions, with no reason to change them.
+
+The narrative remains a technical article about decisions and failures, with
+first-person reasoning and evidence, rather than project documentation or a
+feature list. It demonstrates AI engineering through system boundaries,
+software reliability and the operator's product problem without repeating
+positioning slogans. Both versions have 13 H2s, three code/text blocks and one
+MRR table. Site-style whitespace counts (including MDX syntax/code, excluding
+frontmatter): **PT 2,765; EN 2,698; 13 minutes each at 220 words/minute**.
+LinkedIn: **1,728 JavaScript string characters**, below 3,000; both canonicals
+and the required bilingual marker pass the actual distribution resolver.
+Only pure local resolution ran; no distribution entry point or external write.
+
+Rechecked all rows in the claim matrix. In particular, historical MRR@5 remains
+0.7532 / 0.4375 / 0.6306 on 36 synthetic queries with fake embeddings; 16/16
+remains scripted/offline with real PostgreSQL and fake GitLab. The two live
+smokes remain independent integration evidence. Hash/policy/reconciliation/RLS
+and telemetry claims retain implementation and test boundaries. Static identity,
+no within-tenant ACL, exact-search scaling, manual resume, no exactly-once,
+unmeasured quality/cost, unapplied AWS blueprint and 44 historical unfixed HIGH
+findings remain visible. Passing the fixable-vulnerability gate is never
+described as zero vulnerabilities.
+
+Final validation:
+
+| Gate                                            | Result                                       |
+| ----------------------------------------------- | -------------------------------------------- |
+| `bun run format` / `format:check`               | Passed                                       |
+| `bun run typecheck`                             | 0 errors, 0 warnings, 20 existing hints      |
+| `bun run lint`                                  | Passed                                       |
+| `bun run test`                                  | 42 passed, 112 assertions                    |
+| `bun run build:preview`                         | 40 pages                                     |
+| `bun scripts/check-artifacts.ts dist --preview` | 40 HTML documents passed                     |
+| `bun run test:e2e`                              | Final preview: 24 passed                     |
+| `bun run build`                                 | 40 pages, including both approved articles   |
+| `bun scripts/check-artifacts.ts dist`           | 40 HTML documents passed                     |
+| `bun run check:release`                         | Passed; checker unchanged                    |
+| Production sitemap/source scan                  | Both article URLs present; zero drafts       |
+| Actual local `resolveArticlePair`               | Approved pair and distribution metadata pass |
+| `git diff --check`                              | Passed                                       |
+
+Eight preview and eight production browser configurations (PT/EN ×
+1440/768/390/320px) passed: HTTP 200, dates in metadata/JSON-LD, canonical and
+reciprocal hreflang/x-default, thirteen TOC destinations, intact code/table,
+language navigation, zero document overflow and zero axe WCAG-tagged violations.
+Prose remains 17px desktop/tablet and 16px mobile. Preview is noindex; production
+omits the robots restriction according to BaseLayout. The first production
+probe incorrectly expected an explicit `index, follow` tag; corrected that
+local probe to the actual layout rule and reran all configurations successfully.
+No application code or validator was changed for this probe correction.
+
+Final local screenshots and measurements are ignored under
+`reports/opspilot-release/{preview,production}/`, including
+`{pt,en}-{1440,768,390,320}-top.png` and 1440/390px `*-retrieval.png`,
+`*-authority.png`, `*-evaluation.png`, plus `visual-review.json`.
+`reports/opspilot-release/preview-artifact/` preserves the final preview;
+`dist/` holds the production artifact. These are local artifacts, not deployment.
+The new local commit is based directly on `c7583ad`; its SHA and final clean
+status are recorded in the task report.
 
 ## Portfolio audit
 
@@ -48,9 +148,10 @@ then manual workflow dispatch. No distribution entry point will be executed.
 
 `check:release` inspects all source entries and rejects any unapproved draft
 or missing article date, even when production excludes it. Its expected failure
-is the correct editorial block; the checker must not be weakened or the draft
-promoted to make it pass. Existing CI therefore remains release-blocked until
-a separately authorized editorial/release step.
+at the draft stage was the correct editorial block. The checker was not weakened
+and the draft was not promoted to bypass review. CI #44 tested that draft state;
+the separately authorized final review above now removes the local release block.
+No new hosted CI run was triggered by this task.
 
 ## Source snapshot and inspected evidence
 
@@ -122,7 +223,7 @@ reported execution. This editorial task does not independently reproduce them.
 | v0.1.0 is published on GitHub; AWS remains a blueprint                                       | CURRENT-STATE, AWS deployment/terraform-validation                     | Published-source status + offline validation                | No AWS apply/deployment, runtime or restore evidence                                                     |
 | Release image has 44 HIGH findings without reported fixes; fixable gate passed               | `vulnerability-summary.md`, image report                               | Historical scanner evidence                                 | Not zero vulnerabilities or a current rescan; four IaC risks also retained                               |
 
-## Final review and validation
+## Historical draft-stage review and validation
 
 Reviewed PT/EN for production claims, unqualified security, exactly-once,
 combined live E2E, metric scope, MRR definitions, fake versus semantic
