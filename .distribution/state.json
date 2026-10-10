@@ -96,5 +96,19 @@
       "at": "2026-10-07T20:09:28.320Z",
       "canonicalUrl": "https://marcelotaparelli.com.br/artigos/opspilot-rag-agents-deterministic-controls/"
     }
+  },
+  "project:defectrisk-ml": {
+    "devto": {
+      "id": "4827523",
+      "url": "https://dev.to/marcelotaparelli/defectrisk-2g01",
+      "at": "2026-10-10T09:01:02.192Z",
+      "canonicalUrl": "https://marcelotaparelli.com.br/en/projects/defectrisk-ml/"
+    },
+    "linkedin": {
+      "id": "urn:li:share:7514610938424250368",
+      "url": "urn:li:share:7514610938424250368",
+      "at": "2026-10-10T09:01:03.034Z",
+      "canonicalUrl": "https://marcelotaparelli.com.br/projetos/defectrisk-ml/"
+    }
   }
 }
