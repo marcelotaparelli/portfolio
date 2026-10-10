@@ -3,6 +3,7 @@ import { Picture } from 'astro:assets';
 import BaseLayout from './BaseLayout.astro';
 import photo from '../assets/images/profile.png';
 import Arrow from '../components/Arrow.astro';
+import CvLink from '../components/CvLink.astro';
 import SystemLines from '../components/SystemLines.astro';
 import ProjectList from '../components/ProjectList.astro';
 import ArticleList from '../components/ArticleList.astro';
@@ -53,6 +54,7 @@ const articles = await articlesFor(locale);
           <Arrow direction="diagonal" />
         </a>
       </div>
+      <CvLink locale={locale} variant="hero" />
     </div>
     <div class="hero-person">
       <div class="portrait-frame">

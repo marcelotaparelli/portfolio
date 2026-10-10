@@ -1,5 +1,27 @@
 # Implementation status
 
+## Hero CV download CTA (2026-10-10)
+
+- Added the optional `hero` variant to `CvLink` and used it below the existing
+  home CTAs in both languages. It keeps locale-specific reviewed PDFs and their
+  SHA-256 version URLs, with “Baixar currículo” in PT-BR and “Download résumé”
+  in EN. CV sources, PDFs and the synchronization record were not changed.
+- Scoped the plain accent-colored link to this variant: 12px top spacing,
+  minimum 44px height, 16px desktop/14px mobile text, weight 500, hover underline
+  and the existing keyboard focus outline. Loaded the weight-500 Inter font
+  from the existing dependency specifically for this variant. Default CV links
+  retain their PDF label and arrow.
+- Passed typecheck (zero errors/warnings), lint, formatting, 57 unit tests,
+  28 E2E tests, preview/production builds (44 pages each), both artifact
+  validators and release validation. Browser checks of both homes at 320, 390,
+  760, 761, 1024 and 1440px verified spacing, alignment, font sizes, keyboard
+  focus, hover, no portrait overlap or horizontal overflow, and downloaded PDF
+  bytes matching the corresponding local file. Checked default About/footer
+  links and inspected desktop/mobile screenshots saved under `/tmp`.
+- Bun 1.4.2 was installed temporarily under `/tmp`; builds and browser checks
+  required execution outside the sandbox after EPERM failures. No dependency
+  manifest changes, push or publication were performed.
+
 ## CV cache versioning after live PT/EN comparison (2026-10-10)
 
 - Downloaded both public CVs and compared SHA-256 fingerprints with the local
