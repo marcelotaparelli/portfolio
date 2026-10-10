@@ -1,5 +1,26 @@
 # Implementation status
 
+## Evidence list layout correction (2026-10-10)
+
+- Inspected the rendered site and the public DefectRisk PT case. MDX wraps
+  multiline anchor labels in paragraphs, producing `.prose li > a > p`.
+  These paragraphs used block layout and the global 22px paragraph margin,
+  unlike ordinary list text.
+- Audited all 44 rendered pages and found 28 occurrences across six pages:
+  DefectRisk cases, OpsPilot cases and the OpsPilot RAG/agents articles, in
+  both PT-BR and EN. Added one narrowly scoped CSS rule to render these
+  paragraphs inline with zero margin; other paragraphs/lists are unchanged.
+  No content, links, publication metadata or dependencies were changed.
+- Validated the six affected pages at 1440, 768, 390 and 320px (24
+  configurations), checked before/after screenshots and confirmed no
+  horizontal document overflow. Audit JSON and screenshots are local
+  temporary artifacts under `/tmp`, outside the publication artifact.
+- Passed typecheck (0 errors/warnings, 30 existing hints), lint, format
+  check, 54 unit tests/173 assertions, 28 E2E tests, preview/production
+  builds (44 pages each), both artifact validators and release validation.
+  Browser/server/build checks used authorized execution outside the sandbox.
+  No push, deploy or external publication occurred.
+
 ## DefectRisk project distribution on both channels (2026-10-10)
 
 - The owner requested DEV.to publication in addition to the approved
