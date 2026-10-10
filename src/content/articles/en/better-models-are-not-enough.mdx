@@ -1,0 +1,223 @@
+---
+translationKey: better-models-are-not-enough
+locale: en
+slug: better-models-are-not-enough
+title: 'When Better Models Are Not Enough: What to Do When Data Becomes the Bottleneck'
+description: 'In DefectRisk, more complex models delivered small gains. Group-aware evaluation, conflicting labels and calibration showed where to invest next.'
+status: published
+reviewed: true
+publishedAt: 2026-10-09
+category: AI Engineering · Machine Learning
+distribution:
+  devto:
+    tags: [ai, machinelearning, python, programming]
+---
+
+I kept improving the modeling process: class weights, nested tuning, stronger
+tree families, derived features, and an ensemble. The implementation became
+more careful, but gains on the product decision started getting small.
+The next task became understanding what the data could teach me and how
+much confidence I could attach to the output.
+
+That was the path through [DefectRisk](/en/projects/defectrisk-ml/), a public
+project that ranks software modules by estimated defect risk. Its product
+question was concrete: **if a team can review about 30% of modules, how many
+modules with recorded defects enter that queue?**
+
+“Capture” means flagging a module labeled defective. It does not mean a real
+review process found every bug. That definition shapes both the metric and
+the limits of the conclusion.
+
+## Accuracy answered the wrong question
+
+I used JM1 / OpenML 1053, version 1: 10,885 modules, 21 static metrics, and
+about 19.35% defective modules. A classifier that called everything clean
+would achieve approximately 80.65% accuracy without bringing any defect
+into the queue.
+
+That arithmetic made class imbalance visible. Recall measures the share
+of defective modules captured; precision measures how many flagged modules
+have recorded defects. Review workload shows the cost of using that decision.
+Improving one number without tracking the others could simply mean asking
+the team to do more work.
+
+Balanced Logistic Regression improved baseline recall, but brought more
+false positives. Lowering the threshold expanded the queue. Neither change
+added information to the features. I started comparing models at similar
+capacity instead of assuming 0.50 represented the same useful policy for
+every model.
+
+## Before models, I had to fix the boundaries
+
+The random-split audit found **299 complete feature vectors shared between
+training and test**. The data contained 2,061 duplicate feature rows beyond
+the first occurrence. A model could encounter the same metrics during
+fitting and again during evaluation.
+
+That created a risk of partly measuring recognition of repeated information.
+It did not require discarding the whole dataset; it required changing an
+evaluation boundary before comparing algorithms.
+
+I grouped complete original metric vectors, excluding labels from group
+identity. Each group stayed on one side of training/test, validation, and
+CV boundaries. I retained duplicate and conflicting rows. Overlap audits
+checked the boundaries before fitting, and preprocessing learned only
+within its corresponding fitting partition.
+
+Group-aware evaluation better addresses the question about unseen vectors.
+It does not establish generalization to another project, language, or period.
+Fixing one contamination source does not remove every data limitation.
+
+## Stronger models helped, then delivered diminishing returns
+
+I separated parameter selection from performance estimation: five outer
+folds with groups and three inner folds for a limited configuration set.
+Class weights were calculated within fitting partitions. The selection
+objective was recall near 30% review, with AP as a tie-breaker.
+
+In training-only OOF evidence, at similar capacity:
+
+| Procedure                          | Defective modules captured, out of 1,685 |
+| ---------------------------------- | ---------------------------------------: |
+| Balanced Logistic Regression       |                                      906 |
+| Random Forest with nested tuning   |                                      953 |
+| HGB with nested tuning             |                                      945 |
+| XGBoost with limited nested search |                                      926 |
+
+RF captured 47 more defective modules than Logistic Regression. HGB had
+slightly better AP, but captured fewer defects at the chosen capacity.
+XGBoost did not beat the reference. The material-gain rule was already
+explicit: two absolute recall percentage points or 30 extra captures,
+without clearly worse AP, at similar workload.
+
+Density and ratio features, training-fitted log transforms, and conservative
+pruning did not substantially change the result. Pruning added one capture;
+RF/HGB averaging added seven, moving recall from 56.56% to 56.97%. These
+gains fell below the materiality rule.
+
+Together, those results justified stopping model exploration. Limited
+searches cannot rule out every possible configuration, and repeated
+experiments on the same training data retain selection uncertainty.
+**The available evidence suggested that the current feature set had become
+the main bottleneck.** That is an engineering hypothesis, not a mathematically
+proven information ceiling.
+
+## Conflicting labels reveal a limit without explaining everything
+
+The historical full-dataset audit found 88 feature-vector groups with
+conflicting labels. Training-only analysis found 11 groups containing
+22 rows. These are different populations.
+
+When metrics are identical but labels differ, a deterministic classifier
+receiving only those metrics cannot distinguish the rows individually.
+Context may be missing, labels may be ambiguous, or snapshots may not align
+with the defect period. The observed conflicts do not establish which
+explanation is correct.
+
+Exact training conflicts imply at least 11 deterministic row classification
+errors, far fewer than the hundreds of missed defects. Attributing the
+whole result to label noise would exceed the evidence. Static metrics also
+omit who changed a module, how often it changed, and its test coverage.
+
+## Calibration changed how to read the probability
+
+An RF trained with balanced weights does not automatically produce
+probabilities aligned with natural defect frequency. After the historical
+evaluation, I compared sigmoid and isotonic calibration using training
+data only, with groups and nested selection. Maps learned from scores
+outside RF fitting, without using labels from their evaluation partitions.
+
+For the fixed RF configuration, sigmoid reduced Brier from **0.18692 to
+0.13863**, while AP remained approximately stable. Reliability curves and
+support per range complement Brier, which combines calibration,
+discrimination, and outcome uncertainty. Probability interpretation
+improved without discovering new predictive signal.
+
+A calibrated probability remains a population-based estimate. It does not
+establish individual certainty, causality, or reliability outside the
+distribution. A positive-slope sigmoid map preserves a fitted model's
+ranking; the 0.50 threshold can nevertheless represent a different workload
+after calibration.
+
+## Chasing 90% can quietly change the question
+
+In the uncertainty study, a tail chosen after inspecting outcomes selected
+four defective rows and displayed 100% precision. Four observations chosen
+from the same outcomes used to report them do not support a broad
+automation promise.
+
+Nested policy selection required at least 50 rows across 20 feature groups
+and chose cutoffs inside outer training. No HIGH tail with the ≥90% target
+precision and sufficient support qualified. Conservative policy classified
+136 LOW and zero HIGH, leaving **98.44% UNCERTAIN**. Seven LOW modules had
+defects. Thresholds 0.90 and 0.95 emitted no HIGH cases: precision was
+undefined, not perfect.
+
+Seeking a desired number can lead to choosing cutoffs from evaluation
+labels, hiding tiny coverage, or reusing the test for further adjustments.
+That would be metric hacking or evaluation contamination, not improved
+generalization. Precision needs coverage, recall, support, and a defined
+population alongside it.
+
+Abstention helps expose limits. When almost everything is uncertain, it
+also shows that broad automation has little utility. UNCERTAIN percentage
+is not automatically total review workload: HIGH may also need inspection.
+The product answer remained risk ranking for people.
+
+## The historical result and the validation still needed
+
+The frozen raw RF had one held-out evaluation: **652 of 2,177 modules flagged
+(29.95%), with 300 of 421 defective modules captured (71.26% recall)**.
+Precision was 46.01%; 352 modules recorded as clean entered the queue, and
+121 defective modules stayed outside it. The case includes F1, AP, and the
+full protocol.
+
+This result belongs to the historical raw model. The test was not reused
+for calibration or policy design and does not validate the later calibrated
+artifact. That system has training/CV evidence and requires **a new
+independent external holdout**, evaluated once after freezing the model,
+calibration, and policy. One JM1 partition does not predict production
+performance.
+
+## The next investment would be better information
+
+The next recommendation is new signals available at prediction time: code
+churn, defect history, ownership, test coverage, commit/change history,
+and review history. I did not implement them in DefectRisk. Each signal
+would need a time definition, a matching snapshot, and a label horizon;
+using history recorded after a defect would create another leakage source.
+
+Stopping tuning is also an engineering decision. Here, it meant delivering
+a frozen calibrated artifact and a ranking CLI, documenting what was
+measured, and directing the next investment toward available information.
+**DefectRisk predicts risk and ranking, not certainty.** Its value lies in
+prioritizing review with explicit limits.
+
+See the [DefectRisk case](/en/projects/defectrisk-ml/) for the result and
+executable artifact. The <a href="https://github.com/marcelotaparelli/defectrisk-ml" target="_blank" rel="noopener noreferrer">public repository</a>
+contains code and reproduction instructions. This analysis draws on the
+
+<a
+  href="https://github.com/marcelotaparelli/defectrisk-ml/blob/8ccdfc301a1cb22c89ae2ffbc1a29e2c054325fa/docs/article-data-quality.md"
+  target="_blank"
+  rel="noopener noreferrer"
+>
+  original technical article
+</a>
+, the
+<a
+  href="https://github.com/marcelotaparelli/defectrisk-ml/blob/8ccdfc301a1cb22c89ae2ffbc1a29e2c054325fa/docs/model-card.md"
+  target="_blank"
+  rel="noopener noreferrer"
+>
+  model card
+</a>
+, and the
+<a
+  href="https://github.com/marcelotaparelli/defectrisk-ml/blob/8ccdfc301a1cb22c89ae2ffbc1a29e2c054325fa/docs/calibration-and-uncertainty.md"
+  target="_blank"
+  rel="noopener noreferrer"
+>
+  calibration and uncertainty study
+</a>
+.

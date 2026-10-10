@@ -1,0 +1,243 @@
+---
+translationKey: better-models-are-not-enough
+locale: pt-BR
+slug: better-models-are-not-enough
+title: 'Quando modelos melhores não bastam: o que fazer quando os dados viram o gargalo'
+description: 'No DefectRisk, modelos mais complexos deram ganhos pequenos. Avaliação sem contaminação, rótulos conflitantes e calibração mostraram onde investir depois.'
+status: published
+reviewed: true
+publishedAt: 2026-10-09
+category: Engenharia de IA · Machine Learning
+distribution:
+  linkedin:
+    text: |
+      Quando modelos melhores não bastam, o próximo investimento pode estar nos dados.
+
+      No DefectRisk, comparei modelos sob a mesma capacidade de revisão. Depois de RF, HGB, XGBoost, features derivadas e ensemble, os ganhos ficaram pequenos. A avaliação com grupos, os rótulos conflitantes e a calibração ajudaram a delimitar o produto: ranking de risco para revisão humana.
+
+      A avaliação histórica única do RF bruto capturou 300 de 421 módulos defeituosos ao sinalizar 652 de 2.177. Esse resultado não valida o artefato calibrado posterior, que ainda precisa de holdout externo independente.
+
+      https://marcelotaparelli.com.br/artigos/better-models-are-not-enough/
+
+      ---
+      English version below 🇬🇧
+
+      When better models stop delivering material gains, the next investment may be better data.
+
+      DefectRisk compared models at equal review capacity. Group-aware evaluation, conflicting labels and calibration clarified its scope: risk ranking for human review.
+
+      The historical once-only raw RF evaluation flagged 652 of 2,177 modules and captured 300 of 421 defective modules. It does not validate the later calibrated artifact, which still needs an independent external holdout.
+
+      https://marcelotaparelli.com.br/en/articles/better-models-are-not-enough/
+
+      #MachineLearning #AIEngineering #DataQuality
+---
+
+Continuei melhorando o processo de modelagem: pesos de classe, tuning aninhado,
+novas famílias de árvores, features derivadas e um ensemble. A implementação
+ficava mais cuidadosa, mas os ganhos na decisão de produto começaram a ficar
+pequenos. O trabalho seguinte passou a ser entender o que os dados permitiam
+aprender e quanta confiança eu podia atribuir à saída.
+
+Esse foi o percurso do [DefectRisk](/projetos/defectrisk-ml/), um projeto público
+que ordena módulos de software por risco estimado de defeito. A pergunta de
+produto era concreta: **se uma equipe consegue revisar cerca de 30% dos
+módulos, quantos módulos com defeitos registrados entram nessa fila?**
+
+“Capturar” significa sinalizar um módulo rotulado como defeituoso. Não significa
+que um processo de revisão real encontrou cada bug. Essa definição orienta
+tanto a escolha da métrica quanto o limite da conclusão.
+
+## A acurácia respondia à pergunta errada
+
+Usei JM1 / OpenML 1053, versão 1: 10.885 módulos, 21 métricas estáticas e cerca
+de 19,35% de módulos defeituosos. Um classificador que chamasse tudo de limpo
+teria aproximadamente 80,65% de acurácia sem colocar nenhum defeito na fila.
+
+Essa conta tornou explícito o problema do desequilíbrio de classes. Recall
+mede a parcela dos módulos defeituosos capturada; precisão mede quantos dos
+sinalizados têm defeitos registrados. A carga de revisão mostra o custo de
+usar aquela decisão. Melhorar um número sem acompanhar os outros poderia
+significar apenas pedir mais trabalho à equipe.
+
+A Logistic Regression balanceada melhorou o recall do baseline, mas também
+trouxe mais falsos positivos. Diminuir o limiar ampliou a fila. Nenhuma dessas
+mudanças acrescentou informação às features. Passei a comparar os modelos
+sob capacidade semelhante, em vez de assumir que 0,50 representava a mesma
+política útil em qualquer modelo.
+
+## Antes dos modelos, precisei corrigir as fronteiras
+
+A auditoria do split aleatório encontrou **299 vetores completos de features
+compartilhados entre treino e teste**. Os dados tinham 2.061 linhas de features
+duplicadas além da primeira ocorrência. Um modelo podia encontrar as mesmas
+métricas durante o treino e novamente durante a avaliação.
+
+Isso criava risco de medir, em parte, reconhecimento de informação repetida.
+Não era motivo para descartar todo o dataset; era uma fronteira de avaliação
+que precisava mudar antes de comparar algoritmos.
+
+Agrupei os vetores completos das métricas originais, sem incluir o rótulo na
+identidade do grupo. Cada grupo passou a ficar de um só lado de treino/teste,
+validação e CV. Mantive as linhas duplicadas e conflitantes. Auditorias de
+sobreposição passaram a verificar as fronteiras antes do fitting, e o
+pré-processamento passou a aprender apenas na partição correspondente.
+
+Uma avaliação com grupos responde melhor à pergunta sobre vetores ainda não
+vistos. Ela não prova generalização para outro projeto, linguagem ou período.
+Resolver uma fonte de contaminação não elimina todos os limites dos dados.
+
+## Modelos mais fortes ajudaram, depois deram retornos menores
+
+Separei seleção de parâmetros e estimativa de desempenho: cinco folds externos
+com grupos e três internos para um conjunto limitado de configurações.
+Os pesos de classe foram calculados nas partições de treino. O objetivo de
+seleção foi recall perto de 30% de revisão, com AP como desempate.
+
+Na evidência OOF restrita ao treino, sob capacidade semelhante:
+
+| Procedimento                        | Módulos defeituosos capturados, de 1.685 |
+| ----------------------------------- | ---------------------------------------: |
+| Logistic Regression balanceada      |                                      906 |
+| Random Forest com tuning aninhado   |                                      953 |
+| HGB com tuning aninhado             |                                      945 |
+| XGBoost com busca aninhada limitada |                                      926 |
+
+O RF trouxe 47 capturas adicionais sobre a Logistic Regression. O HGB teve
+AP ligeiramente melhor, mas não capturou mais defeitos na capacidade escolhida.
+O XGBoost não superou a referência. A regra de ganho material já estava
+explícita: dois pontos percentuais absolutos de recall ou 30 capturas
+adicionais, sem AP claramente pior, sob carga semelhante.
+
+Features de densidade e proporção, transformações logarítmicas ajustadas no
+treino e poda conservadora não mudaram substancialmente o resultado. A poda
+adicionou uma captura; a média RF/HGB adicionou sete, elevando recall de
+56,56% para 56,97%. Eram ganhos abaixo da regra de materialidade.
+
+Esse conjunto justificou encerrar a exploração de modelos. Buscas limitadas
+não descartam toda configuração possível, e repetir experimentos nos mesmos
+dados de treino preserva incerteza de seleção. **A evidência disponível sugeria
+que o conjunto atual de features havia se tornado o principal gargalo.**
+Isso é uma hipótese de engenharia, não um teto de informação matematicamente
+demonstrado.
+
+## Rótulos conflitantes mostram um limite, mas não explicam tudo
+
+A auditoria histórica do dataset inteiro encontrou 88 grupos de vetores com
+rótulos conflitantes. A análise restrita ao treino encontrou 11 grupos com
+22 linhas. São populações diferentes.
+
+Se as métricas são idênticas e os rótulos divergem, um classificador
+determinístico que recebe apenas essas métricas não consegue distinguir
+individualmente as linhas. Pode faltar contexto, o rótulo pode ser ambíguo
+ou o snapshot pode não corresponder ao período do defeito. Os conflitos
+observados não determinam qual dessas explicações é correta.
+
+Os conflitos exatos de treino implicam pelo menos 11 erros de classificação
+determinística, muito menos que as centenas de defeitos não capturados.
+Atribuir todo o resultado a ruído de rótulo excederia a evidência. As métricas
+estáticas também não contam quem alterou o módulo, com que frequência ele
+mudou ou qual era sua cobertura de testes.
+
+## Calibrar mudou a leitura da probabilidade
+
+Um RF treinado com pesos balanceados não entrega automaticamente probabilidades
+que acompanham a frequência natural dos defeitos. Depois da avaliação histórica,
+comparei calibração sigmoide e isotônica usando apenas o treino, com grupos e
+seleção aninhada. Os mapas aprenderam em scores fora do fitting do RF, sem
+usar os rótulos das partições que os avaliavam.
+
+Para a configuração fixa do RF, a sigmoide reduziu Brier de **0,18692 para
+0,13863**, com AP aproximadamente estável. Curvas de confiabilidade e suporte
+por faixa complementam o Brier, que combina calibração, discriminação e
+incerteza dos resultados. A melhora foi na interpretação probabilística,
+sem uma descoberta nova de sinal preditivo.
+
+Uma probabilidade calibrada continua sendo uma estimativa baseada em uma
+população. Ela não demonstra certeza individual, causalidade ou confiabilidade
+fora da distribuição. Um mapa sigmoide com inclinação positiva preserva o
+ranking do modelo ajustado; ainda assim, o limiar de 0,50 passa a significar
+uma carga diferente depois da calibração.
+
+## Perseguir 90% pode mudar a pergunta sem avisar
+
+No estudo de incerteza, uma faixa escolhida depois de olhar os resultados
+selecionou quatro linhas defeituosas e exibiu 100% de precisão. Quatro exemplos
+escolhidos pelos mesmos resultados usados para anunciá-los não sustentam uma
+promessa de automação ampla.
+
+A seleção aninhada de políticas exigiu suporte mínimo de 50 linhas em 20
+grupos de features e escolheu os cortes dentro do treino externo. Nenhuma
+faixa HIGH com precisão alvo ≥90% e suporte suficiente se qualificou. A
+política conservadora classificou 136 LOW e nenhum HIGH, deixando **98,44%
+UNCERTAIN**. Sete dos LOW tinham defeitos. Nos limiares de 0,90 e 0,95, não
+houve HIGH: a precisão era indefinida, não perfeita.
+
+Buscar o número desejado pode levar a escolher o corte pelos rótulos de
+avaliação, esconder cobertura mínima ou reutilizar o teste para novos ajustes.
+Isso seria metric hacking ou contaminação da avaliação, não melhoria de
+generalização. Precisão precisa vir acompanhada de cobertura, recall, suporte
+e definição da população.
+
+A abstenção ajuda a tornar os limites visíveis. Quando quase tudo fica
+incerto, ela também mostra que a automação ampla é pouco útil. E o percentual
+UNCERTAIN não é automaticamente a carga total de revisão: HIGH também pode
+pedir inspeção. A resposta de produto permaneceu ranking de risco para pessoas.
+
+## O resultado histórico e a validação ainda necessária
+
+O RF bruto congelado teve uma avaliação held-out única: **652 de 2.177 módulos
+sinalizados (29,95%), com 300 de 421 módulos defeituosos capturados (71,26%
+de recall)**. A precisão foi 46,01%; 352 módulos registrados como limpos
+entraram na fila e 121 defeituosos ficaram fora. O case reúne F1, AP e o
+protocolo completo.
+
+Esse resultado pertence ao modelo bruto histórico. O teste não foi reutilizado
+para calibração ou políticas e não valida o artefato calibrado posterior.
+Esse sistema tem evidência de treino/CV e precisa de **um novo holdout externo
+independente**, avaliado uma única vez depois de congelar modelo, calibração
+e política. O resultado em uma partição JM1 não prevê desempenho de produção.
+
+## O próximo investimento seria informação melhor
+
+A próxima recomendação é obter sinais novos disponíveis no momento da
+predição: churn, histórico de defeitos, ownership, cobertura de testes,
+commits/mudanças e revisões. Não os implementei no DefectRisk. Cada sinal
+precisaria de definição temporal, snapshot correspondente e horizonte de
+rótulo; usar história registrada depois do defeito criaria outra fonte de
+leakage.
+
+Encerrar o tuning também é uma decisão de engenharia. Neste caso, significou
+entregar um artefato calibrado congelado e uma CLI de ranking, documentar
+o que foi medido e concentrar o próximo investimento na informação disponível.
+**DefectRisk prevê risco e ranking, não certeza.** O valor está em priorizar
+revisão com limites explícitos.
+
+Veja o [case DefectRisk](/projetos/defectrisk-ml/) para o resultado e o artefato
+executável. O <a href="https://github.com/marcelotaparelli/defectrisk-ml" target="_blank" rel="noopener noreferrer">repositório público</a>
+contém código e instruções de reprodução. As fontes desta análise são o
+
+<a
+  href="https://github.com/marcelotaparelli/defectrisk-ml/blob/8ccdfc301a1cb22c89ae2ffbc1a29e2c054325fa/docs/article-data-quality.md"
+  target="_blank"
+  rel="noopener noreferrer"
+>
+  artigo técnico original
+</a>
+, o
+<a
+  href="https://github.com/marcelotaparelli/defectrisk-ml/blob/8ccdfc301a1cb22c89ae2ffbc1a29e2c054325fa/docs/model-card.md"
+  target="_blank"
+  rel="noopener noreferrer"
+>
+  model card
+</a>
+e o
+<a
+  href="https://github.com/marcelotaparelli/defectrisk-ml/blob/8ccdfc301a1cb22c89ae2ffbc1a29e2c054325fa/docs/calibration-and-uncertainty.md"
+  target="_blank"
+  rel="noopener noreferrer"
+>
+  estudo de calibração e incerteza
+</a>
+.

@@ -12,6 +12,8 @@ const expected = new Set([
   'ops-triage-ai',
   'opspilot-ai',
   'resilient-transaction-api',
+  'defectrisk-ml',
+  'better-models-are-not-enough',
   'llm-did-not-win-everywhere',
   'jev-1-13-decision-model-benchmark',
 ]);

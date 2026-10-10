@@ -1,0 +1,197 @@
+---
+translationKey: defectrisk-ml
+locale: en
+slug: defectrisk-ml
+title: DefectRisk
+description: Defect-risk ranking to prioritize code review. In the historical raw RF evaluation, reviewing ~30% of modules captured 71.26% of known defects.
+status: published
+reviewed: true
+order: 3
+category: AI Engineering · Machine Learning
+role: Evaluation, model development and CLI implementation
+context: Authored open-source project
+technologies:
+  [Python, scikit-learn, pandas, Random Forest, XGBoost, pytest, Joblib]
+externalUrl: https://github.com/marcelotaparelli/defectrisk-ml
+contribution: Evaluation without duplicate-vector contamination, comparisons at equal review capacity, calibration, uncertainty and frozen-artifact inference.
+---
+
+**Review ~30% of modules → capture 71.26% of known defects.**
+
+In the historical once-only evaluation of the frozen raw Random Forest,
+652 of 2,177 modules were flagged and 300 of the 421 modules with recorded
+defects entered that queue. This measures prioritization; it does not show
+that reviewers found every bug or validate the later calibrated system.
+
+I built the evaluation process, compared models at equal review capacity,
+and delivered a frozen artifact with a real inference CLI. DefectRisk
+estimates risk to help a team decide where to start reviewing.
+
+## Problem
+
+A team cannot inspect every module with equal attention. The useful question
+is: **if we can review only part of the codebase, can ML concentrate more
+defects inside that queue?**
+
+Defective modules are the minority class. On JM1, predicting everything clean
+would yield about 80.65% accuracy while capturing no defects. Recall,
+precision, and review effort therefore guide the product decision.
+
+## Evaluation integrity came first
+
+The project uses **JM1 / OpenML 1053, version 1**: 10,885 modules, 21 static
+code metrics, and approximately 19.35% defective modules.
+
+The initial audit found **299 complete feature vectors shared between
+training and test** in the random split. The data included duplicates and
+conflicting-label groups: identical metrics with different defect records.
+Evaluation could partly measure recognition of repeated examples rather
+than generalization.
+
+I grouped original vectors before splitting. Labels stay outside group
+identity; identical vectors remain on the same side of every training/test,
+validation, and cross-validation boundary. I retained the rows, including
+conflicting ones, and added overlap audits before fitting. Imputation,
+transformations, and class weights learn only from fitting partitions.
+
+## Model development
+
+Development progressed through **Logistic Regression baseline → class
+weighting → threshold and review-workload analysis → Random Forest → HGB →
+XGBoost**, with limited nested tuning, feature engineering, and an ensemble
+comparison.
+
+The main decision was to compare models at **equal review capacity,
+especially around 30%**, instead of relying on the default 0.50 threshold.
+Five outer folds with groups estimated results; three inner folds selected
+tree configurations without consulting the outer fold's outcomes.
+
+In the training-only selection study, RF captured 953 of 1,685 defective
+modules, versus 906 for balanced Logistic Regression, at similar workload.
+HGB, XGBoost, derived features, and a small ensemble did not produce a
+material gain sufficient to replace RF. The selected weighted forest has
+200 trees, depth 8, and a minimum of three examples per leaf. These CV
+comparisons are separate from the historical result below.
+
+## Historical raw RF result
+
+**Reviewing roughly one third of the highest-risk modules concentrated about
+seven out of ten modules with recorded defects inside the queue.**
+
+The model and policy were frozen before the single held-out evaluation.
+The policy selected its cutoff from scores and capacity without consulting
+test labels, keeping tied scores together.
+
+| Measure                       | Historical held-out |
+| ----------------------------- | ------------------: |
+| Modules evaluated             |               2,177 |
+| Modules with recorded defects |                 421 |
+| Flagged for review            |        652 (29.95%) |
+| Defective modules captured    |          300 of 421 |
+| Recall                        |              71.26% |
+| Precision                     |              46.01% |
+| F1                            |              0.5592 |
+| Average Precision (AP)        |              0.6553 |
+| Defective modules missed      |                 121 |
+
+The queue also contained **352 modules recorded as clean**, the false
+positives. This is human review prioritization, not automatic bug detection.
+71.26% is recall on this test, not accuracy, probability correctness, or
+expected production performance.
+
+**This result belongs to the frozen raw RF. It is not final validation of
+the calibrated artifact or abstention policies developed afterward.**
+
+## Calibration and uncertainty
+
+Later, I evaluated sigmoid and isotonic calibration with nested CV and
+groups, **using training data only**. For the fixed RF configuration,
+sigmoid improved Brier score from **0.18692 to 0.13863**, while AP remained
+approximately stable (0.40703 → 0.40619). The score measures probability
+quality; interpretation also considers reliability curves and the support
+within each range.
+
+Calibration improved probability interpretation without creating new
+predictive information. The attempt at automatic HIGH classification with
+≥90% precision found no sufficiently supported tail. The conservative
+policy left **98.44% UNCERTAIN**: 136 LOW, zero HIGH, and 8,572 UNCERTAIN.
+Even among LOW modules, seven had recorded defects.
+
+The product remains **risk ranking + human review prioritization**.
+DefectRisk predicts risk and ranking, not certainty. The historical test
+was not reused for calibration or policy design; the later system still
+requires a genuinely independent external holdout.
+
+## Executable artifact
+
+The delivery includes the frozen calibrated artifact `defectrisk-rf-sigmoid-v1`,
+an ordered feature schema, dependency versions, training fingerprints,
+and checksums. The CLI validates the CSV and loads the verified artifact,
+without training:
+
+```sh
+python -m pip install -e .
+defectrisk rank examples/modules.csv
+```
+
+Run from the DefectRisk repository root with the recorded dependencies.
+The flow is **CSV with static metrics → verified frozen artifact →
+calibrated probability → descending risk ranking**. Module identifiers stay
+outside the model; table and JSON output are available.
+
+Schema and checksum checks verify consistency and integrity, not authenticity.
+Joblib loading must use only trusted local artifacts. Reproducing saved CV
+evidence neither reopens the historical test nor independently validates
+the final artifact.
+
+## Limits and next investment
+
+- JM1 is historical; features contain only static metrics.
+- Label and snapshot provenance is imperfect; ambiguous or conflicting
+  labels exist.
+- There is no guarantee of generalization across projects, languages, or versions.
+- Calibration and policies have training/CV evidence only and require a new
+  independent external holdout with frozen settings.
+- Probabilities do not establish individual certainty or causality; a low
+  score does not waive standard testing or review.
+
+The available evidence suggested that the current features had become the
+main bottleneck, without proving a mathematical information ceiling. The
+recommended next investment is better prediction-time data: **code churn,
+defect history, ownership, test coverage, commit/change history, and review
+history**. These signals were not implemented; they would require clear
+snapshots and label horizons.
+
+The article [When Better Models Are Not Enough](/en/articles/better-models-are-not-enough/)
+explains how I decided to stop model exploration.
+
+## Evidence
+
+- <a
+    href="https://github.com/marcelotaparelli/defectrisk-ml"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    DefectRisk on GitHub: code, artifact and instructions
+  </a>
+- <a
+    href="https://github.com/marcelotaparelli/defectrisk-ml/blob/8ccdfc301a1cb22c89ae2ffbc1a29e2c054325fa/docs/model-card.md"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    Model card and intended-use limits
+  </a>
+- <a
+    href="https://github.com/marcelotaparelli/defectrisk-ml/blob/8ccdfc301a1cb22c89ae2ffbc1a29e2c054325fa/docs/final-evaluation.md"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    Historical once-only raw RF evaluation
+  </a>
+- <a
+    href="https://github.com/marcelotaparelli/defectrisk-ml/blob/8ccdfc301a1cb22c89ae2ffbc1a29e2c054325fa/docs/calibration-and-uncertainty.md"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    Later training-only calibration and uncertainty study
+  </a>

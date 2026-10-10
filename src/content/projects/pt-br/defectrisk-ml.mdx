@@ -1,0 +1,195 @@
+---
+translationKey: defectrisk-ml
+locale: pt-BR
+slug: defectrisk-ml
+title: DefectRisk
+description: Ranking de risco de defeitos para priorizar revisão de código. Na avaliação histórica do RF bruto, revisar ~30% dos módulos capturou 71,26% dos defeitos conhecidos.
+status: published
+reviewed: true
+order: 3
+category: Engenharia de IA · Machine Learning
+role: Avaliação, desenvolvimento do modelo e implementação da CLI
+context: Projeto público autoral — código aberto
+technologies:
+  [Python, scikit-learn, pandas, Random Forest, XGBoost, pytest, Joblib]
+externalUrl: https://github.com/marcelotaparelli/defectrisk-ml
+contribution: Avaliação sem contaminação por vetores duplicados, comparação por capacidade de revisão, calibração, incerteza e inferência com artefato congelado.
+---
+
+**Revisar ~30% dos módulos → capturar 71,26% dos defeitos conhecidos.**
+
+Na avaliação histórica, realizada uma única vez com o Random Forest bruto
+congelado, 652 de 2.177 módulos foram sinalizados e 300 dos 421 módulos com
+defeitos registrados entraram nessa fila. Isso mede priorização; não demonstra
+que revisores encontraram cada bug nem valida o sistema calibrado posterior.
+
+Construí o processo de avaliação, comparei modelos sob a mesma capacidade de
+revisão e entreguei um artefato congelado com uma CLI de inferência real.
+O DefectRisk estima risco para orientar onde uma equipe começa a revisão.
+
+## Problema
+
+Uma equipe não consegue inspecionar todos os módulos com a mesma atenção.
+A pergunta útil é: **se podemos revisar apenas parte do código, o ML consegue
+concentrar mais defeitos nessa fila?**
+
+Módulos defeituosos são a classe minoritária. No JM1, prever tudo como limpo
+renderia cerca de 80,65% de acurácia sem capturar um único defeito. Por isso,
+recall, precisão e esforço de revisão orientam a decisão de produto.
+
+## O primeiro problema foi a avaliação
+
+O projeto usa **JM1 / OpenML 1053, versão 1**: 10.885 módulos, 21 métricas
+estáticas de código e aproximadamente 19,35% de módulos defeituosos.
+
+A auditoria inicial encontrou **299 vetores completos de features compartilhados
+entre treino e teste** no split aleatório. Havia dados duplicados e grupos
+com rótulos conflitantes: métricas idênticas, mas registros de defeito diferentes.
+Parte da avaliação poderia medir reconhecimento de exemplos repetidos em vez
+de generalização.
+
+Passei a agrupar os vetores originais antes de separar os dados. O rótulo não
+entra na identidade do grupo; vetores idênticos permanecem no mesmo lado de
+cada fronteira de treino/teste, validação e cross-validation. Mantive as linhas,
+inclusive as conflitantes, e acrescentei auditorias de sobreposição antes do
+treino. Imputação, transformação e pesos de classe são ajustados apenas nas
+partições de fitting.
+
+## Construção do modelo
+
+A progressão foi baseline de **Logistic Regression → pesos de classe → análise
+de limiar e carga de revisão → Random Forest → HGB → XGBoost**, com tuning
+limitado e aninhado, engenharia de features e comparação de ensemble.
+
+A decisão principal foi comparar modelos na **mesma capacidade de revisão,
+especialmente perto de 30%**, em vez de depender do limiar padrão de 0,50.
+Cinco folds externos com grupos estimaram os resultados; três folds internos
+selecionaram as configurações de árvores sem usar os resultados do fold externo.
+
+No estudo de seleção, restrito ao treino, o RF capturou 953 de 1.685 módulos
+defeituosos, contra 906 da Logistic Regression balanceada, sob carga semelhante.
+HGB, XGBoost, features derivadas e um pequeno ensemble não trouxeram ganho
+material suficiente para substituir o RF. O escolhido foi uma floresta
+ponderada de 200 árvores, profundidade 8 e mínimo de três exemplos por folha.
+Essas comparações de CV não são o resultado histórico abaixo.
+
+## Resultado histórico do RF bruto
+
+**Ao revisar aproximadamente um terço dos módulos de maior risco, o modelo
+concentrou cerca de sete em cada dez módulos com defeitos registrados na fila.**
+
+O modelo e a política foram congelados antes da única avaliação held-out.
+A política escolheu o corte pelos scores e pela capacidade, sem consultar os
+rótulos do teste, mantendo scores empatados juntos.
+
+| Medida                             | Held-out histórico |
+| ---------------------------------- | -----------------: |
+| Módulos avaliados                  |              2.177 |
+| Módulos com defeitos registrados   |                421 |
+| Sinalizados para revisão           |       652 (29,95%) |
+| Módulos defeituosos capturados     |         300 de 421 |
+| Recall                             |             71,26% |
+| Precisão                           |             46,01% |
+| F1                                 |             0,5592 |
+| Average Precision (AP)             |             0,6553 |
+| Módulos defeituosos não capturados |                121 |
+
+A fila também continha **352 módulos registrados como limpos**, os falsos
+positivos. É priorização para revisão humana, não detecção automática de bugs.
+71,26% é recall nesse teste, não acurácia, correção de probabilidades ou previsão
+de desempenho em produção.
+
+**O resultado pertence ao RF bruto congelado. Não é a validação final do
+artefato calibrado ou das políticas de abstenção desenvolvidos depois.**
+
+## Calibração e incerteza
+
+Depois, avaliei calibração sigmoide e isotônica com CV aninhada e grupos,
+**usando apenas o treino**. Para a configuração fixa do RF, a sigmoide melhorou
+o Brier score de **0,18692 para 0,13863**, com AP aproximadamente estável
+(0,40703 → 0,40619). O score mede qualidade probabilística; a interpretação
+também considera curvas de confiabilidade e o suporte de cada faixa.
+
+A calibração melhorou a interpretação das probabilidades sem criar nova
+informação preditiva. A tentativa de classificação automática HIGH com
+precisão ≥90% não encontrou uma faixa com suporte suficiente. A política
+conservadora deixou **98,44% como UNCERTAIN**: 136 LOW, nenhum HIGH e 8.572
+UNCERTAIN. Mesmo entre os LOW, sete módulos tinham defeitos registrados.
+
+O produto permanece **ranking de risco + priorização de revisão humana**.
+DefectRisk prevê risco e ranking, não certeza. O teste histórico não foi
+reutilizado para calibrar ou definir essas políticas; o sistema posterior
+ainda exige um holdout externo verdadeiramente independente.
+
+## Artefato executável
+
+A entrega inclui o artefato calibrado congelado `defectrisk-rf-sigmoid-v1`,
+schema ordenado das features, versões de dependências, fingerprints de treino
+e checksums. A CLI valida o CSV e carrega o artefato verificado, sem treinar:
+
+```sh
+python -m pip install -e .
+defectrisk rank examples/modules.csv
+```
+
+Execute na raiz do repositório DefectRisk com as dependências registradas.
+O fluxo é **CSV com métricas estáticas → artefato congelado verificado →
+probabilidade calibrada → ranking decrescente de risco**. Identificadores dos
+módulos ficam fora do modelo; tabela e JSON são saídas disponíveis.
+
+Schema e checksums verificam consistência e integridade, não autenticidade.
+O carregamento Joblib deve usar apenas artefatos locais confiáveis. Reproduzir
+a evidência salva de CV não reabre o teste histórico nem fornece validação
+independente do artefato final.
+
+## Limitações e próximo investimento
+
+- JM1 é histórico; as features são apenas métricas estáticas.
+- A proveniência dos rótulos e dos snapshots é imperfeita; existem rótulos
+  ambíguos ou conflitantes.
+- Não há garantia de generalização entre projetos, linguagens ou versões.
+- A calibração e as políticas têm evidência restrita ao treino/CV e precisam
+  de um novo holdout externo independente, com configurações congeladas.
+- Probabilidades não demonstram certeza individual ou causalidade; um risco
+  baixo não dispensa testes ou revisão padrão.
+
+A evidência disponível sugeriu que as features atuais haviam se tornado o
+principal gargalo, sem provar um teto matemático de informação. O próximo
+investimento recomendado é melhorar os dados disponíveis no momento da
+predição: **churn de código, histórico de defeitos, ownership, cobertura de
+testes, histórico de commits/mudanças e de revisão**. Esses sinais não foram
+implementados; exigiriam snapshots e horizontes de rótulo bem definidos.
+
+O artigo [Quando modelos melhores não bastam](/artigos/better-models-are-not-enough/)
+detalha como tomei a decisão de encerrar a exploração de modelos.
+
+## Evidências
+
+- <a
+    href="https://github.com/marcelotaparelli/defectrisk-ml"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    DefectRisk no GitHub: código, artefato e instruções
+  </a>
+- <a
+    href="https://github.com/marcelotaparelli/defectrisk-ml/blob/8ccdfc301a1cb22c89ae2ffbc1a29e2c054325fa/docs/model-card.md"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    Model card e limites de uso
+  </a>
+- <a
+    href="https://github.com/marcelotaparelli/defectrisk-ml/blob/8ccdfc301a1cb22c89ae2ffbc1a29e2c054325fa/docs/final-evaluation.md"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    Avaliação histórica única do RF bruto
+  </a>
+- <a
+    href="https://github.com/marcelotaparelli/defectrisk-ml/blob/8ccdfc301a1cb22c89ae2ffbc1a29e2c054325fa/docs/calibration-and-uncertainty.md"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    Estudo posterior de calibração e incerteza, restrito ao treino
+  </a>

@@ -13,6 +13,11 @@ const pairs = [
   ['/projetos/salus/', '/en/projects/salus/'],
   ['/projetos/ops-triage-ai/', '/en/projects/ops-triage-ai/'],
   ['/projetos/opspilot-ai/', '/en/projects/opspilot-ai/'],
+  ['/projetos/defectrisk-ml/', '/en/projects/defectrisk-ml/'],
+  [
+    '/artigos/better-models-are-not-enough/',
+    '/en/articles/better-models-are-not-enough/',
+  ],
   [
     '/projetos/resilient-transaction-api/',
     '/en/projects/resilient-transaction-api/',
@@ -101,6 +106,10 @@ for (const path of [
   '/en/projects/opspilot-ai/',
   '/projetos/ops-triage-ai/',
   '/en/projects/ops-triage-ai/',
+  '/projetos/defectrisk-ml/',
+  '/en/projects/defectrisk-ml/',
+  '/artigos/better-models-are-not-enough/',
+  '/en/articles/better-models-are-not-enough/',
   '/projetos/resilient-transaction-api/',
   '/en/projects/resilient-transaction-api/',
   '/projetos/agencia-catus/',
@@ -206,22 +215,28 @@ test('project external links are explicit, safe and locale-equivalent', async ({
       aria: 'Visit website: Ops Triage AI — opens in a new tab',
     },
     ...['pt-BR', 'en'].flatMap((locale) =>
-      ['opspilot-ai', 'resilient-transaction-api'].map((slug) => {
-        const english = locale === 'en';
-        const title =
-          slug === 'opspilot-ai' ? 'OpsPilot AI' : 'Resilient Transaction API';
-        const listing = english ? '/en/projects/' : '/projetos/';
-        return {
-          listing,
-          casePath: listing + slug + '/',
-          url: 'https://github.com/marcelotaparelli/' + slug,
-          readCase: english ? 'Explore case' : 'Explorar case',
-          cta: english ? 'Visit website' : 'Visitar site',
-          aria: english
-            ? 'Visit website: ' + title + ' — opens in a new tab'
-            : 'Visitar site: ' + title + ' — abre em nova aba',
-        };
-      }),
+      ['opspilot-ai', 'resilient-transaction-api', 'defectrisk-ml'].map(
+        (slug) => {
+          const english = locale === 'en';
+          const title =
+            slug === 'opspilot-ai'
+              ? 'OpsPilot AI'
+              : slug === 'defectrisk-ml'
+                ? 'DefectRisk'
+                : 'Resilient Transaction API';
+          const listing = english ? '/en/projects/' : '/projetos/';
+          return {
+            listing,
+            casePath: listing + slug + '/',
+            url: 'https://github.com/marcelotaparelli/' + slug,
+            readCase: english ? 'Explore case' : 'Explorar case',
+            cta: english ? 'Visit website' : 'Visitar site',
+            aria: english
+              ? 'Visit website: ' + title + ' — opens in a new tab'
+              : 'Visitar site: ' + title + ' — abre em nova aba',
+          };
+        },
+      ),
     ),
   ];
   for (const item of expectations) {
@@ -381,14 +396,16 @@ test('AI and software positioning, metadata and project priority agree in both l
             .locator('.project-info')
             .locator('h2, h3')
             .allTextContents()
-        )
-          .slice(0, 4)
-          .map((s) => s.trim()),
+        ).map((s) => s.trim()),
       ).toEqual([
         'OpsPilot AI',
         'Ops Triage AI',
+        'DefectRisk',
         'Resilient Transaction API',
         'Salus',
+        'Agência Catus',
+        'Atendimento EVAG',
+        'Google Drive → WordPress',
       ]);
     }
   }

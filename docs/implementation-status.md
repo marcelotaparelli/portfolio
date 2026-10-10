@@ -1,5 +1,57 @@
 # Implementation status
 
+## DefectRisk bilingual portfolio integration (2026-10-10)
+
+- Audited AGENTS.md, package scripts, content schema/selection, Home,
+  ProjectList, translations, release/artifact/distribution validators, existing
+  PT/EN OpsPilot, Ops Triage and Resilient cases, and this status history before
+  editing. Initial working tree was clean at `d2234c27a92c6958c5bb11fe90b2d7426f95efb2`.
+- Read current public DefectRisk main at
+  `8ccdfc301a1cb22c89ae2ffbc1a29e2c054325fa`: README, model card, portfolio case,
+  data-quality article, calibration/uncertainty study, historical final
+  evaluation, pyproject and CLI. No model training or held-out rerun occurred.
+  Preserved the historical frozen raw RF result (652/2,177 reviewed,
+  300/421 defective modules captured, 71.26% recall, 46.01% precision,
+  F1 0.5592, AP 0.6553, 121 missed) separately from later training-only
+  calibration/policy evidence and its required independent external holdout.
+- Added published/reviewed PT/EN `defectrisk-ml` cases using the existing
+  renderer. Both have order 3; shifted every prior order >=3 by one. Final
+  sequence: OpsPilot, Ops Triage, DefectRisk, Resilient, Salus, Catus, EVAG,
+  Drive WordPress. OpsPilot/Ops Triage sources remain unchanged.
+- Added PT/EN `better-models-are-not-enough` articles dated 2026-10-09, adapted
+  to the site's first-person editorial style. Case/article links are reciprocal;
+  evidence documentation links are pinned to the audited source commit. The
+  narrative covers evaluation boundaries, imbalance, conflicting labels,
+  controlled plateaus, calibration and abstention without claiming a proven
+  information ceiling or broad high-confidence automation.
+- Minimal PT/EN Selected Work/Projects copy now includes rigorously evaluated
+  Machine Learning; About gains one sentence on leakage-safe ML evaluation,
+  ranking, calibration and uncertainty. Hero, components, styles, schema,
+  dependencies and HTML/PDF CVs are unchanged.
+- Added both translation keys to the required release set. Existing published
+  article validation requires local distribution metadata: the new PT file
+  supplies one bilingual LinkedIn text with both canonicals, and EN supplies
+  four DEV.to tags. No external publication or distribution was performed.
+  Extended existing E2E cases for reciprocal SEO, 320px accessibility/reflow,
+  GitHub links and the complete eight-project order; no validator was weakened.
+- Passed `bun run typecheck` (0 errors/warnings, 20 existing hints), lint,
+  repository format/format check, 42 unit tests/112 assertions, 28 E2E,
+  preview and production builds (44 pages each), both artifact validators
+  (44 HTML documents each), and `bun run check:release`. Build/E2E required
+  execution outside the sandbox after verified esbuild pipe/listen EPERM;
+  repository commands and configurations were retained. Used local Bun 1.4.2
+  and installed the missing Git/Chromium system tooling; no project dependency
+  changes were needed.
+- Preview and production browser review covered Home, Projects, DefectRisk,
+  article and About in PT/EN at 1440/768/390/320px (80 configurations): HTTP 200, correct order,
+  language/SEO/date metadata, existing responsive cards, intact TOC, readable
+  tables/CLI, zero document overflow and zero axe WCAG-tagged violations.
+  Followed case/article cross-links in both languages and inspected real
+  desktop/mobile captures. Evidence and a saved preview artifact are ignored
+  under `reports/defectrisk/`. `dist/` holds production output.
+- Publication metadata follows the requested state; generated changes remain
+  local for human review. No push, deployment or CV generation occurred.
+
 ## OpsPilot AI final editorial approval for release (2026-10-07)
 
 - Reviewed the full PT/EN articles, cases, original claim matrix and current

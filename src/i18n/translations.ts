@@ -52,7 +52,7 @@ const pt = {
     eyebrow: '02 / TRABALHOS SELECIONADOS',
     title: 'Problemas reais.\nTrabalho concreto.',
     description:
-      'RAG e agentes com controles de execução, avaliação e adaptação de modelos, backend resiliente e automação. Cada case apresenta evidências e limites explícitos.',
+      'RAG e agentes com controles de execução, avaliação e adaptação de modelos, Machine Learning com avaliação rigorosa, backend resiliente e automação. Cada case apresenta evidências e limites explícitos.',
   },
   experience: {
     eyebrow: '03 / EXPERIÊNCIA E COMPETÊNCIAS',
@@ -80,7 +80,7 @@ const pt = {
     eyebrow: 'PROJETOS',
     title: 'Do contexto\nà contribuição.',
     description:
-      'Projetos de Engenharia de IA e de Software: RAG, agentes, evals, adaptação de modelos e backend confiável. Contribuições, trade-offs e evidências em cada case.',
+      'Projetos de Engenharia de IA e de Software: RAG, agentes, evals, adaptação de modelos, Machine Learning com avaliação rigorosa e backend confiável. Contribuições, trade-offs e evidências em cada case.',
   },
   articles: {
     eyebrow: 'ARTIGOS',
@@ -110,7 +110,7 @@ const pt = {
     capabilities: 'Competências em contexto',
     learning: 'Engenharia na prática',
     learningText:
-      'No OpsPilot AI, construí RAG e workflows com agentes em Python/FastAPI, pgvector, LangGraph e OpenAI, com aprovação humana e OpenTelemetry. No Ops Triage AI, combinei baseline determinístico, LLM local e política híbrida; avaliei Jev e adaptei Laya com PyTorch/CUDA em experimentos separados do runtime. Na Resilient Transaction API, trabalhei idempotência, resiliência e operação observável com TypeScript/Bun, PostgreSQL e Redis, incluindo um laboratório AWS temporário, fora de produção.',
+      'No OpsPilot AI, construí RAG e workflows com agentes em Python/FastAPI, pgvector, LangGraph e OpenAI, com aprovação humana e OpenTelemetry. No Ops Triage AI, combinei baseline determinístico, LLM local e política híbrida; avaliei Jev e adaptei Laya com PyTorch/CUDA em experimentos separados do runtime. No DefectRisk, trabalhei avaliação de ML sem contaminação por duplicatas, ranking de risco, calibração e incerteza. Na Resilient Transaction API, trabalhei idempotência, resiliência e operação observável com TypeScript/Bun, PostgreSQL e Redis, incluindo um laboratório AWS temporário, fora de produção.',
     education: {
       heading: 'Formação',
       postgraduate: {
@@ -191,7 +191,7 @@ const en: Translations = {
     eyebrow: '02 / SELECTED WORK',
     title: 'Real problems.\nTangible work.',
     description:
-      'RAG and agents with execution controls, model evaluation and adaptation, resilient backend systems, and automation. Each case presents explicit evidence and limitations.',
+      'RAG and agents with execution controls, model evaluation and adaptation, rigorously evaluated Machine Learning, resilient backend systems, and automation. Each case presents explicit evidence and limitations.',
   },
   experience: {
     eyebrow: '03 / EXPERIENCE & CAPABILITIES',
@@ -218,7 +218,7 @@ const en: Translations = {
     eyebrow: 'PROJECTS',
     title: 'From context\nto contribution.',
     description:
-      'AI and Software Engineering projects: RAG, agents, evals, model adaptation, and reliable backend systems. Each case defines contributions, trade-offs, and evidence.',
+      'AI and Software Engineering projects: RAG, agents, evals, model adaptation, rigorously evaluated Machine Learning, and reliable backend systems. Each case defines contributions, trade-offs, and evidence.',
   },
   articles: {
     eyebrow: 'ARTICLES',
@@ -248,7 +248,7 @@ const en: Translations = {
     capabilities: 'Capabilities in context',
     learning: 'Engineering in practice',
     learningText:
-      'In OpsPilot AI, I built RAG and agentic workflows with Python/FastAPI, pgvector, LangGraph, and OpenAI, with human approval and OpenTelemetry. In Ops Triage AI, I combined a deterministic baseline, a local LLM, and a hybrid policy; I evaluated Jev and adapted Laya with PyTorch/CUDA in experiments separate from the runtime. In Resilient Transaction API, I worked on idempotency, resilience, and observable operations with TypeScript/Bun, PostgreSQL, and Redis, including a temporary non-production AWS lab.',
+      'In OpsPilot AI, I built RAG and agentic workflows with Python/FastAPI, pgvector, LangGraph, and OpenAI, with human approval and OpenTelemetry. In Ops Triage AI, I combined a deterministic baseline, a local LLM, and a hybrid policy; I evaluated Jev and adapted Laya with PyTorch/CUDA in experiments separate from the runtime. In DefectRisk, I worked on leakage-safe ML evaluation, risk ranking, calibration, and uncertainty. In Resilient Transaction API, I worked on idempotency, resilience, and observable operations with TypeScript/Bun, PostgreSQL, and Redis, including a temporary non-production AWS lab.',
     education: {
       heading: 'Education',
       postgraduate: {
