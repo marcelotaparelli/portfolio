@@ -1,9 +1,9 @@
 name: Distribute content
 
-# Article distribution (DEV.to + LinkedIn) or project launch (LinkedIn only).
+# Article or project distribution (DEV.to + LinkedIn).
 # Human approval is the manual workflow_dispatch itself: a human passes the
 # content slug and type, the workflow validates the pair, distributes per channel
-# (articles: DEV.to EN + bilingual LinkedIn; projects: approved PT-BR LinkedIn), and records
+# (articles: DEV.to EN + bilingual LinkedIn; projects: EN case + PT-BR LinkedIn), and records
 # state on the dedicated `distribution-state` branch. Never commits to main.
 # Never publishes in any other circumstance. No rebuild, no deploy.
 on:
@@ -14,7 +14,7 @@ on:
         required: true
         type: string
       content_type:
-        description: Article pair or project launch (LinkedIn only)
+        description: Article pair or project launch (DEV.to + LinkedIn)
         required: true
         default: article
         type: choice
@@ -71,9 +71,7 @@ jobs:
           set -euo pipefail
           # Fail closed before any network call when credentials are absent.
           # (The script re-checks; this keeps the failure reason obvious.)
-          if [ "$CONTENT_TYPE" = article ]; then
-            test -n "${DEVTO_API_KEY:-}" || { echo "missing secret: DEVTO_API_KEY" >&2; exit 1; }
-          fi
+          test -n "${DEVTO_API_KEY:-}" || { echo "missing secret: DEVTO_API_KEY" >&2; exit 1; }
           test -n "${LINKEDIN_ACCESS_TOKEN:-}" || { echo "missing secret: LINKEDIN_ACCESS_TOKEN" >&2; exit 1; }
           test -n "${LINKEDIN_PERSON_URN:-}" || { echo "missing variable: LINKEDIN_PERSON_URN" >&2; exit 1; }
           bun scripts/distribution/distribute.ts \

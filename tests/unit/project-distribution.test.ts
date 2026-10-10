@@ -4,6 +4,7 @@ import {
   resolveProjectPost,
 } from '../../scripts/distribution/project';
 import { buildLinkedinPayload } from '../../scripts/distribution/linkedin';
+import { buildDevtoPayload } from '../../scripts/distribution/devto';
 import type { ArticleReader } from '../../scripts/distribution/article';
 import { mkdtemp, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
@@ -37,6 +38,19 @@ describe('project launch distribution', () => {
       `https://marcelotaparelli.com.br/en/projects/${slug}/`,
     );
     expect(pair.pt.distribution.devtoTags).toBeUndefined();
+    const devto = buildDevtoPayload(pair.en);
+    expect(devto.canonical_url).toBe(pair.en.canonicalUrl);
+    expect(devto.tags).toEqual([
+      'ai',
+      'machinelearning',
+      'python',
+      'programming',
+    ]);
+    expect(devto.body_markdown).toContain('300 of the 421');
+    expect(devto.body_markdown).toContain(
+      'https://marcelotaparelli.com.br/en/articles/better-models-are-not-enough/',
+    );
+    expect(devto.body_markdown).not.toContain('Nem todo problema');
   });
 
   test('rejects drafts and unreviewed project cases in either locale', async () => {
@@ -119,6 +133,32 @@ describe('project launch distribution', () => {
       'no published pt-BR project',
     );
   });
+
+  test('requires valid DEV.to tags and a nonempty English case', async () => {
+    for (const replacement of [
+      'tags: []',
+      'tags: [a, b, c, d, e]',
+      'tags: [42]',
+    ]) {
+      const reader = modifiedReader((path, source) =>
+        path === copyPath
+          ? source.replace(
+              'tags: [ai, machinelearning, python, programming]',
+              replacement,
+            )
+          : source,
+      );
+      await expect(resolveProjectPost(slug, reader)).rejects.toThrow(/tags/);
+    }
+    const emptyCase = modifiedReader((path, source) =>
+      path === `src/content/projects/en/${slug}.mdx`
+        ? source.match(/^---\n[\s\S]*?\n---\n/)![0]
+        : source,
+    );
+    await expect(resolveProjectPost(slug, emptyCase)).rejects.toThrow(
+      'must not be empty',
+    );
+  });
 });
 
 // Exercise the actual CLI with an offline network stub. No external requests.
@@ -141,6 +181,10 @@ describe('project launch CLI', () => {
           }
           if (String(url) === 'https://api.linkedin.com/rest/posts')
             return new Response('{}', { status: 201, headers: { 'x-restli-id': 'urn:li:ugcPost:offline-test' } });
+          if (String(url).startsWith('https://dev.to/api/articles/me?'))
+            return Response.json([]);
+          if (String(url) === 'https://dev.to/api/articles')
+            return Response.json({ id: 99, url: 'https://dev.to/offline-test/defectrisk' }, { status: Number(process.env.TEST_DEVTO_STATUS ?? 201) });
           throw new Error('Unexpected network request');
         };
       `,
@@ -156,6 +200,8 @@ describe('project launch CLI', () => {
     websiteStatus = '200',
     kind = 'project',
     failedLocale = 'pt-BR',
+    devtoStatus = '201',
+    devtoKey = 'offline-devto-key',
   ) {
     const child = Bun.spawn(
       [
@@ -173,12 +219,13 @@ describe('project launch CLI', () => {
       {
         env: {
           ...process.env,
-          DEVTO_API_KEY: '',
+          DEVTO_API_KEY: devtoKey,
           LINKEDIN_ACCESS_TOKEN: 'offline-test-token',
           LINKEDIN_PERSON_URN: 'urn:li:person:offline-test',
           TEST_CALLS_PATH: join(dir, 'calls.json'),
           TEST_WEBSITE_STATUS: websiteStatus,
           TEST_FAILED_LOCALE: failedLocale,
+          TEST_DEVTO_STATUS: devtoStatus,
         },
         stdout: 'pipe',
         stderr: 'pipe',
@@ -197,7 +244,7 @@ describe('project launch CLI', () => {
     return { code, stdout, stderr, calls };
   }
 
-  test('publishes only LinkedIn without DEV.to credentials and skips a rerun', async () => {
+  test('publishes the English case on DEV.to and approved LinkedIn copy, then skips both on rerun', async () => {
     await fixture(async (dir) => {
       const originalArticle = {
         linkedin: {
@@ -213,28 +260,65 @@ describe('project launch CLI', () => {
       );
       const first = await cli(dir);
       expect(first.code).toBe(0);
-      expect(first.stdout).toContain('DEV.to: skipped');
+      expect(first.stdout).toContain('DEV.to: published');
       expect(first.calls.map((call) => call.method)).toEqual([
         'GET',
         'GET',
+        'GET',
+        'POST',
         'POST',
       ]);
-      const body = JSON.parse(first.calls[2]!.body!);
+      const body = JSON.parse(first.calls[4]!.body!);
       expect(body.commentary).toBe(
         (await resolveProjectPost(slug)).pt.distribution.linkedinText,
       );
       const ledger = await Bun.file(join(dir, 'ledger.json')).json();
       expect(ledger[slug]).toEqual(originalArticle);
+      expect(ledger[`project:${slug}`].devto.id).toBe('99');
+      expect(JSON.parse(first.calls[3]!.body!).article).toEqual(
+        buildDevtoPayload((await resolveProjectPost(slug)).en),
+      );
       expect(ledger[`project:${slug}`].linkedin.id).toBe(
         'urn:li:ugcPost:offline-test',
       );
       const second = await cli(dir);
       expect(second.code).toBe(0);
       expect(second.stdout).toContain('LinkedIn: already-published');
+      expect(second.stdout).toContain('DEV.to: already-published');
       expect(second.calls.map((call) => call.method)).toEqual(['GET', 'GET']);
       expect(
         first.stdout + first.stderr + second.stdout + second.stderr,
       ).not.toContain('offline-test-token');
+      expect(first.stdout + first.stderr).not.toContain('offline-devto-key');
+    });
+  });
+
+  test('retries a failed DEV.to publication without reposting successful LinkedIn', async () => {
+    await fixture(async (dir) => {
+      const failed = await cli(dir, '200', 'project', 'pt-BR', '422');
+      expect(failed.code).toBe(1);
+      const partial = await Bun.file(join(dir, 'ledger.json')).json();
+      expect(partial[`project:${slug}`].linkedin.id).toBe(
+        'urn:li:ugcPost:offline-test',
+      );
+      expect(partial[`project:${slug}`].devto).toBeUndefined();
+      const retry = await cli(dir);
+      expect(retry.code).toBe(0);
+      expect(retry.stdout).toContain('LinkedIn: already-published');
+      expect(
+        retry.calls
+          .filter((call) => call.method === 'POST')
+          .map((call) => call.url),
+      ).toEqual(['https://dev.to/api/articles']);
+    });
+  });
+
+  test('requires DEV.to credentials before publishing either channel', async () => {
+    await fixture(async (dir) => {
+      const result = await cli(dir, '200', 'project', 'pt-BR', '201', '');
+      expect(result.code).toBe(1);
+      expect(result.stderr).toContain('DEVTO_API_KEY');
+      expect(result.calls.some((call) => call.method === 'POST')).toBe(false);
     });
   });
 

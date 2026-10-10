@@ -1,10 +1,11 @@
-// Project launches use approved PT-BR copy, independent of article distribution.
+// Project launches use approved PT-BR LinkedIn copy and the reviewed EN case on DEV.to.
 // Both website locales must remain published and reviewed.
 import {
   DistributionError,
   fsReader,
   splitFrontmatter,
   validateDistributionInput,
+  absolutizeMarkdown,
   type ArticleReader,
 } from './article';
 import { ORIGIN, type ResolvedPair, type ResolvedArticle } from './types';
@@ -43,7 +44,7 @@ export async function resolveProjectPost(
       ? reader.listPtFiles()
       : reader.listEnFiles());
     for (const path of paths) {
-      const { data } = splitFrontmatter(await reader.readFile(path));
+      const { data, body } = splitFrontmatter(await reader.readFile(path));
       if (data.slug !== slug || data.locale !== locale) continue;
       if (data.status !== 'published' || data.reviewed !== true)
         throw new DistributionError(
@@ -63,7 +64,7 @@ export async function resolveProjectPost(
         translationKey: data.translationKey,
         title: data.title,
         description: data.description,
-        markdown: '',
+        markdown: absolutizeMarkdown(body.trim(), ORIGIN),
         canonicalUrl: `${ORIGIN}/${locale === 'pt-BR' ? 'projetos' : 'en/projects'}/${slug}/`,
         distribution: {},
       };
@@ -91,5 +92,12 @@ export async function resolveProjectPost(
     );
   pt.distribution.linkedinText = body.trim();
   validateDistributionInput(pt.distribution, pt.canonicalUrl);
+  const tags = data.distribution?.devto?.tags;
+  if (!Array.isArray(tags) || !tags.every((tag) => typeof tag === 'string'))
+    throw new DistributionError('project launch requires DEV.to tags');
+  en.distribution.devtoTags = tags;
+  validateDistributionInput(en.distribution, en.canonicalUrl);
+  if (!en.markdown)
+    throw new DistributionError('project EN case must not be empty');
   return { slug, translationKey: pt.translationKey, pt, en };
 }

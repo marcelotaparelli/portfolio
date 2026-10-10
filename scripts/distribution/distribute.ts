@@ -1,7 +1,7 @@
 // Phase 1 content distribution CLI (DEV.to + LinkedIn).
 // Single manual execution: bun scripts/distribution/distribute.ts --slug <slug> --ledger <path>
 // Default: a PT-BR + EN article pair (DEV.to EN + bilingual LinkedIn).
-// --kind project: approved PT-BR launch copy, LinkedIn only, with both
+// --kind project: approved PT-BR LinkedIn launch copy + EN case on DEV.to, with both
 // published/reviewed project cases checked before publication.
 // Secrets come only from the environment and are never printed.
 // Exit 0: every requested channel published or already-published.
@@ -125,7 +125,7 @@ async function main(): Promise<void> {
   const linkedinUrn = process.env.LINKEDIN_PERSON_URN ?? '';
   const secrets = [devtoKey, linkedinToken];
   const missing: string[] = [];
-  if (kind === 'article' && !devtoKey) missing.push('DEVTO_API_KEY');
+  if (!devtoKey) missing.push('DEVTO_API_KEY');
   if (!linkedinToken) missing.push('LINKEDIN_ACCESS_TOKEN');
   if (!linkedinUrn) missing.push('LINKEDIN_PERSON_URN');
 
@@ -158,11 +158,7 @@ async function main(): Promise<void> {
     const message = error instanceof Error ? error.message : String(error);
     console.log(`Content: ${slug}`);
     console.log(`Website: failed (${redact(message, secrets)})`);
-    console.log(
-      kind === 'project'
-        ? 'DEV.to: skipped'
-        : 'DEV.to: failed (content not distributable)',
-    );
+    console.log('DEV.to: failed (content not distributable)');
     console.log('LinkedIn: failed (content not distributable)');
     process.exit(1);
   }
@@ -171,8 +167,8 @@ async function main(): Promise<void> {
     printSummary(slug, websiteOk, [
       {
         channel: 'devto',
-        status: kind === 'project' ? 'skipped' : 'failed',
-        error: kind === 'project' ? undefined : 'disabled',
+        status: 'failed',
+        error: 'disabled',
       },
       { channel: 'linkedin', status: 'failed', error: 'disabled' },
     ]);
@@ -181,41 +177,39 @@ async function main(): Promise<void> {
   }
 
   const resolved = pair as ResolvedPair;
-  if (kind === 'article')
-    results.push(
-      await runChannel(
-        'devto',
-        async () => {
-          // Remote lookup by the EN canonical is authoritative: it catches a
-          // post that exists even when the ledger lacks (or contradicts) it,
-          // and it never matches the old mistaken PT post.
-          const existing = await findByCanonical(
-            devtoKey,
-            resolved.en.canonicalUrl,
-          );
-          if (existing) {
-            entry.devto = {
-              ...existing,
-              canonicalUrl: resolved.en.canonicalUrl,
-            };
-            return {
-              url: existing.url,
-              remoteId: existing.id,
-              preexisting: true,
-            };
-          }
-          const done = await publishDevto(
-            devtoKey,
-            buildDevtoPayload(resolved.en),
-          );
-          entry.devto = { ...done, canonicalUrl: resolved.en.canonicalUrl };
-          return { url: done.url, remoteId: done.id };
-        },
-        isPublishedFor(entry.devto, resolved.en.canonicalUrl),
-        secrets,
-      ),
-    );
-  else results.push({ channel: 'devto', status: 'skipped' });
+  results.push(
+    await runChannel(
+      'devto',
+      async () => {
+        // Remote lookup by the EN canonical is authoritative: it catches a
+        // post that exists even when the ledger lacks (or contradicts) it,
+        // and it never matches the old mistaken PT post.
+        const existing = await findByCanonical(
+          devtoKey,
+          resolved.en.canonicalUrl,
+        );
+        if (existing) {
+          entry.devto = {
+            ...existing,
+            canonicalUrl: resolved.en.canonicalUrl,
+          };
+          return {
+            url: existing.url,
+            remoteId: existing.id,
+            preexisting: true,
+          };
+        }
+        const done = await publishDevto(
+          devtoKey,
+          buildDevtoPayload(resolved.en),
+        );
+        entry.devto = { ...done, canonicalUrl: resolved.en.canonicalUrl };
+        return { url: done.url, remoteId: done.id };
+      },
+      isPublishedFor(entry.devto, resolved.en.canonicalUrl),
+      secrets,
+    ),
+  );
   // Skip means zero API calls: the ledger is the source of truth, but only
   // when it records the canonical we expect now. The remote DEV.to lookup
   // inside the publish path protects the case where the ledger lacks an

@@ -555,34 +555,39 @@ e do Chromium do Playwright; o CI instala com `playwright install
 5. Actions → "Distribute content" com o `article_slug`.
 6. Conferir o `Summary` do run + posts no DEV.to e LinkedIn.
 
-### Publicar lançamento de projeto no LinkedIn
+### Publicar lançamento de projeto no DEV.to e LinkedIn
 
 O workflow **Distribute content** também aceita `content_type: project`.
-Esse modo publica somente no LinkedIn, usando texto PT-BR aprovado; não
-cria artigo no DEV.to nem exige `DEVTO_API_KEY`. O modo padrão `article`
+Esse modo publica o case EN completo no DEV.to e o texto PT-BR aprovado
+no LinkedIn. Exige `DEVTO_API_KEY`. O modo padrão `article`
 continua exigindo o par de artigos e o post bilíngue existentes.
 
 1. Manter os cases PT-BR e EN publicados e revisados, com o mesmo slug e
    `translationKey`, e fazer deploy antes da distribuição.
 2. Salvar a cópia em `docs/editorial/<slug>-linkedin.md`. O frontmatter exige
    `slug`, `locale: pt-BR`, `status: approved` e `reviewed: true`; o corpo
-   contém exatamente o texto a publicar, sem título editorial adicional.
+   contém exatamente o texto do LinkedIn, sem título editorial adicional.
+   Incluir também `distribution.devto.tags` com 1–4 tags não vazias; o
+   distribuidor usa o corpo do case EN revisado como conteúdo do DEV.to,
+   com a URL `/en/projects/<slug>/` como canonical e links locais absolutos.
    Aprovar a cópia antes de marcar esses campos. O texto deve conter a URL
    do case PT-BR e ter no máximo 3.000 caracteres.
 3. Validar, fazer commit e push; aguardar CI verde.
 4. Actions → **Distribute content** → **Run workflow**:
    - `article_slug`: `defectrisk-ml`.
    - `content_type`: `project`.
-5. Conferir o resumo: website OK, DEV.to skipped e LinkedIn published
-   (ou already-published em uma repetição).
+5. Conferir o resumo: website OK, DEV.to e LinkedIn published
+   (ou already-published por canal em uma repetição).
 
 O DefectRisk usa `docs/editorial/defectrisk-ml-linkedin.md`, com a cópia
 aprovada pelo proprietário. As duas URLs públicas dos cases precisam retornar
 HTTP 200 antes de qualquer publicação. São necessários
-`LINKEDIN_ACCESS_TOKEN` e `LINKEDIN_PERSON_URN`, já usados no modo artigo.
+`DEVTO_API_KEY`, `LINKEDIN_ACCESS_TOKEN` e `LINKEDIN_PERSON_URN`, já usados no modo artigo.
 O registro fica em `project:defectrisk-ml` na mesma branch
 `distribution-state`; o grupo de concorrência continua `distribution`.
-Registros de artigos permanecem separados. Um ledger ilegível ou inválido
+Registros de artigos permanecem separados. Se o LinkedIn foi publicado no
+modo projeto anterior e registrado no ledger, a execução publica somente
+o DEV.to ainda ausente. Um ledger ilegível ou inválido
 bloqueia a execução, evitando tratar um histórico corrompido como vazio.
 O mesmo limite de idempotência do LinkedIn se aplica: se a publicação remota
 for bem-sucedida e a persistência do ledger falhar, investigar antes de repetir.

@@ -1,5 +1,27 @@
 # Implementation status
 
+## DefectRisk project distribution on both channels (2026-10-10)
+
+- The owner requested DEV.to publication in addition to the approved
+  LinkedIn launch. Project mode now distributes the existing reviewed EN
+  case to DEV.to, with its public `/en/projects/defectrisk-ml/` canonical,
+  original title/description and absolute local Markdown links. No new
+  editorial claims or website content were generated.
+- Added four DEV.to tags to the launch copy's metadata; the approved
+  LinkedIn body remains unchanged. Project mode now requires `DEVTO_API_KEY`
+  alongside the existing LinkedIn credentials, matching article mode.
+- Both channels use the existing per-channel publication and canonical
+  checks. The `project:<slug>` ledger key is unchanged: an already-recorded
+  LinkedIn launch is skipped while a missing DEV.to publication proceeds.
+  Article validation and distribution remain unchanged.
+- Offline tests verify the EN DEV.to payload, exact LinkedIn copy, both-channel
+  publication, rerun skips, partial failure recovery without LinkedIn repost,
+  missing DEV.to credentials, invalid tags and empty EN content.
+  Unit suite passed: 54 tests, 173 assertions. Typecheck passed with zero
+  errors/warnings (30 hints), and lint passed. No real API publication ran.
+- Updated workflow descriptions and the runbook. The prior LinkedIn-only
+  implementation below is retained as history and superseded by this entry.
+
 ## DefectRisk LinkedIn launch distribution (2026-10-10)
 
 - Integrated the owner's approved PT-BR launch copy into

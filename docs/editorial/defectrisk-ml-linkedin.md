@@ -3,6 +3,9 @@ slug: defectrisk-ml
 locale: pt-BR
 status: approved
 reviewed: true
+distribution:
+  devto:
+    tags: [ai, machinelearning, python, programming]
 ---
 
 Nem todo problema de IA precisa de um LLM.
