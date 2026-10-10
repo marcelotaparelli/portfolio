@@ -139,11 +139,3 @@ ul li::before {
 .skills strong {
   font-weight: 700;
 }
-
-.education p:last-child {
-  font-size: 9pt;
-}
-
-.education p:last-child strong {
-  font-weight: 500;
-}

@@ -50,6 +50,10 @@ Variable execution state belongs in `docs/implementation-status.md`, not here.
 - Agents may work only within repository constraints.
 - Architectural changes require explicit justification.
 - Generated changes require human review.
+- After completing and validating requested changes, always create a local
+  commit with the required author/committer identity. This is the owner's
+  standing authorization for local commits, not for push or publication;
+  commit only task-related changes and preserve any unrelated user work.
 - Never weaken tests or validators.
 - Do not add dependencies without demonstrated need.
 - Do not push automatically unless explicitly authorized.

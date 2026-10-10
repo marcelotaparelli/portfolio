@@ -1,5 +1,25 @@
 # Implementation status
 
+## CV professional experience and education typography (2026-10-10)
+
+- Based on the owner's supplied experience, updated both CVs to describe
+  Catus e-commerce development with AI coding agents and research into AI for
+  process automation, development efficiency and product delivery. EVAG now
+  includes agent-assisted development/maintenance and analysis/development of
+  AI automations, retaining the concrete Drive/WordPress and GitLab examples.
+  No quantified outcomes were introduced. Current roles use the owner's
+  supplied titles: Catus AI Engineer and EVAG Software Engineer, with equivalent
+  PT-BR labels. The previous EVAG Product Owner role and all dates are unchanged.
+- Removed the smaller/lighter Alura education styles. All three education
+  titles now render at 9.5pt with weight 700 in both languages, confirmed in
+  Chromium. Reviewed both print-rendered layouts and regenerated the PDFs:
+  one A4 page each, with 14.9px PT-BR and 31.4px EN bottom headroom.
+- Refreshed the CV synchronization record after the HTML/PDF updates. Passed
+  57 unit tests, the final synchronization check, 28 E2E tests, typecheck
+  (0 errors/warnings, 31 existing hints), lint, formatting, preview/production
+  builds (44 pages each), artifact validation and release validation.
+- Changes remain local for owner review; no push or publication was performed.
+
 ## Bilingual CV project update and synchronization gate (2026-10-10)
 
 - Updated both CV summaries/skills to include classical Machine Learning,
