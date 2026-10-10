@@ -7,7 +7,7 @@ const pt = {
       'Python, RAG, Agentes, Evals | TypeScript, Bun, Node.js | Foco em Produto',
     description:
       'Engenheiro de IA com base em Engenharia de Software e experiência em backend, APIs e produção. Pesquisa de IA, automação de processos e desenvolvimento agêntico com visão de produto.',
-    pillars: 'Engenharia de IA · Base em Software · Visão de Produto',
+    pillars: 'Engenharia de IA · Engenharia de Software · Visão de Produto',
   },
   nav: {
     projects: 'Projetos',

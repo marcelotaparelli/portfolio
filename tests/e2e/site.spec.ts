@@ -386,7 +386,7 @@ test('AI and software positioning, metadata and project priority agree in both l
         );
         await expect(page.locator('.hero-bottom')).toContainText(
           path === '/'
-            ? 'Engenharia de IA · Base em Software · Visão de Produto'
+            ? 'Engenharia de IA · Engenharia de Software · Visão de Produto'
             : 'AI Engineering · Software foundation · Product lens',
         );
         await expect(
