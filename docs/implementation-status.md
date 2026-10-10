@@ -1,5 +1,22 @@
 # Implementation status
 
+## CV career progression from owner-supplied LinkedIn experience (2026-10-10)
+
+- Used the owner's pasted LinkedIn experience as the source for five distinct
+  role periods in both CVs. Catus: Full Stack Developer Jun–Sep 2026, AI Engineer
+  Oct 2026–present. EVAG: Product Owner Apr 2023–Mar 2024, Developer Apr 2024–Sep
+  2026, Software & AI Engineer Oct 2026–present. Corrected the previous Catus
+  July start and avoided applying the newer engineering titles retrospectively.
+- Placed Drive/WordPress and GitLab automation in the EVAG Developer period.
+  Current roles describe AI research, automation and agentic development.
+  Condensed summary, skills and previous-role descriptions without changing
+  font sizes or removing the five selected projects.
+- Inspected both print layouts and verified all five role headings/dates.
+  Regenerated PDFs with exactly one A4 page each and 19.4px bottom headroom;
+  refreshed the synchronization record. Passed 57 unit tests, 28 E2E tests,
+  typecheck, lint, formatting, preview/production builds (44 pages each), both
+  artifact validators and release validation. No push or publication performed.
+
 ## Agentic development experience bullets (2026-10-10)
 
 - Reordered current Catus/EVAG experience in both CVs to lead with AI research
