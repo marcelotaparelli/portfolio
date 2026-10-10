@@ -1,5 +1,29 @@
 # Implementation status
 
+## Site experience aligned with downloadable CVs (2026-10-10)
+
+- Reviewed both downloadable PDFs and their HTML sources. Updated the shared
+  career timeline with the current Catus AI Engineer and EVAG Software & AI
+  Engineer roles starting October 2026. Corrected the Catus Full Stack period
+  to June–September 2026 and ended the EVAG Developer role in September 2026;
+  retained the April 2023–March 2024 Product Owner role.
+- Aligned the PT-BR/EN home introduction, section 03 description, metadata,
+  About introduction and career narrative, and AI/software/product capabilities
+  with the CV responsibilities. Updated the existing E2E hero-copy assertions
+  to match the revised bilingual text, retaining their exact-copy checks.
+- Project cases, CV sources, public PDFs and their synchronization record were
+  unchanged: the CVs supplied the evidence for these site-copy corrections.
+  Editorial changes still require owner review before publication.
+- Passed typecheck (zero errors/warnings), lint, formatting, 57 unit tests,
+  28 E2E tests, preview and production builds (44 pages each), both artifact
+  validators and release validation. Browser checks of both homes and About
+  pages at 320, 390, 760, 1024 and 1440px confirmed five career entries and no
+  horizontal overflow. Inspected desktop hero/experience and mobile experience
+  screenshots. Left `dist/` holding the production build.
+- Installed temporary validation tools without changing project dependencies.
+  Builds and browser checks required execution outside the sandbox after EPERM
+  failures. No push or publication performed.
+
 ## Hero CV CTA visual refinement (2026-10-10)
 
 - Following owner feedback, changed the hero CV link to 14px in all viewports,

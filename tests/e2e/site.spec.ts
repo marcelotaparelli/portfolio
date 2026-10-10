@@ -376,12 +376,12 @@ test('AI and software positioning, metadata and project priority agree in both l
         await expect(page.locator('.hero-intro p')).toHaveText(
           path === '/'
             ? [
-                'Construo sistemas de IA do problema de negócio à produção, combinando Engenharia de IA, Engenharia de Software, verificação, segurança, observabilidade e medição.',
-                'RAG, agentes, avaliação, guardrails e observabilidade sobre uma base sólida de engenharia de software.',
+                'Atuo com pesquisa de IA, automação de processos e desenvolvimento agêntico na Agência Catus e na EVAG, combinando Engenharia de Software e visão de produto.',
+                'Construo RAG, agentes e Machine Learning com avaliação, guardrails e revisão humana, apoiado por experiência em backend, APIs e produção.',
               ]
             : [
-                'I build AI systems from the business problem to production — combining AI Engineering, Software Engineering, verification, security, observability and measurement.',
-                'RAG, agents, evaluation, guardrails and observability on a solid software engineering foundation.',
+                'I work on AI research, process automation, and agentic development at Agência Catus and EVAG, combining Software Engineering with a product perspective.',
+                'I build RAG, agents, and Machine Learning with evaluation, guardrails, and human review, supported by experience in backend, APIs, and production.',
               ],
         );
         await expect(page.locator('.hero-bottom')).toContainText(

@@ -6,7 +6,7 @@ const pt = {
     supporting:
       'Python, RAG, Agentes, Evals | TypeScript, Bun, Node.js | Foco em Produto',
     description:
-      'Engenheiro de IA com base sólida em Engenharia de Software e visão de Produto. Do problema de negócio à produção, com verificação, segurança e medição.',
+      'Engenheiro de IA com base em Engenharia de Software e experiência em backend, APIs e produção. Pesquisa de IA, automação de processos e desenvolvimento agêntico com visão de produto.',
     pillars: 'Engenharia de IA · Base em Software · Visão de Produto',
   },
   nav: {
@@ -42,8 +42,8 @@ const pt = {
       second: 'A PRODUTOS DE IA.',
     },
     intro:
-      'Construo sistemas de IA do problema de negócio à produção, combinando Engenharia de IA, Engenharia de Software, verificação, segurança, observabilidade e medição.',
-    body: 'RAG, agentes, avaliação, guardrails e observabilidade sobre uma base sólida de engenharia de software.',
+      'Atuo com pesquisa de IA, automação de processos e desenvolvimento agêntico na Agência Catus e na EVAG, combinando Engenharia de Software e visão de produto.',
+    body: 'Construo RAG, agentes e Machine Learning com avaliação, guardrails e revisão humana, apoiado por experiência em backend, APIs e produção.',
     work: 'Ver projetos',
     contact: 'Vamos conversar',
     caption: 'Engenharia com perspectiva de produto.',
@@ -58,7 +58,7 @@ const pt = {
     eyebrow: '03 / EXPERIÊNCIA E COMPETÊNCIAS',
     title: 'Engenharia com\nvisão do todo.',
     description:
-      'Uma trajetória que conecta produto, clientes, comunicação e desenvolvimento de software.',
+      'De Product Owner à Engenharia de Software e IA: entrega de websites, sistemas em produção, automação de processos e desenvolvimento agêntico. Desde outubro de 2026, atuo como Engenheiro de IA na Agência Catus e Engenheiro de Software e IA na EVAG.',
     link: 'Mais sobre minha trajetória',
     current: 'Presente',
   },
@@ -101,11 +101,11 @@ const pt = {
     eyebrow: 'SOBRE',
     title: 'Engenharia de IA.\nBase em Software.\nVisão de Produto.',
     intro:
-      'Sou Marcelo Taparelli, Engenheiro de IA com uma base sólida em Engenharia de Software e experiência em produto. Parto do problema de negócio, modelo o domínio e defino arquitetura e restrições antes de escolher RAG, modelos de decisão ou agentes, quando fazem sentido.',
+      'Sou Marcelo Taparelli, Engenheiro de IA na Agência Catus e Engenheiro de Software e IA na EVAG. Trabalho com pesquisa de IA, automação de processos e desenvolvimento agêntico, com experiência em backend, APIs, sistemas em produção e produto. Parto do problema de negócio antes de escolher a tecnologia.',
     body: 'Verificação, segurança e operação orientam o caminho à produção. Cerco componentes probabilísticos com contratos tipados, políticas determinísticas, testes, evals, fallbacks e aprovação humana. Observabilidade e medição orientam melhorias dentro dos limites de cada avaliação. Produto é a visão para decidir por que construir, para quem, qual valor importa e quais trade-offs aceitar.',
     journey: 'Uma trajetória de conexões',
     journeyText:
-      'Antes e ao longo do trabalho com software, vendas, negociação e ensino de inglês ampliaram meu repertório de comunicação. Na atuação como Product Owner, trabalhei com briefing, requisitos, priorização e o ciclo de entrega de websites.',
+      'Na EVAG, comecei como Product Owner em abril de 2023, conectando clientes, design e desenvolvimento na entrega de websites. Em abril de 2024, passei ao desenvolvimento de sistemas e automações, com funcionalidades e correções em produção. Na Agência Catus, atuei como Desenvolvedor Full Stack de junho a setembro de 2026, em e-commerce e WordPress. Desde outubro de 2026, exerço os cargos de Engenharia de IA na Catus e de Engenharia de Software e IA na EVAG, pesquisando métodos com IA e desenvolvendo automações e sistemas.',
     practice: 'Experiência profissional',
     capabilities: 'Competências em contexto',
     learning: 'Engenharia na prática',
@@ -144,7 +144,7 @@ const en: Translations = {
     supporting:
       'Python, RAG, Agents, Evals | TypeScript, Bun, Node.js | Product-minded',
     description:
-      'AI Engineer with a strong Software Engineering foundation and a Product mindset. From business problem to production, with verification, security and measurement.',
+      'AI Engineer with a Software Engineering foundation and experience in backend, APIs, and production. AI research, process automation, and agentic development with a product perspective.',
     pillars: 'AI Engineering · Software foundation · Product lens',
   },
   nav: {
@@ -181,8 +181,8 @@ const en: Translations = {
       second: 'TO AI PRODUCTS.',
     },
     intro:
-      'I build AI systems from the business problem to production — combining AI Engineering, Software Engineering, verification, security, observability and measurement.',
-    body: 'RAG, agents, evaluation, guardrails and observability on a solid software engineering foundation.',
+      'I work on AI research, process automation, and agentic development at Agência Catus and EVAG, combining Software Engineering with a product perspective.',
+    body: 'I build RAG, agents, and Machine Learning with evaluation, guardrails, and human review, supported by experience in backend, APIs, and production.',
     work: 'View projects',
     contact: 'Let’s talk',
     caption: 'Engineering with a product perspective.',
@@ -197,7 +197,7 @@ const en: Translations = {
     eyebrow: '03 / EXPERIENCE & CAPABILITIES',
     title: 'Engineering with\nthe whole picture.',
     description:
-      'A path connecting product, clients, communication, and software development.',
+      'From Product Owner to Software and AI Engineering: website delivery, production systems, process automation, and agentic development. Since October 2026, I work as an AI Engineer at Agência Catus and a Software & AI Engineer at EVAG.',
     link: 'More about my background',
     current: 'Present',
   },
@@ -239,11 +239,11 @@ const en: Translations = {
     eyebrow: 'ABOUT',
     title: 'AI Engineering.\nSoftware foundation.\nProduct lens.',
     intro:
-      'I’m Marcelo Taparelli, an AI Engineer with a strong Software Engineering foundation and a Product mindset. I start with the business problem, model the domain, and define architecture and constraints before choosing RAG, decision models, or agents where they add value.',
+      'I’m Marcelo Taparelli, an AI Engineer at Agência Catus and a Software & AI Engineer at EVAG. I work on AI research, process automation, and agentic development, with experience in backend, APIs, production systems, and product. I start with the business problem before choosing the technology.',
     body: 'Verification, security, and operability guide the path to production. I surround probabilistic components with typed contracts, deterministic policies, tests, evals, fallbacks, and human approval. Observability and measurement support improvements within the limits of each evaluation. Product is my lens for deciding why to build, who it serves, which value matters, and which trade-offs to accept.',
     journey: 'A path of connections',
     journeyText:
-      'Before and alongside software, sales, negotiation, and teaching English broadened my communication skills. As a Product Owner, I worked on briefs, requirements, prioritization, and the website delivery lifecycle.',
+      'At EVAG, I started as a Product Owner in April 2023, connecting clients, design, and development to deliver websites. In April 2024, I moved into systems development and automation, including features and production fixes. At Agência Catus, I worked as a Full Stack Developer from June to September 2026 on e-commerce and WordPress. Since October 2026, I hold AI Engineering and Software & AI Engineering roles at Catus and EVAG respectively, researching AI-assisted methods and developing automation and systems.',
     practice: 'Professional experience',
     capabilities: 'Capabilities in context',
     learning: 'Engineering in practice',

@@ -3,8 +3,8 @@ export const skills = [
     title: { 'pt-BR': 'Engenharia de IA', en: 'AI Engineering' },
     description: {
       'pt-BR':
-        'Python, FastAPI, LLMs, RAG, embeddings, pgvector e busca híbrida. Agentes com LangGraph e OpenAI, structured outputs, guardrails, aprovação humana e observabilidade com OpenTelemetry. Evals com baselines determinísticos e held-outs congelados; domain adaptation/fine-tuning com PyTorch, GPU/CUDA, mixed precision, seleção de checkpoints por validation e análise de confidence/calibration.',
-      en: 'Python, FastAPI, LLMs, RAG, embeddings, pgvector, and hybrid retrieval. Agents with LangGraph and OpenAI, structured outputs, guardrails, human approval, and OpenTelemetry observability. Evals with deterministic baselines and frozen held-outs; domain adaptation/fine-tuning with PyTorch, GPU/CUDA, mixed precision, validation-based checkpoint selection, and confidence/calibration analysis.',
+        'Pesquisa de IA para automação de processos e desenvolvimento agêntico, com testes, validação e documentação. Python, FastAPI, scikit-learn, pandas, Machine Learning, LLMs, RAG, embeddings, pgvector e busca híbrida. Agentes com LangGraph e OpenAI, structured outputs, guardrails, aprovação humana e observabilidade com OpenTelemetry. Evals com baselines determinísticos e held-outs congelados; domain adaptation/fine-tuning com PyTorch, GPU/CUDA, mixed precision, seleção de checkpoints por validation e análise de confidence/calibration.',
+      en: 'AI research for process automation and agentic development, with testing, validation, and documentation. Python, FastAPI, scikit-learn, pandas, Machine Learning, LLMs, RAG, embeddings, pgvector, and hybrid retrieval. Agents with LangGraph and OpenAI, structured outputs, guardrails, human approval, and OpenTelemetry observability. Evals with deterministic baselines and frozen held-outs; domain adaptation/fine-tuning with PyTorch, GPU/CUDA, mixed precision, validation-based checkpoint selection, and confidence/calibration analysis.',
     },
     tools: null,
   },
@@ -12,8 +12,8 @@ export const skills = [
     title: { 'pt-BR': 'Engenharia de Software', en: 'Software Engineering' },
     description: {
       'pt-BR':
-        'Minha base para construir corretamente: TypeScript, Bun, Node.js, APIs REST, SQL/PostgreSQL, Redis e Git. Modelagem de domínio, arquitetura de software, Clean Architecture, princípios de DDD, SOLID, Clean Code e TDD. Testes unitários, de integração e E2E; idempotência, retries e circuit breaker para lidar com concorrência e falhas.',
-      en: 'My foundation for building correctly: TypeScript, Bun, Node.js, REST APIs, SQL/PostgreSQL, Redis, and Git. Domain modeling, software architecture, Clean Architecture, DDD principles, SOLID, Clean Code, and TDD. Unit, integration, and E2E tests; idempotency, retries, and circuit breakers for concurrency and failures.',
+        'Experiência com sistemas, APIs, automação, e-commerce e WordPress. TypeScript, Bun, Node.js, Laravel, Python, JavaScript, Tailwind, APIs REST, SQL/PostgreSQL, Redis e Git. Modelagem de domínio, arquitetura de software, Clean Architecture, princípios de DDD, SOLID, Clean Code e TDD. Testes unitários, de integração e E2E; idempotência, retries e circuit breaker para lidar com concorrência e falhas.',
+      en: 'Experience with systems, APIs, automation, e-commerce, and WordPress. TypeScript, Bun, Node.js, Laravel, Python, JavaScript, Tailwind, REST APIs, SQL/PostgreSQL, Redis, and Git. Domain modeling, software architecture, Clean Architecture, DDD principles, SOLID, Clean Code, and TDD. Unit, integration, and E2E tests; idempotency, retries, and circuit breakers for concurrency and failures.',
     },
     tools: null,
   },
@@ -33,8 +33,8 @@ export const skills = [
     title: { 'pt-BR': 'Visão de Produto', en: 'Product perspective' },
     description: {
       'pt-BR':
-        'Enquadrar o problema de negócio, entender para quem construo e decidir qual valor medir. Experiência com briefing, requisitos, priorização e fluxos operacionais. Explicitar restrições e trade-offs de confiabilidade, segurança, performance, custo, latência e operação; decidir se IA é necessária antes de adicioná-la.',
-      en: 'Frame the business problem, understand who I build for, and decide which value to measure. Experience with briefs, requirements, prioritization, and operational workflows. Make constraints and trade-offs in reliability, security, performance, cost, latency, and operability explicit; decide whether AI is necessary before adding it.',
+        'Enquadrar o problema de negócio, entender para quem construo e decidir qual valor medir. Experiência como Product Owner na entrega de websites do levantamento ao deploy, conectando clientes, design e desenvolvimento. Briefing, requisitos, fluxos e priorização por negócio, UX e capacidade técnica. Explicitar restrições e trade-offs de confiabilidade, segurança, performance, custo, latência e operação; decidir se IA é necessária antes de adicioná-la.',
+      en: 'Frame the business problem, understand who I build for, and decide which value to measure. Product Owner experience delivering websites from discovery to deployment, connecting clients, design, and development. Briefs, requirements, workflows, and prioritization across business, UX, and technical capacity. Make constraints and trade-offs in reliability, security, performance, cost, latency, and operability explicit; decide whether AI is necessary before adding it.',
     },
     tools: null,
   },
