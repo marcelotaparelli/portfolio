@@ -1,18 +1,26 @@
 name: Distribute content
 
-# Article distribution (DEV.to + LinkedIn) for a PT-BR + EN pair.
+# Article distribution (DEV.to + LinkedIn) or project launch (LinkedIn only).
 # Human approval is the manual workflow_dispatch itself: a human passes the
-# article slug, the workflow validates the pair, distributes per channel
-# (DEV.to from EN, one bilingual LinkedIn post from PT-BR), and records
+# content slug and type, the workflow validates the pair, distributes per channel
+# (articles: DEV.to EN + bilingual LinkedIn; projects: approved PT-BR LinkedIn), and records
 # state on the dedicated `distribution-state` branch. Never commits to main.
 # Never publishes in any other circumstance. No rebuild, no deploy.
 on:
   workflow_dispatch:
     inputs:
       article_slug:
-        description: Article slug of the PT-BR + EN pair (e.g. portfolio-bun-astro-mdx)
+        description: Content slug (e.g. portfolio-bun-astro-mdx or defectrisk-ml)
         required: true
         type: string
+      content_type:
+        description: Article pair or project launch (LinkedIn only)
+        required: true
+        default: article
+        type: choice
+        options:
+          - article
+          - project
 
 permissions:
   contents: read
@@ -50,31 +58,37 @@ jobs:
           fi
           echo "path=/tmp/distribution-ledger.json" >> "$GITHUB_OUTPUT"
 
-      - name: Distribute article
+      - name: Distribute content
         id: distribute
         env:
           DEVTO_API_KEY: ${{ secrets.DEVTO_API_KEY }}
           LINKEDIN_ACCESS_TOKEN: ${{ secrets.LINKEDIN_ACCESS_TOKEN }}
           LINKEDIN_PERSON_URN: ${{ vars.LINKEDIN_PERSON_URN }}
+          CONTENT_SLUG: ${{ inputs.article_slug }}
+          CONTENT_TYPE: ${{ inputs.content_type }}
+          LEDGER_PATH: ${{ steps.ledger.outputs.path }}
         run: |
           set -euo pipefail
           # Fail closed before any network call when credentials are absent.
           # (The script re-checks; this keeps the failure reason obvious.)
-          test -n "${DEVTO_API_KEY:-}" || { echo "missing secret: DEVTO_API_KEY" >&2; exit 1; }
+          if [ "$CONTENT_TYPE" = article ]; then
+            test -n "${DEVTO_API_KEY:-}" || { echo "missing secret: DEVTO_API_KEY" >&2; exit 1; }
+          fi
           test -n "${LINKEDIN_ACCESS_TOKEN:-}" || { echo "missing secret: LINKEDIN_ACCESS_TOKEN" >&2; exit 1; }
           test -n "${LINKEDIN_PERSON_URN:-}" || { echo "missing variable: LINKEDIN_PERSON_URN" >&2; exit 1; }
           bun scripts/distribution/distribute.ts \
-            --slug "${{ inputs.article_slug }}" \
-            --ledger "${{ steps.ledger.outputs.path }}" | tee /tmp/distribution-summary.txt
+            --slug "$CONTENT_SLUG" --kind "$CONTENT_TYPE" \
+            --ledger "$LEDGER_PATH" | tee /tmp/distribution-summary.txt
 
       - name: Diagnose website access after failure
         if: failure() && steps.distribute.outcome == 'failure'
         env:
           ARTICLE_SLUG: ${{ inputs.article_slug }}
+          CONTENT_TYPE: ${{ inputs.content_type }}
         run: |
           set -euo pipefail
           # Resolve validated public URLs without loading publication credentials.
-          bun -e 'import { resolveArticlePair } from "./scripts/distribution/article"; const pair = await resolveArticlePair(process.env.ARTICLE_SLUG ?? ""); console.log(pair.pt.canonicalUrl); console.log(pair.en.canonicalUrl);' > /tmp/distribution-canonicals.txt
+          bun -e 'import { resolveArticlePair } from "./scripts/distribution/article"; import { resolveProjectPost } from "./scripts/distribution/project"; const resolve = process.env.CONTENT_TYPE === "project" ? resolveProjectPost : resolveArticlePair; const pair = await resolve(process.env.ARTICLE_SLUG ?? ""); console.log(pair.pt.canonicalUrl); console.log(pair.en.canonicalUrl);' > /tmp/distribution-canonicals.txt
           while IFS= read -r article_url; do
             for ip_family in 4 6; do
               echo "Public GET diagnostic: IPv${ip_family} ${article_url}"
@@ -97,12 +111,12 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git config --global init.defaultBranch main
-          TMPDIR="$(mktemp -d)"
-          trap 'rm -rf "$TMPDIR"' EXIT
+          LEDGER_TMP_DIR="$(mktemp -d)"
+          trap 'rm -rf "$LEDGER_TMP_DIR"' EXIT
           # Isolated clone: never touch the main checkout, never copy .git.
           # The token is masked in logs by Actions.
-          git clone --quiet "https://x-access-token:${PUSH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" "$TMPDIR/state"
-          cd "$TMPDIR/state"
+          git clone --quiet "https://x-access-token:${PUSH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" "$LEDGER_TMP_DIR/state"
+          cd "$LEDGER_TMP_DIR/state"
           if git ls-remote --exit-code --heads origin distribution-state >/dev/null 2>&1; then
             git checkout --quiet distribution-state
           else

@@ -1,8 +1,8 @@
 // Phase 1 content distribution CLI (DEV.to + LinkedIn).
 // Single manual execution: bun scripts/distribution/distribute.ts --slug <slug> --ledger <path>
-// The slug identifies a PT-BR + EN article pair: DEV.to publishes
-// exclusively from EN (canonical /en/articles/…), LinkedIn posts
-// exclusively from PT-BR (canonical /artigos/…).
+// Default: a PT-BR + EN article pair (DEV.to EN + bilingual LinkedIn).
+// --kind project: approved PT-BR launch copy, LinkedIn only, with both
+// published/reviewed project cases checked before publication.
 // Secrets come only from the environment and are never printed.
 // Exit 0: every requested channel published or already-published.
 // Exit 1: any channel failed (including fail-closed validation).
@@ -10,6 +10,7 @@
 import { checkPublic, DistributionError, resolveArticlePair } from './article';
 import { buildDevtoPayload, findByCanonical, publishDevto } from './devto';
 import { buildLinkedinPayload, publishLinkedin } from './linkedin';
+import { resolveProjectPost } from './project';
 import type {
   ChannelResult,
   Ledger,
@@ -20,7 +21,7 @@ import type {
 
 function usage(): never {
   console.error(
-    'usage: bun scripts/distribution/distribute.ts --slug <slug> --ledger <path>',
+    'usage: bun scripts/distribution/distribute.ts --slug <slug> --ledger <path> [--kind article|project]',
   );
   process.exit(2);
 }
@@ -91,15 +92,15 @@ function printSummary(
 ): void {
   const line = (channel: string, status: string) =>
     console.log(`${channel}: ${status}`);
-  console.log(`Article: ${slug}`);
+  console.log(`Content: ${slug}`);
   console.log(`Website: ${websiteOk ? 'OK' : 'failed'}`);
   for (const result of results) {
     line(
       result.channel === 'devto' ? 'DEV.to' : 'LinkedIn',
       result.error
         ? `failed (${result.error})`
-        : result.status === 'already-published'
-          ? 'already-published'
+        : result.status === 'already-published' || result.status === 'skipped'
+          ? result.status
           : `published (${result.url ?? result.remoteId ?? 'ok'})`,
     );
   }
@@ -115,44 +116,64 @@ async function main(): Promise<void> {
     usage();
   const slug: string = slugValue;
   const ledgerPath: string = ledgerValue;
+  const kindFlag = args.indexOf('--kind');
+  const kind = kindFlag === -1 ? 'article' : args[kindFlag + 1];
+  if (kind !== 'article' && kind !== 'project') usage();
 
   const devtoKey = process.env.DEVTO_API_KEY ?? '';
   const linkedinToken = process.env.LINKEDIN_ACCESS_TOKEN ?? '';
   const linkedinUrn = process.env.LINKEDIN_PERSON_URN ?? '';
   const secrets = [devtoKey, linkedinToken];
   const missing: string[] = [];
-  if (!devtoKey) missing.push('DEVTO_API_KEY');
+  if (kind === 'article' && !devtoKey) missing.push('DEVTO_API_KEY');
   if (!linkedinToken) missing.push('LINKEDIN_ACCESS_TOKEN');
   if (!linkedinUrn) missing.push('LINKEDIN_PERSON_URN');
 
   let ledger: Ledger;
   try {
     ledger = readLedger(await Bun.file(ledgerPath).text());
-  } catch {
-    ledger = {};
+  } catch (error) {
+    console.error(
+      error instanceof DistributionError
+        ? error.message
+        : 'cannot read distribution ledger',
+    );
+    process.exit(1);
   }
-  const entry: LedgerEntry = ledger[slug] ?? {};
+  const ledgerKey = kind === 'project' ? `project:${slug}` : slug;
+  const entry: LedgerEntry = ledger[ledgerKey] ?? {};
   const results: ChannelResult[] = [];
   let websiteOk = false;
   let pair: ResolvedPair | null = null;
 
   try {
-    pair = await resolveArticlePair(slug);
+    pair =
+      kind === 'project'
+        ? await resolveProjectPost(slug)
+        : await resolveArticlePair(slug);
     await checkPublic(pair.pt.canonicalUrl);
     await checkPublic(pair.en.canonicalUrl);
     websiteOk = true;
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
-    console.log(`Article: ${slug}`);
+    console.log(`Content: ${slug}`);
     console.log(`Website: failed (${redact(message, secrets)})`);
-    console.log('DEV.to: failed (article not distributable)');
-    console.log('LinkedIn: failed (article not distributable)');
+    console.log(
+      kind === 'project'
+        ? 'DEV.to: skipped'
+        : 'DEV.to: failed (content not distributable)',
+    );
+    console.log('LinkedIn: failed (content not distributable)');
     process.exit(1);
   }
 
   if (missing.length > 0) {
     printSummary(slug, websiteOk, [
-      { channel: 'devto', status: 'failed', error: 'disabled' },
+      {
+        channel: 'devto',
+        status: kind === 'project' ? 'skipped' : 'failed',
+        error: kind === 'project' ? undefined : 'disabled',
+      },
       { channel: 'linkedin', status: 'failed', error: 'disabled' },
     ]);
     console.error(`missing secrets: ${missing.join(', ')}`);
@@ -160,36 +181,41 @@ async function main(): Promise<void> {
   }
 
   const resolved = pair as ResolvedPair;
-  results.push(
-    await runChannel(
-      'devto',
-      async () => {
-        // Remote lookup by the EN canonical is authoritative: it catches a
-        // post that exists even when the ledger lacks (or contradicts) it,
-        // and it never matches the old mistaken PT post.
-        const existing = await findByCanonical(
-          devtoKey,
-          resolved.en.canonicalUrl,
-        );
-        if (existing) {
-          entry.devto = { ...existing, canonicalUrl: resolved.en.canonicalUrl };
-          return {
-            url: existing.url,
-            remoteId: existing.id,
-            preexisting: true,
-          };
-        }
-        const done = await publishDevto(
-          devtoKey,
-          buildDevtoPayload(resolved.en),
-        );
-        entry.devto = { ...done, canonicalUrl: resolved.en.canonicalUrl };
-        return { url: done.url, remoteId: done.id };
-      },
-      isPublishedFor(entry.devto, resolved.en.canonicalUrl),
-      secrets,
-    ),
-  );
+  if (kind === 'article')
+    results.push(
+      await runChannel(
+        'devto',
+        async () => {
+          // Remote lookup by the EN canonical is authoritative: it catches a
+          // post that exists even when the ledger lacks (or contradicts) it,
+          // and it never matches the old mistaken PT post.
+          const existing = await findByCanonical(
+            devtoKey,
+            resolved.en.canonicalUrl,
+          );
+          if (existing) {
+            entry.devto = {
+              ...existing,
+              canonicalUrl: resolved.en.canonicalUrl,
+            };
+            return {
+              url: existing.url,
+              remoteId: existing.id,
+              preexisting: true,
+            };
+          }
+          const done = await publishDevto(
+            devtoKey,
+            buildDevtoPayload(resolved.en),
+          );
+          entry.devto = { ...done, canonicalUrl: resolved.en.canonicalUrl };
+          return { url: done.url, remoteId: done.id };
+        },
+        isPublishedFor(entry.devto, resolved.en.canonicalUrl),
+        secrets,
+      ),
+    );
+  else results.push({ channel: 'devto', status: 'skipped' });
   // Skip means zero API calls: the ledger is the source of truth, but only
   // when it records the canonical we expect now. The remote DEV.to lookup
   // inside the publish path protects the case where the ledger lacks an
@@ -211,7 +237,7 @@ async function main(): Promise<void> {
     ),
   );
 
-  ledger[slug] = entry;
+  ledger[ledgerKey] = entry;
   await Bun.write(ledgerPath, JSON.stringify(ledger, null, 2) + '\n');
   printSummary(slug, websiteOk, results);
   if (results.some((result) => result.status === 'failed')) process.exit(1);

@@ -1,4 +1,9 @@
-# DefectRisk — post para LinkedIn
+---
+slug: defectrisk-ml
+locale: pt-BR
+status: approved
+reviewed: true
+---
 
 Nem todo problema de IA precisa de um LLM.
 

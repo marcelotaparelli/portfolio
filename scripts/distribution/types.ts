@@ -19,10 +19,11 @@ export interface ResolvedArticle {
 }
 
 /**
- * Bilingual article pair for distribution.
+ * Bilingual website content pair for distribution.
  * DEV.to publishes the EN article (canonical /en/articles/…). LinkedIn
  * publishes one PT-authored bilingual copy with both article canonicals.
- * No runtime translation: both versions already exist in the repo.
+ * Project launches use approved PT-BR copy on LinkedIn only; both website
+ * cases still exist in the repo. No runtime translation.
  */
 export interface ResolvedPair {
   slug: string;

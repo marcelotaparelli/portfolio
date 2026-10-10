@@ -1,5 +1,36 @@
 # Implementation status
 
+## DefectRisk LinkedIn launch distribution (2026-10-10)
+
+- Integrated the owner's approved PT-BR launch copy into
+  `docs/editorial/defectrisk-ml-linkedin.md`, with explicit slug, locale,
+  approval and review metadata. Preserved the approved post body; the earlier
+  editorial heading is excluded from the publication payload.
+- Added `content_type: project` to the existing manual **Distribute content**
+  workflow. Use `article_slug: defectrisk-ml`; this mode publishes LinkedIn
+  only and does not require DEV.to credentials. Default article distribution
+  retains its existing bilingual article validation and per-channel behavior.
+- Project resolution requires published/reviewed PT-BR and EN cases with
+  matching translation identity, approved/reviewed copy, the PT case URL and
+  the existing 3,000-character limit. Both public case URLs returned HTTP 200
+  in a read-only check. The script checks both URLs again before publishing.
+- Project ledger entries use `project:<slug>` in the existing
+  `distribution-state` branch and shared concurrency group. Unreadable or
+  invalid JSON ledgers now fail closed instead of silently resetting history.
+  Workflow input values are passed through environment variables to the shell.
+- Added resolver and offline CLI tests for approval, website language parity,
+  canonical links, size, traversal, unknown slugs, LinkedIn-only publication,
+  exact approved payload, rerun skip, separate article state, public URL
+  failures and corrupt ledgers. No real publication API request was made.
+- Passed typecheck (0 errors/warnings, 28 hints), lint, 51 unit tests with
+  151 assertions, 28 E2E tests, preview and production builds (44 pages each),
+  both artifact validators (44 HTML documents each) and release validation.
+  Sandbox restrictions blocked the initial preview build, E2E server and DNS
+  check; authorized executions outside the sandbox passed.
+- Updated the GitHub Actions runbook with the project launch inputs and
+  publication prerequisites. No dependency, website content or publication
+  validator was changed. No push, deployment or external publication occurred.
+
 ## DefectRisk bilingual portfolio integration (2026-10-10)
 
 - Audited AGENTS.md, package scripts, content schema/selection, Home,

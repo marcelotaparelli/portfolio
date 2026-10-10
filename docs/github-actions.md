@@ -555,6 +555,38 @@ e do Chromium do Playwright; o CI instala com `playwright install
 5. Actions → "Distribute content" com o `article_slug`.
 6. Conferir o `Summary` do run + posts no DEV.to e LinkedIn.
 
+### Publicar lançamento de projeto no LinkedIn
+
+O workflow **Distribute content** também aceita `content_type: project`.
+Esse modo publica somente no LinkedIn, usando texto PT-BR aprovado; não
+cria artigo no DEV.to nem exige `DEVTO_API_KEY`. O modo padrão `article`
+continua exigindo o par de artigos e o post bilíngue existentes.
+
+1. Manter os cases PT-BR e EN publicados e revisados, com o mesmo slug e
+   `translationKey`, e fazer deploy antes da distribuição.
+2. Salvar a cópia em `docs/editorial/<slug>-linkedin.md`. O frontmatter exige
+   `slug`, `locale: pt-BR`, `status: approved` e `reviewed: true`; o corpo
+   contém exatamente o texto a publicar, sem título editorial adicional.
+   Aprovar a cópia antes de marcar esses campos. O texto deve conter a URL
+   do case PT-BR e ter no máximo 3.000 caracteres.
+3. Validar, fazer commit e push; aguardar CI verde.
+4. Actions → **Distribute content** → **Run workflow**:
+   - `article_slug`: `defectrisk-ml`.
+   - `content_type`: `project`.
+5. Conferir o resumo: website OK, DEV.to skipped e LinkedIn published
+   (ou already-published em uma repetição).
+
+O DefectRisk usa `docs/editorial/defectrisk-ml-linkedin.md`, com a cópia
+aprovada pelo proprietário. As duas URLs públicas dos cases precisam retornar
+HTTP 200 antes de qualquer publicação. São necessários
+`LINKEDIN_ACCESS_TOKEN` e `LINKEDIN_PERSON_URN`, já usados no modo artigo.
+O registro fica em `project:defectrisk-ml` na mesma branch
+`distribution-state`; o grupo de concorrência continua `distribution`.
+Registros de artigos permanecem separados. Um ledger ilegível ou inválido
+bloqueia a execução, evitando tratar um histórico corrompido como vazio.
+O mesmo limite de idempotência do LinkedIn se aplica: se a publicação remota
+for bem-sucedida e a persistência do ledger falhar, investigar antes de repetir.
+
 ### Redistribuir / corrigir artigo
 
 1. Corrigir **só o conteúdo** (frontmatter/corpo) em `main` —
@@ -571,7 +603,7 @@ e do Chromium do Playwright; o CI instala com `playwright install
 - Artigo ainda não deployado (canonicals sem 200) — falha fechada.
 - CI vermelho ou `main` com correção ainda não mergeada.
 - Secrets/variável ausentes (o run falha sem publicar nada).
-- Mudança que não é artigo distribuível (projeto, página, CSS,
+- No modo `article`, mudança que não é artigo distribuível (projeto, página, CSS,
   correção de typo já distribuída sem impacto — republicar não
   atualiza posts existentes, só gera ruído).
 - Para "atualizar" um post já publicado: o pipeline cria, não
