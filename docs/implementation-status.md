@@ -1,5 +1,30 @@
 # Implementation status
 
+## Bilingual CV project update and synchronization gate (2026-10-10)
+
+- Updated both CV summaries/skills to include classical Machine Learning,
+  scikit-learn and pandas alongside RAG, agents, Software Engineering and
+  product judgment. Selected projects now follow the portfolio order:
+  OpsPilot AI, Ops Triage AI, DefectRisk, Resilient Transaction API and Salus.
+- Added DefectRisk's historical 300/421 defective-module result (71.26% recall
+  at approximately 30% review capacity), human-review ranking, reproducible CLI
+  and later artifact's external-validation limitation. Condensed existing
+  project descriptions while preserving synthetic-evaluation, independent-smoke
+  and non-production AWS boundaries. Employment and education are unchanged.
+- Regenerated both public PDFs: exactly one A4 page each, with 16.7px bottom
+  headroom and unchanged typography. Inspected print-rendered PT/EN layouts
+  and all nine links in each CV.
+- Added an AGENTS.md constraint, maintenance instructions and a unit-test CI
+  gate comparing SHA-256 fingerprints of all project MDX files, both HTML CVs
+  and both PDFs against `cv/project-sync.json`. A temporary project mutation
+  made the test fail; restoring the source made it pass. The record detects
+  drift and does not replace semantic accuracy or human review.
+- Passed 57 unit tests/184 assertions, 28 E2E tests, typecheck (0 errors and
+  warnings, 31 pre-existing hints), lint, formatting, preview/production builds
+  (44 pages each), both artifact validators and release validation.
+- Prepared changes for owner review; no push, deployment or publication was
+  performed.
+
 ## Shared bilingual LinkedIn contract and DefectRisk rewrite (2026-10-10)
 
 - Corrected the project-mode exception that allowed a Portuguese-only

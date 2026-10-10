@@ -1,0 +1,22 @@
+{
+  "cv/en.html": "9b08a73634a17772ea64e53eb236c210723e434bb1847ee7974af20f798d52d9",
+  "cv/pt-br.html": "0b922da640b96ee139b5fc09919470432b40d9bb03ab4222d0988632d05b3aed",
+  "public/cv/marcelo-taparelli-cv-en.pdf": "340e19581e95b115f2cc7e9b5602ec1542a882cc227d26f65daf9f5128829220",
+  "public/cv/marcelo-taparelli-cv-pt-br.pdf": "41cad4cda6c7262f93fe7b6024fbe50158892da8c8883c31ce45209e2bb85de5",
+  "src/content/projects/en/atendimento-evag.mdx": "be4b6119aafb6849415addaa68173a7331c285874e57328a09f2b1083d67eed3",
+  "src/content/projects/en/catus.mdx": "81d0fd922359a471e074ab6eb5258d96ad4e406ac45edc0f076c7db173a1fec8",
+  "src/content/projects/en/defectrisk-ml.mdx": "fcb58b74738ce553407f1a6060125f600f1e49477a6b3d82641569c2633c7fca",
+  "src/content/projects/en/drive-wordpress.mdx": "03c86f6a891a421936f9d34cbc95dd8dfb68cb8e7715333083158fe99a82e6e7",
+  "src/content/projects/en/ops-triage-ai.mdx": "7f1670062378e967e0556544f5fb7ebfd0f01ddad4a8d964b5aa9d291e0e5487",
+  "src/content/projects/en/opspilot-ai.mdx": "0e9c4b1784b2918c1b5af835c2bf5996996b4ebdcee01fffac9c7fe73749bc0b",
+  "src/content/projects/en/resilient-transaction-api.mdx": "211f3ae254585035abb45aa157dc20a9bc4089f2954755e41aff2d3f6c4c83b1",
+  "src/content/projects/en/salus.mdx": "1e085fcfe7ce7ea18e82d3aec39acc153ee2be052402354c75a33f8037caaf5d",
+  "src/content/projects/pt-br/atendimento-evag.mdx": "d738abc6b7e65a559372a4deb0084d7d6c8fbf9f4e639aca46155597242b462e",
+  "src/content/projects/pt-br/catus.mdx": "87527a7e8ec36b4988cb078a8599509c303b63e966402460450574f3d760de89",
+  "src/content/projects/pt-br/defectrisk-ml.mdx": "8bfb355ef5e8939c928a88816c12b7665824d8597548b9d512079acdd1b05f64",
+  "src/content/projects/pt-br/drive-wordpress.mdx": "c77bc9f3a1bf60564fb252b353657b366cf037dc5c5d9c3304cf9f3736229698",
+  "src/content/projects/pt-br/ops-triage-ai.mdx": "798ce73c63b527cdd231e520a7228ff1cc49a86ce8eca792ca165bf24fb2a4fb",
+  "src/content/projects/pt-br/opspilot-ai.mdx": "eaa8c96e612bb1af0739ac3d4264f243be01e92e6c5bdda9d90af28a128861b0",
+  "src/content/projects/pt-br/resilient-transaction-api.mdx": "c3cab9f61a48121d3fb5d5e718a9f81461a447b2abd02eef794c4229895c22f2",
+  "src/content/projects/pt-br/salus.mdx": "ab32e3d3e2ebc66f0bcd71e70bf5e1f873aec91c0aa95454c24a5a9fe33aebcb"
+}

@@ -8,6 +8,11 @@ Variable execution state belongs in `docs/implementation-status.md`, not here.
 - Bun + Astro + TypeScript strict; static output.
 - PT-BR served at `/`, EN served at `/en/`.
 - Published content must keep parity between both languages.
+- Any addition, removal, reordering or content change in site projects requires
+  updating and reviewing both CVs (`cv/pt-br.html`, `cv/en.html`), regenerating
+  both public PDFs and refreshing `cv/project-sync.json` in the same change.
+  Follow `docs/cv-maintenance.md`; never refresh the synchronization record just
+  to bypass a failing test. Selected projects need not include every case.
 - Favor simplicity, performance, and few dependencies.
 - Do not switch stacks, redesign, or refactor by preference.
 

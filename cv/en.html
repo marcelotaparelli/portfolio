@@ -11,7 +11,7 @@
         <h1>Marcelo Vinicius Taparelli</h1>
         <p class="title">AI Engineer | Software Engineer</p>
         <p class="keywords">
-          Python · RAG · Agents · Evals · TypeScript · Bun · Node.js ·
+          Python · Machine Learning · RAG · Agents · Evals · TypeScript ·
           PostgreSQL · AWS
         </p>
         <p class="contact">
@@ -31,10 +31,10 @@
       <h2>Professional summary</h2>
       <p>
         AI Engineer with a strong Software Engineering foundation and experience
-        in backend, APIs, and production software. I build AI systems with RAG,
-        agents, evals, model evaluation, and human review. From business problem
-        to production, a Product perspective guides architecture, verification,
-        security, observability, and measurement.
+        in backend, APIs, and production software. I build RAG, agents, and
+        Machine Learning with reliable evaluation and human review. A Product
+        perspective guides approach selection, architecture, security, and
+        executable delivery.
       </p>
 
       <h2>Professional experience</h2>
@@ -92,10 +92,10 @@
       <h2>Technical skills</h2>
       <div class="skills">
         <p>
-          <strong>AI Engineering:</strong> Python, FastAPI, RAG, embeddings,
-          pgvector, hybrid retrieval, LangGraph, OpenAI, agents, evals,
-          structured outputs, guardrails, human-in-the-loop; experimental model
-          evaluation/adaptation with PyTorch and CUDA.
+          <strong>AI Engineering:</strong> Python, FastAPI, scikit-learn,
+          pandas, Machine Learning, RAG, pgvector, hybrid retrieval, LangGraph,
+          OpenAI, agents, evals, guardrails and human review; experimental model
+          evaluation/adaptation with PyTorch/CUDA.
         </p>
         <p>
           <strong>Software Engineering:</strong> TypeScript, Bun, Node.js, REST
@@ -108,9 +108,8 @@
           and a temporary non-production AWS lab.
         </p>
         <p>
-          <strong>Product perspective:</strong> Business problems, requirements,
-          constraints, trade-offs, outcome measurement and deciding when to use
-          AI.
+          <strong>Product perspective:</strong> Problems, requirements,
+          trade-offs, outcomes and deciding when to use AI.
         </p>
       </div>
 
@@ -121,10 +120,9 @@
             >OpsPilot AI</a
           >:</strong
         >
-        Python/FastAPI, RAG, pgvector, LangGraph/OpenAI. Deterministic policies,
-        human approval, GitLab reconciliation, evals and OpenTelemetry.
-        Independent OpenAI and GitLab sandbox smokes; validated Terraform, no
-        AWS deployment.
+        Python/FastAPI, RAG and LangGraph/OpenAI agents with human approval,
+        GitLab reconciliation, evals and OpenTelemetry. Independent OpenAI and
+        GitLab sandbox smokes; no AWS deployment.
       </p>
       <p>
         <strong
@@ -132,11 +130,20 @@
             >Ops Triage AI</a
           >:</strong
         >
-        Deterministic baseline, local LLM, hybrid policy and human review.
-        Jev/Laya evaluation-only on a frozen synthetic held-out (70 tickets).
-        Laya with PyTorch/CUDA: exact tuple 11.43% zero-shot → 85.71% adapted;
-        validation-based selection. HIGH/CRITICAL recall regressed from 92.86%
-        to 85.71%.
+        Triage with a deterministic baseline, local LLM and human review.
+        Jev/Laya evaluation and PyTorch/CUDA adaptation outside runtime; frozen
+        synthetic held-out of 70 tickets, with documented regressions.
+      </p>
+      <p>
+        <strong
+          ><a href="https://github.com/marcelotaparelli/defectrisk-ml"
+            >DefectRisk</a
+          >:</strong
+        >
+        Python/scikit-learn, risk ranking for human review. Historical test: the
+        top ~30% of modules included 300/421 defective modules (71.26% recall).
+        Leakage-safe evaluation and reproducible CLI; the later artifact needs
+        external validation.
       </p>
       <p>
         <strong
@@ -145,9 +152,9 @@
             >Resilient Transaction API</a
           >:</strong
         >
-        TypeScript/Bun, PostgreSQL, Redis, idempotency, retries, circuit
-        breaker, observability and Docker. Terraform and a temporary
-        non-production AWS lab with functional validation, destroy and audit.
+        TypeScript/Bun, PostgreSQL, Redis, idempotency, retries and circuit
+        breaker. Terraform and a temporary non-production AWS lab with
+        functional validation, destroy and audit.
       </p>
       <p>
         <strong
