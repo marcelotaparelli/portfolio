@@ -1,5 +1,20 @@
 # Implementation status
 
+## Hero CV CTA visual refinement (2026-10-10)
+
+- Following owner feedback, changed the hero CV link to 14px in all viewports,
+  Inter weight 300 and the same muted color as the RAG introduction paragraph.
+  Replaced the hero font asset with weight 300 from the existing dependency
+  and added a decorative 16px download arrow with an 8px gap. Default CV links
+  and locale-specific versioned downloads remain unchanged.
+- Passed typecheck, lint, formatting, 57 unit tests, 28 E2E tests and preview
+  build/artifact validation (44 pages). Browser checks on both homes at 320,
+  390, 760, 761, 1024 and 1440px confirmed the new font/color/icon, keyboard
+  focus, hover, spacing, no overlap/overflow and exact locale PDF downloads.
+  Inspected the desktop screenshot and verified default About/footer links.
+  Production build (44 pages), artifact validation and release validation
+  also passed. No push or publication performed.
+
 ## Hero CV download CTA (2026-10-10)
 
 - Added the optional `hero` variant to `CvLink` and used it below the existing
