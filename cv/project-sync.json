@@ -1,8 +1,8 @@
 {
-  "cv/en.html": "1493f4ccf957381338bf6d5052d8de01b06ea25b79005ccc806525d7cc558f0a",
-  "cv/pt-br.html": "7ba1e4e6f954a2cf4b3bf6f79fbfd59c7a691d4472216d77f172ee99cb0b7b13",
-  "public/cv/marcelo-taparelli-cv-en.pdf": "5fb5a703fa077e3779ceb096fff5066d1f390c3f631e518c7b185e647b834d23",
-  "public/cv/marcelo-taparelli-cv-pt-br.pdf": "184c8489473e333ba26a636468f803f908bef8840cdd7dda268a896c2c843371",
+  "cv/en.html": "8acbb3112d88ef52a0ecae9fbd9c64914e1901e7b8c87d88f6705e3c59abe5ec",
+  "cv/pt-br.html": "f8101892fce679091739937241935b9d9cc6be74453f0d360b4928ac97b37108",
+  "public/cv/marcelo-taparelli-cv-en.pdf": "0b05f49150d8a0df60e178ca60fb8c846d2a90d38a023511265f438a50a51112",
+  "public/cv/marcelo-taparelli-cv-pt-br.pdf": "8ae60684bb4ca98f7ca3d9353ff8298110f3caa068d5d491dd720afe9fe47497",
   "src/content/projects/en/atendimento-evag.mdx": "be4b6119aafb6849415addaa68173a7331c285874e57328a09f2b1083d67eed3",
   "src/content/projects/en/catus.mdx": "81d0fd922359a471e074ab6eb5258d96ad4e406ac45edc0f076c7db173a1fec8",
   "src/content/projects/en/defectrisk-ml.mdx": "fcb58b74738ce553407f1a6060125f600f1e49477a6b3d82641569c2633c7fca",

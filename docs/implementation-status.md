@@ -1,5 +1,22 @@
 # Implementation status
 
+## Agentic development experience bullets (2026-10-10)
+
+- Reordered current Catus/EVAG experience in both CVs to lead with AI research
+  and process automation. Catus now describes agentic e-commerce development
+  with testing, validation and documentation creation/review, plus agency/client
+  WordPress development, deployment and research into AI-assisted methods.
+  Removed Wake maintenance, Core Web Vitals and the two-blog wording as requested.
+- EVAG now describes agentic development/maintenance with software engineering
+  best practices, testing and security. Retained the Drive/WordPress and GitLab
+  automation examples. Statements come from the owner's supplied work description;
+  no outcomes, dates or metrics were invented.
+- Regenerated both PDFs and inspected their print layouts: one A4 page each,
+  with 31.4px bottom headroom. Refreshed the synchronization record. Passed 57
+  unit tests, 28 E2E tests, typecheck, lint, formatting, preview/production builds
+  (44 pages each), both artifact validators and release validation.
+- No push or publication was performed.
+
 ## CV professional experience and education typography (2026-10-10)
 
 - Based on the owner's supplied experience, updated both CVs to describe
