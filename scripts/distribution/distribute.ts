@@ -1,7 +1,7 @@
 // Phase 1 content distribution CLI (DEV.to + LinkedIn).
 // Single manual execution: bun scripts/distribution/distribute.ts --slug <slug> --ledger <path>
 // Default: a PT-BR + EN article pair (DEV.to EN + bilingual LinkedIn).
-// --kind project: approved PT-BR LinkedIn launch copy + EN case on DEV.to, with both
+// --kind project: approved bilingual LinkedIn launch copy + EN case on DEV.to, with both
 // published/reviewed project cases checked before publication.
 // Secrets come only from the environment and are never printed.
 // Exit 0: every requested channel published or already-published.

@@ -92,6 +92,42 @@ export interface ArticleReader {
   readFile: (path: string) => Promise<string>;
 }
 
+/** Same bilingual publication contract for articles and project launches. */
+export function validateBilingualLinkedinText(
+  text: string,
+  ptCanonical: string,
+  enCanonical: string,
+): void {
+  validateDistributionInput({ linkedinText: text }, ptCanonical);
+  if (!text.includes(enCanonical))
+    failClosed('LinkedIn post must contain the EN canonical URL');
+  const marker = 'English version below 🇬🇧';
+  const englishIndex = text.indexOf(marker);
+  if (englishIndex < 0)
+    failClosed('LinkedIn post must include the bilingual section marker');
+  const portugueseIndex = text.indexOf('🇧🇷');
+  if (portugueseIndex < 0 || portugueseIndex >= englishIndex)
+    failClosed(
+      'LinkedIn post must include the PT-BR flag before the English section',
+    );
+  const pt = text.slice(portugueseIndex + '🇧🇷'.length, englishIndex);
+  const en = text.slice(englishIndex + marker.length);
+  if (!pt.includes(ptCanonical) || !en.includes(enCanonical))
+    failClosed(
+      'LinkedIn canonical URLs must appear in their own language sections',
+    );
+  const hasCopy = (section: string) =>
+    /\p{L}{2,}/u.test(
+      section
+        .replace(/^\s*(?:PT-BR|EN)\s*/i, '')
+        .replace(/^\s*(?:[^:\n]+:\s*)?https?:\/\/\S+\s*$/gm, '')
+        .replace(/https?:\/\/\S+/g, '')
+        .replace(/#[\p{L}\p{N}_]+/gu, ''),
+    );
+  if (!hasCopy(pt) || !hasCopy(en))
+    failClosed('LinkedIn post requires copy in both language sections');
+}
+
 async function listGlob(pattern: string): Promise<string[]> {
   const paths: string[] = [];
   for await (const path of new Glob(pattern).scan('.')) paths.push(path);
@@ -197,14 +233,11 @@ export async function resolveArticlePair(
     );
   if (pt.distribution.linkedinText === undefined)
     failClosed(`${ptParsed.path}: missing linkedin text for LinkedIn`);
-  if (!pt.distribution.linkedinText.includes(en.canonicalUrl))
-    failClosed(
-      `${ptParsed.path}: LinkedIn post must contain the EN canonical URL`,
-    );
-  if (!pt.distribution.linkedinText.includes('English version below 🇬🇧'))
-    failClosed(
-      `${ptParsed.path}: LinkedIn post must include the bilingual section marker`,
-    );
+  validateBilingualLinkedinText(
+    pt.distribution.linkedinText,
+    pt.canonicalUrl,
+    en.canonicalUrl,
+  );
   if (en.distribution.devtoTags === undefined)
     failClosed(`${enParsed.path}: missing devto tags for DEV.to`);
   return { slug, translationKey: pt.translationKey, pt, en };

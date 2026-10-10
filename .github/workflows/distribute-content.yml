@@ -3,7 +3,7 @@ name: Distribute content
 # Article or project distribution (DEV.to + LinkedIn).
 # Human approval is the manual workflow_dispatch itself: a human passes the
 # content slug and type, the workflow validates the pair, distributes per channel
-# (articles: DEV.to EN + bilingual LinkedIn; projects: EN case + PT-BR LinkedIn), and records
+# (articles: DEV.to EN + bilingual LinkedIn; projects: EN case + bilingual LinkedIn), and records
 # state on the dedicated `distribution-state` branch. Never commits to main.
 # Never publishes in any other circumstance. No rebuild, no deploy.
 on:

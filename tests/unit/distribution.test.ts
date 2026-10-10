@@ -7,6 +7,7 @@ import {
   resolveArticlePair,
   splitFrontmatter,
   validateDistributionInput,
+  validateBilingualLinkedinText,
   type ArticleReader,
 } from '../../scripts/distribution/article';
 import {
@@ -46,11 +47,15 @@ distribution:
     text: |
       🇧🇷 PT-BR
 
+      Uma decisão de engenharia.
+
       Leia: ${PT_CANONICAL}
 
       ---
 
       English version below 🇬🇧
+
+      An engineering decision.
 
       Read: ${EN_CANONICAL}`;
 
@@ -344,6 +349,31 @@ category: Engenharia`,
 });
 
 describe('distribution metadata validation', () => {
+  test('enforces flags, copy and canonicals in their own sections for every LinkedIn post', () => {
+    const valid = `🇧🇷 PT-BR\nTexto em português.\n${PT_CANONICAL}\nEnglish version below 🇬🇧\nEnglish copy.\n${EN_CANONICAL}`;
+    expect(() =>
+      validateBilingualLinkedinText(valid, PT_CANONICAL, EN_CANONICAL),
+    ).not.toThrow();
+    for (const invalid of [
+      valid.replace('🇧🇷', ''),
+      valid.replace('English version below 🇬🇧', 'English'),
+      valid.replace('Texto em português.', ''),
+      valid.replace('English copy.', ''),
+      valid
+        .replace('English copy.', '')
+        .replace(EN_CANONICAL, `Case: ${EN_CANONICAL}`),
+      valid.replace('🇧🇷', '') + '\n🇧🇷',
+      valid
+        .replace(PT_CANONICAL, 'TEMP')
+        .replace(EN_CANONICAL, PT_CANONICAL)
+        .replace('TEMP', EN_CANONICAL),
+      `Texto em português. ${PT_CANONICAL} ${EN_CANONICAL}`,
+    ]) {
+      expect(() =>
+        validateBilingualLinkedinText(invalid, PT_CANONICAL, EN_CANONICAL),
+      ).toThrow();
+    }
+  });
   test('accepts valid input', () => {
     expect(() =>
       validateDistributionInput(

@@ -1,45 +1,47 @@
 ---
 slug: defectrisk-ml
 locale: pt-BR
-status: approved
-reviewed: true
+status: draft
+reviewed: false
 distribution:
   devto:
     tags: [ai, machinelearning, python, programming]
 ---
 
+🇧🇷 PT-BR
+
 Nem todo problema de IA precisa de um LLM.
 
-Depois de projetos com RAG, agentes e LLMs, quis explorar outra frente da Engenharia de IA: Machine Learning aplicado a uma decisão real.
+Depois de RAG e agentes, explorei Machine Learning com o DefectRisk: se não dá para revisar todo o código, onde olhar primeiro?
 
-A pergunta era simples:
-se uma equipe não consegue revisar todo o código, onde vale a pena olhar primeiro?
+O modelo usa métricas de software para ordenar módulos por risco. No teste histórico, os ~30% priorizados reuniram 300 dos 421 módulos com defeitos conhecidos: 71,26%.
 
-Foi daí que nasceu o DefectRisk.
+É uma fila para revisão humana, não um detector automático de bugs.
 
-O modelo analisa métricas de software e organiza os módulos por risco, ajudando a priorizar a revisão humana.
+O trabalho foi além do modelo: avaliação confiável, limites dos dados e uma CLI executável. O artefato posterior ainda precisa de avaliação externa independente.
 
-No teste histórico com 2.177 módulos, os aproximadamente 30% priorizados concentraram 300 dos 421 módulos com defeitos conhecidos.
+Para mim, Engenharia de IA é ajudar a tomar uma decisão real e saber explicar os limites.
 
-Ou seja:
-~30% dos módulos priorizados para revisão → 71,26% dos módulos com defeitos conhecidos nessa fila.
+Case: https://marcelotaparelli.com.br/projetos/defectrisk-ml/
 
-Isso não significa que o modelo “encontra bugs sozinho”.
+---
 
-O objetivo é outro: ajudar uma equipe a decidir onde começar a investigar.
+English version below 🇬🇧
 
-E uma das partes mais importantes do projeto foi perceber que construir o modelo era só uma parte do trabalho. Também precisei garantir que a avaliação fosse confiável, entender os limites dos dados e reconhecer quando aumentar a complexidade já não estava trazendo ganhos relevantes.
+Not every AI problem needs an LLM.
 
-Também transformei o modelo em algo executável: ele pode receber métricas de novos módulos e gerar um ranking de risco via CLI.
+After RAG and agents, I explored Machine Learning with DefectRisk: when you cannot review all the code, where should you look first?
 
-Esse projeto reforçou uma ideia que quero levar para meu trabalho como engenheiro:
+The model uses software metrics to rank modules by risk. In the historical test, the prioritized ~30% included 300 of the 421 modules with known defects: 71.26%.
 
-um bom sistema de IA não é só aquele que tem uma boa métrica. É aquele que ajuda a tomar uma decisão real e cujos limites conseguimos explicar.
+It is a queue for human review, not an automatic bug detector.
 
-Case completo:
-https://marcelotaparelli.com.br/projetos/defectrisk-ml/
+The work went beyond the model: reliable evaluation, data limitations and an executable CLI. The later artifact still needs independent external evaluation.
 
-Código:
-https://github.com/marcelotaparelli/defectrisk-ml
+For me, AI Engineering means helping people make a real decision and explaining the limits.
+
+Case: https://marcelotaparelli.com.br/en/projects/defectrisk-ml/
+
+GitHub: https://github.com/marcelotaparelli/defectrisk-ml
 
 #AIEngineering #MachineLearning #SoftwareEngineering

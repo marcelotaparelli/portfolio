@@ -6,26 +6,39 @@ import {
 import { buildLinkedinPayload } from '../../scripts/distribution/linkedin';
 import { buildDevtoPayload } from '../../scripts/distribution/devto';
 import type { ArticleReader } from '../../scripts/distribution/article';
-import { mkdtemp, rm } from 'node:fs/promises';
+import { mkdir, mkdtemp, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
 const slug = 'defectrisk-ml';
 const copyPath = `docs/editorial/${slug}-linkedin.md`;
 
+// Approval is simulated only in fixture data. Repository drafts stay blocked.
+const approvedReader: ArticleReader = {
+  ...projectReader,
+  readFile: async (path) => {
+    const source = await projectReader.readFile(path);
+    return path === copyPath
+      ? source
+          .replace('status: draft', 'status: approved')
+          .replace('reviewed: false', 'reviewed: true')
+      : source;
+  },
+};
+
 function modifiedReader(
   transform: (path: string, source: string) => string,
 ): ArticleReader {
   return {
-    ...projectReader,
+    ...approvedReader,
     readFile: async (path) =>
-      transform(path, await projectReader.readFile(path)),
+      transform(path, await approvedReader.readFile(path)),
   };
 }
 
 describe('project launch distribution', () => {
   test('uses the approved copy exactly and links to the published project pair', async () => {
-    const pair = await resolveProjectPost(slug);
+    const pair = await resolveProjectPost(slug, approvedReader);
     const copy = await Bun.file(copyPath).text();
     const approvedBody = copy.replace(/^---\n[\s\S]*?\n---\n/, '').trim();
     expect(buildLinkedinPayload(pair.pt, 'urn:li:person:test').commentary).toBe(
@@ -74,7 +87,7 @@ describe('project launch distribution', () => {
   test('rejects a missing locale or mismatched translation identity', async () => {
     await expect(
       resolveProjectPost(slug, {
-        ...projectReader,
+        ...approvedReader,
         listEnFiles: async () => [],
       }),
     ).rejects.toThrow('no published en project');
@@ -134,6 +147,17 @@ describe('project launch distribution', () => {
     );
   });
 
+  test('blocks the earlier Portuguese-only launch even with approval metadata', async () => {
+    const reader = modifiedReader((path, source) =>
+      path === copyPath
+        ? source.slice(0, source.indexOf('English version below 🇬🇧'))
+        : source,
+    );
+    await expect(resolveProjectPost(slug, reader)).rejects.toThrow(
+      'EN canonical URL',
+    );
+  });
+
   test('requires valid DEV.to tags and a nonempty English case', async () => {
     for (const replacement of [
       'tags: []',
@@ -166,6 +190,15 @@ describe('project launch CLI', () => {
   async function fixture(run: (dir: string) => Promise<void>) {
     const dir = await mkdtemp(join(tmpdir(), 'defectrisk-distribution-'));
     try {
+      // Separate workspace: production CLI sees approved fixtures, never the draft.
+      for (const path of [
+        copyPath,
+        `src/content/projects/pt-br/${slug}.mdx`,
+        `src/content/projects/en/${slug}.mdx`,
+      ]) {
+        await mkdir(join(dir, path, '..'), { recursive: true });
+        await Bun.write(join(dir, path), await approvedReader.readFile(path));
+      }
       await Bun.write(join(dir, 'ledger.json'), '{}');
       await Bun.write(join(dir, 'calls.json'), '[]');
       await Bun.write(
@@ -208,7 +241,7 @@ describe('project launch CLI', () => {
         process.execPath,
         '--preload',
         join(dir, 'network.ts'),
-        'scripts/distribution/distribute.ts',
+        join(process.cwd(), 'scripts/distribution/distribute.ts'),
         '--slug',
         slug,
         '--kind',
@@ -217,6 +250,7 @@ describe('project launch CLI', () => {
         join(dir, 'ledger.json'),
       ],
       {
+        cwd: dir,
         env: {
           ...process.env,
           DEVTO_API_KEY: devtoKey,
@@ -270,13 +304,14 @@ describe('project launch CLI', () => {
       ]);
       const body = JSON.parse(first.calls[4]!.body!);
       expect(body.commentary).toBe(
-        (await resolveProjectPost(slug)).pt.distribution.linkedinText,
+        (await resolveProjectPost(slug, approvedReader)).pt.distribution
+          .linkedinText,
       );
       const ledger = await Bun.file(join(dir, 'ledger.json')).json();
       expect(ledger[slug]).toEqual(originalArticle);
       expect(ledger[`project:${slug}`].devto.id).toBe('99');
       expect(JSON.parse(first.calls[3]!.body!).article).toEqual(
-        buildDevtoPayload((await resolveProjectPost(slug)).en),
+        buildDevtoPayload((await resolveProjectPost(slug, approvedReader)).en),
       );
       expect(ledger[`project:${slug}`].linkedin.id).toBe(
         'urn:li:ugcPost:offline-test',

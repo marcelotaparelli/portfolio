@@ -1,5 +1,36 @@
 # Implementation status
 
+## Shared bilingual LinkedIn contract and DefectRisk rewrite (2026-10-10)
+
+- Corrected the project-mode exception that allowed a Portuguese-only
+  LinkedIn launch. Article and project resolution now share the same validator:
+  PT-BR flag before the English marker, text in both sections, each language's
+  canonical in its own section and the existing 3,000-character ceiling.
+  Link-only sections, including labeled URLs, do not count as editorial copy.
+- Added durable AGENTS.md constraints for one concise bilingual LinkedIn post
+  in both modes, targeting 1,000–1,800 total characters. Documented preservation
+  of publication state and explicit authorization for replacement posts.
+- Rewrote the DefectRisk launch as equivalent PT/EN sections with flags,
+  historical 300/421-module scope, human review, executable CLI and the later
+  artifact's independent-evaluation limitation. The body has 1,598 JavaScript
+  string characters and is marked `status: draft`, `reviewed: false` pending
+  owner review, per AGENTS.md's human-review requirement. Actual project
+  resolution rejects this unapproved source before publication.
+- Added missing PT-BR flag headers to four existing article distribution
+  metadata blocks. Their prose and website bodies are unchanged. All published
+  article pairs satisfy the stricter shared validator in release validation.
+- Regression coverage rejects a Portuguese-only project even with approved
+  metadata, missing flags/sections, empty or link-only copy and swapped
+  canonicals. CLI tests now use a separate temporary workspace with explicitly
+  approved fixture data, preserving the real draft's review state.
+- Passed 56 unit tests/183 assertions, typecheck (0 errors/warnings, 31 hints),
+  lint, preview and production builds (44 pages each), both artifact validators
+  and release validation. No UI layout or dependency changes were introduced.
+- Updated the runbook: distribution creates posts and does not edit existing
+  LinkedIn publications. No connected LinkedIn editing tool was available.
+  No ledger entry was removed or changed; no push, deployment, repost or remote
+  post edit was performed. The new copy is ready for owner review/manual editing.
+
 ## Evidence list layout correction (2026-10-10)
 
 - Inspected the rendered site and the public DefectRisk PT case. MDX wraps

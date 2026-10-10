@@ -22,7 +22,7 @@ export interface ResolvedArticle {
  * Bilingual website content pair for distribution.
  * DEV.to publishes the EN article (canonical /en/articles/…). LinkedIn
  * publishes one PT-authored bilingual copy with both article canonicals.
- * Project launches use approved PT-BR LinkedIn copy and the reviewed EN case
+ * Project launches use approved bilingual LinkedIn copy and the reviewed EN case
  * on DEV.to (canonical /en/projects/…). No runtime translation.
  */
 export interface ResolvedPair {

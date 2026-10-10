@@ -1,10 +1,11 @@
-// Project launches use approved PT-BR LinkedIn copy and the reviewed EN case on DEV.to.
+// Project launches use approved bilingual LinkedIn copy and the reviewed EN case on DEV.to.
 // Both website locales must remain published and reviewed.
 import {
   DistributionError,
   fsReader,
   splitFrontmatter,
   validateDistributionInput,
+  validateBilingualLinkedinText,
   absolutizeMarkdown,
   type ArticleReader,
 } from './article';
@@ -91,7 +92,11 @@ export async function resolveProjectPost(
       'project LinkedIn copy is not approved and reviewed',
     );
   pt.distribution.linkedinText = body.trim();
-  validateDistributionInput(pt.distribution, pt.canonicalUrl);
+  validateBilingualLinkedinText(
+    pt.distribution.linkedinText,
+    pt.canonicalUrl,
+    en.canonicalUrl,
+  );
   const tags = data.distribution?.devto?.tags;
   if (!Array.isArray(tags) || !tags.every((tag) => typeof tag === 'string'))
     throw new DistributionError('project launch requires DEV.to tags');

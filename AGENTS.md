@@ -28,6 +28,15 @@ Variable execution state belongs in `docs/implementation-status.md`, not here.
 
 - Drafts must never leak into production.
 - Preserve the existing PT/EN publication model.
+- LinkedIn distribution, for articles and project launches alike, must use one
+  concise bilingual post: `🇧🇷 PT-BR`, then `English version below 🇬🇧`, with
+  substantive PT/EN copy and each language's canonical URL in its own section.
+  Aim for 1,000–1,800 characters total; never exceed LinkedIn's 3,000-character
+  limit. Do not introduce a monolingual channel exception. Changes require
+  explicit owner direction and matching documentation/validation updates.
+- Rewriting distribution copy does not update an already-published post.
+  Preserve its ledger entry; do not delete state or create a replacement post
+  without explicit authorization. New editorial copy requires human review.
 - Do not invent metrics, results, claims, or content.
 - Preserve security and publication constraints already enforced by code and tests.
 
