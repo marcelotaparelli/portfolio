@@ -1,5 +1,6 @@
 ---
 import { file as bunFile } from 'bun';
+import { createHash } from 'node:crypto';
 import { cv } from '../data/site';
 import { t } from '../i18n/translations';
 import type { Locale } from '../i18n/routes';
@@ -12,10 +13,15 @@ const file = cv[locale];
 const available =
   file.reviewed &&
   (await bunFile(`${process.cwd()}/public${file.path}`).exists());
+const version = available
+  ? createHash('sha256')
+      .update(new Uint8Array(await bunFile(`public${file.path}`).arrayBuffer()))
+      .digest('hex')
+  : '';
 ---
 
 {available && (
-  <a class="text-link" href={file.path} download>
+  <a class="text-link" href={`${file.path}?v=${version}`} download>
     {t(locale).cv}
     <span class="file-label">PDF</span>
     <Arrow direction="diagonal" />

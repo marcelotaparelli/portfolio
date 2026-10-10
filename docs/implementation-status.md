@@ -1,5 +1,23 @@
 # Implementation status
 
+## CV cache versioning after live PT/EN comparison (2026-10-10)
+
+- Downloaded both public CVs and compared SHA-256 fingerprints with the local
+  approved PDFs. The unversioned PT URL returned an older PDF with Hostinger
+  CDN `HIT`/`Age` headers, while EN matched the current file. A new query URL
+  returned the current PT PDF with `MISS`; the content-fingerprint version URL
+  also returned HTTP 200 and exactly matched the approved PT bytes. The current
+  PDF was already deployed: stale cache caused the observed discrepancy.
+- CV links now include a SHA-256 version derived from their PDF at build time.
+  Availability/review checks and the canonical PDF paths remain unchanged.
+  No PDF prose or caching policy was changed. Documented live verification and
+  extended E2E coverage to require exact versioned PT/EN links and served bytes,
+  retaining the download filename checks.
+- Passed 57 unit tests, 28 E2E tests, typecheck, lint, formatting, both builds
+  (44 pages each), artifact validators and release validation. The code fix
+  requires a subsequent deployment to update the site's download buttons;
+  no push, deployment or CDN purge was performed.
+
 ## CV career progression from owner-supplied LinkedIn experience (2026-10-10)
 
 - Used the owner's pasted LinkedIn experience as the source for five distinct

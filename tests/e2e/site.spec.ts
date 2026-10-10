@@ -1,5 +1,7 @@
 import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
+import { createHash } from 'node:crypto';
+import { readFile } from 'node:fs/promises';
 
 const pairs = [
   ['/', '/en/'],
@@ -280,6 +282,14 @@ test('draft preview is non-indexable and CV links target valid locale PDFs', asy
   page,
   request,
 }) => {
+  const ptPdf = await readFile(
+    new URL('../../public/cv/marcelo-taparelli-cv-pt-br.pdf', import.meta.url),
+  );
+  const enPdf = await readFile(
+    new URL('../../public/cv/marcelo-taparelli-cv-en.pdf', import.meta.url),
+  );
+  const ptHref = `/cv/marcelo-taparelli-cv-pt-br.pdf?v=${createHash('sha256').update(ptPdf).digest('hex')}`;
+  const enHref = `/cv/marcelo-taparelli-cv-en.pdf?v=${createHash('sha256').update(enPdf).digest('hex')}`;
   await page.goto('/sobre/');
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute(
     'content',
@@ -288,10 +298,7 @@ test('draft preview is non-indexable and CV links target valid locale PDFs', asy
   const ptLinks = page.locator('a[href^="/cv/"]');
   await expect(ptLinks).toHaveCount(2);
   for (const link of await ptLinks.all()) {
-    await expect(link).toHaveAttribute(
-      'href',
-      '/cv/marcelo-taparelli-cv-pt-br.pdf',
-    );
+    await expect(link).toHaveAttribute('href', ptHref);
   }
   const ptDownload = page.waitForEvent('download');
   await ptLinks.first().click();
@@ -303,10 +310,7 @@ test('draft preview is non-indexable and CV links target valid locale PDFs', asy
   const enLinks = page.locator('a[href^="/cv/"]');
   await expect(enLinks).toHaveCount(2);
   for (const link of await enLinks.all()) {
-    await expect(link).toHaveAttribute(
-      'href',
-      '/cv/marcelo-taparelli-cv-en.pdf',
-    );
+    await expect(link).toHaveAttribute('href', enHref);
   }
   const enDownload = page.waitForEvent('download');
   await enLinks.first().click();
@@ -314,12 +318,14 @@ test('draft preview is non-indexable and CV links target valid locale PDFs', asy
     'marcelo-taparelli-cv-en.pdf',
   );
 
-  expect(
-    (await request.get('/cv/marcelo-taparelli-cv-pt-br.pdf')).status(),
-  ).toBe(200);
-  expect((await request.get('/cv/marcelo-taparelli-cv-en.pdf')).status()).toBe(
-    200,
-  );
+  for (const [href, pdf] of [
+    [ptHref, ptPdf],
+    [enHref, enPdf],
+  ] as const) {
+    const response = await request.get(href);
+    expect(response.status()).toBe(200);
+    expect(await response.body()).toEqual(pdf);
+  }
   expect(await (await request.get('/sitemap.xml')).text()).not.toContain(
     '<loc>',
   );

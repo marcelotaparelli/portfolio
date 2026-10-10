@@ -38,3 +38,9 @@ record is refreshed. This detects drift, not semantic accuracy or human review;
 reviewers must reject a record-only refresh that skips CV review. CSS-only site
 changes do not require editorial CV updates. CV stylesheet changes still require
 regenerating and visually reviewing both PDFs.
+
+CV download links include a SHA-256 version parameter computed from each PDF
+at build time. Replacing a PDF changes its download URL, avoiding stale copies
+in the hosting cache. After deployment, compare the bytes downloaded from each
+rendered PT/EN link with the corresponding approved PDF. The E2E suite checks
+both URL fingerprints and served PDF bytes; this does not verify the live host.
