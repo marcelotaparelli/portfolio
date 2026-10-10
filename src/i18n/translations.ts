@@ -145,7 +145,7 @@ const en: Translations = {
       'Python, RAG, Agents, Evals | TypeScript, Bun, Node.js | Product-minded',
     description:
       'AI Engineer with a Software Engineering foundation and experience in backend, APIs, and production. AI research, process automation, and agentic development with a product perspective.',
-    pillars: 'AI Engineering · Software foundation · Product lens',
+    pillars: 'AI Engineering · Software Engineering · Product lens',
   },
   nav: {
     projects: 'Projects',
