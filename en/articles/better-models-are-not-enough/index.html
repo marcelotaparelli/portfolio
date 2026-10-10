@@ -1,0 +1,171 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#061321"><title>When Better Models Are Not Enough: What to Do When Data Becomes the Bottleneck — Marcelo Taparelli</title><meta name="description" content="In DefectRisk, more complex models delivered small gains. Group-aware evaluation, conflicting labels and calibration showed where to invest next."><link rel="canonical" href="https://marcelotaparelli.com.br/en/articles/better-models-are-not-enough/"><link rel="alternate" hreflang="en" href="https://marcelotaparelli.com.br/en/articles/better-models-are-not-enough/"><link rel="alternate" hreflang="pt-BR" href="https://marcelotaparelli.com.br/artigos/better-models-are-not-enough/"><link rel="alternate" hreflang="x-default" href="https://marcelotaparelli.com.br/artigos/better-models-are-not-enough/"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="preload" href="/fonts/inter-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin><meta property="og:type" content="article"><meta property="og:site_name" content="Marcelo Taparelli"><meta property="og:title" content="When Better Models Are Not Enough: What to Do When Data Becomes the Bottleneck — Marcelo Taparelli"><meta property="og:description" content="In DefectRisk, more complex models delivered small gains. Group-aware evaluation, conflicting labels and calibration showed where to invest next."><meta property="og:url" content="https://marcelotaparelli.com.br/en/articles/better-models-are-not-enough/"><meta property="og:locale" content="en_US"><meta property="og:locale:alternate" content="pt_BR"><meta property="og:image" content="https://marcelotaparelli.com.br/og/en.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="Marcelo Taparelli — AI Engineer | Software Engineer"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="When Better Models Are Not Enough: What to Do When Data Becomes the Bottleneck — Marcelo Taparelli"><meta name="twitter:description" content="In DefectRisk, more complex models delivered small gains. Group-aware evaluation, conflicting labels and calibration showed where to invest next."><meta name="twitter:image" content="https://marcelotaparelli.com.br/og/en.png"><meta name="twitter:image:alt" content="Marcelo Taparelli — AI Engineer | Software Engineer"><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Person","@id":"https://marcelotaparelli.com.br/#person","name":"Marcelo Taparelli","url":"https://marcelotaparelli.com.br","jobTitle":"AI Engineer | Software Engineer","description":"AI Engineer with a strong Software Engineering foundation and a Product mindset. From business problem to production, with verification, security and measurement.","sameAs":["https://www.linkedin.com/in/marcelo-taparelli/","https://github.com/marcelotaparelli"]},{"@type":"WebSite","@id":"https://marcelotaparelli.com.br/#website","url":"https://marcelotaparelli.com.br","name":"Marcelo Taparelli","inLanguage":["pt-BR","en"],"description":"AI Engineer with a strong Software Engineering foundation and a Product mindset. From business problem to production, with verification, security and measurement."},{"@type":"BlogPosting","headline":"When Better Models Are Not Enough: What to Do When Data Becomes the Bottleneck","description":"In DefectRisk, more complex models delivered small gains. Group-aware evaluation, conflicting labels and calibration showed where to invest next.","url":"https://marcelotaparelli.com.br/en/articles/better-models-are-not-enough/","mainEntityOfPage":"https://marcelotaparelli.com.br/en/articles/better-models-are-not-enough/","inLanguage":"en","author":{"@id":"https://marcelotaparelli.com.br/#person"},"datePublished":"2026-10-09T00:00:00.000Z"}]}</script><link rel="stylesheet" href="/_astro/BaseLayout.sQTQz3I0.css"></head><body><a class="skip-link" href="#main">Skip to content</a><header class="site-header"><div class="container header-inner"><a class="brand" href="/en/" aria-label="Marcelo Taparelli"><svg width="30" height="30" viewBox="0 0 40 40" fill="none" aria-hidden="true"><path d="M5 30V10l10 12 10-12v20M25 10h12M31 10v20" stroke="currentColor" stroke-width="2" stroke-linejoin="round"></path></svg><span>Marcelo Taparelli<span class="brand-dot">.</span></span></a><nav class="desktop-nav" aria-label="Main navigation"><a href="/en/projects/">Projects</a><a href="/en/about/">About</a><a href="/en/articles/" aria-current="page">Articles</a><a href="/en/contact/">Contact</a></nav><div class="header-actions"><nav class="language-switch" aria-label="Select language"><a href="/artigos/better-models-are-not-enough/" lang="pt-BR" hreflang="pt-BR" aria-label="Português">PT</a><span aria-hidden="true">/</span><a href="/en/articles/better-models-are-not-enough/" lang="en" hreflang="en" aria-current="true" aria-label="English">EN</a></nav><details class="mobile-menu"><summary aria-label="Menu"><span class="menu-lines" aria-hidden="true"></span><span class="sr-only">Menu</span></summary><nav aria-label="Main navigation"><a href="/en/projects/">Projects</a><a href="/en/about/">About</a><a href="/en/articles/" aria-current="page">Articles</a><a href="/en/contact/">Contact</a></nav></details></div></div></header><script type="module">var e=document.querySelector(`.mobile-menu`),t=e?.querySelector(`summary`);document.addEventListener(`keydown`,n=>{n.key===`Escape`&&e?.open&&(e.open=!1,t?.focus())}),document.addEventListener(`click`,t=>{e?.open&&t.target instanceof Node&&!e.contains(t.target)&&(e.open=!1)});</script><main id="main" tabindex="-1"><div class="container"><nav class="breadcrumb" aria-label="Breadcrumb"><a href="/en/articles/">Articles</a><span aria-hidden="true">/</span><span aria-current="page">AI Engineering · Machine Learning</span></nav><header class="page-intro case-intro"><p class="eyebrow">AI Engineering · Machine Learning</p><h1>When Better Models Are Not Enough: What to Do When Data Becomes the Bottleneck</h1><p class="section-description">In DefectRisk, more complex models delivered small gains. Group-aware evaluation, conflicting labels and calibration showed where to invest next.</p><div class="article-meta"><span>Marcelo Taparelli</span><span>7 min read</span><time datetime="2026-10-09T00:00:00.000Z">October 9, 2026</time></div></header><div class="editorial-grid"><aside class="editorial-sidebar"><p class="eyebrow">In this article</p><nav aria-label="In this article"><a href="#accuracy-answered-the-wrong-question">Accuracy answered the wrong question</a><a href="#before-models-i-had-to-fix-the-boundaries">Before models, I had to fix the boundaries</a><a href="#stronger-models-helped-then-delivered-diminishing-returns">Stronger models helped, then delivered diminishing returns</a><a href="#conflicting-labels-reveal-a-limit-without-explaining-everything">Conflicting labels reveal a limit without explaining everything</a><a href="#calibration-changed-how-to-read-the-probability">Calibration changed how to read the probability</a><a href="#chasing-90-can-quietly-change-the-question">Chasing 90% can quietly change the question</a><a href="#the-historical-result-and-the-validation-still-needed">The historical result and the validation still needed</a><a href="#the-next-investment-would-be-better-information">The next investment would be better information</a></nav></aside><article class="prose"><p>I kept improving the modeling process: class weights, nested tuning, stronger
+tree families, derived features, and an ensemble. The implementation became
+more careful, but gains on the product decision started getting small.
+The next task became understanding what the data could teach me and how
+much confidence I could attach to the output.</p>
+<p>That was the path through <a href="/en/projects/defectrisk-ml/">DefectRisk</a>, a public
+project that ranks software modules by estimated defect risk. Its product
+question was concrete: <strong>if a team can review about 30% of modules, how many
+modules with recorded defects enter that queue?</strong></p>
+<p>“Capture” means flagging a module labeled defective. It does not mean a real
+review process found every bug. That definition shapes both the metric and
+the limits of the conclusion.</p>
+<h2 id="accuracy-answered-the-wrong-question">Accuracy answered the wrong question</h2>
+<p>I used JM1 / OpenML 1053, version 1: 10,885 modules, 21 static metrics, and
+about 19.35% defective modules. A classifier that called everything clean
+would achieve approximately 80.65% accuracy without bringing any defect
+into the queue.</p>
+<p>That arithmetic made class imbalance visible. Recall measures the share
+of defective modules captured; precision measures how many flagged modules
+have recorded defects. Review workload shows the cost of using that decision.
+Improving one number without tracking the others could simply mean asking
+the team to do more work.</p>
+<p>Balanced Logistic Regression improved baseline recall, but brought more
+false positives. Lowering the threshold expanded the queue. Neither change
+added information to the features. I started comparing models at similar
+capacity instead of assuming 0.50 represented the same useful policy for
+every model.</p>
+<h2 id="before-models-i-had-to-fix-the-boundaries">Before models, I had to fix the boundaries</h2>
+<p>The random-split audit found <strong>299 complete feature vectors shared between
+training and test</strong>. The data contained 2,061 duplicate feature rows beyond
+the first occurrence. A model could encounter the same metrics during
+fitting and again during evaluation.</p>
+<p>That created a risk of partly measuring recognition of repeated information.
+It did not require discarding the whole dataset; it required changing an
+evaluation boundary before comparing algorithms.</p>
+<p>I grouped complete original metric vectors, excluding labels from group
+identity. Each group stayed on one side of training/test, validation, and
+CV boundaries. I retained duplicate and conflicting rows. Overlap audits
+checked the boundaries before fitting, and preprocessing learned only
+within its corresponding fitting partition.</p>
+<p>Group-aware evaluation better addresses the question about unseen vectors.
+It does not establish generalization to another project, language, or period.
+Fixing one contamination source does not remove every data limitation.</p>
+<h2 id="stronger-models-helped-then-delivered-diminishing-returns">Stronger models helped, then delivered diminishing returns</h2>
+<p>I separated parameter selection from performance estimation: five outer
+folds with groups and three inner folds for a limited configuration set.
+Class weights were calculated within fitting partitions. The selection
+objective was recall near 30% review, with AP as a tie-breaker.</p>
+<p>In training-only OOF evidence, at similar capacity:</p>
+<table>
+<thead>
+<tr>
+<th>Procedure</th>
+<th style="text-align:right">Defective modules captured, out of 1,685</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Balanced Logistic Regression</td>
+<td style="text-align:right">906</td>
+</tr>
+<tr>
+<td>Random Forest with nested tuning</td>
+<td style="text-align:right">953</td>
+</tr>
+<tr>
+<td>HGB with nested tuning</td>
+<td style="text-align:right">945</td>
+</tr>
+<tr>
+<td>XGBoost with limited nested search</td>
+<td style="text-align:right">926</td>
+</tr>
+</tbody>
+</table>
+<p>RF captured 47 more defective modules than Logistic Regression. HGB had
+slightly better AP, but captured fewer defects at the chosen capacity.
+XGBoost did not beat the reference. The material-gain rule was already
+explicit: two absolute recall percentage points or 30 extra captures,
+without clearly worse AP, at similar workload.</p>
+<p>Density and ratio features, training-fitted log transforms, and conservative
+pruning did not substantially change the result. Pruning added one capture;
+RF/HGB averaging added seven, moving recall from 56.56% to 56.97%. These
+gains fell below the materiality rule.</p>
+<p>Together, those results justified stopping model exploration. Limited
+searches cannot rule out every possible configuration, and repeated
+experiments on the same training data retain selection uncertainty.
+<strong>The available evidence suggested that the current feature set had become
+the main bottleneck.</strong> That is an engineering hypothesis, not a mathematically
+proven information ceiling.</p>
+<h2 id="conflicting-labels-reveal-a-limit-without-explaining-everything">Conflicting labels reveal a limit without explaining everything</h2>
+<p>The historical full-dataset audit found 88 feature-vector groups with
+conflicting labels. Training-only analysis found 11 groups containing
+22 rows. These are different populations.</p>
+<p>When metrics are identical but labels differ, a deterministic classifier
+receiving only those metrics cannot distinguish the rows individually.
+Context may be missing, labels may be ambiguous, or snapshots may not align
+with the defect period. The observed conflicts do not establish which
+explanation is correct.</p>
+<p>Exact training conflicts imply at least 11 deterministic row classification
+errors, far fewer than the hundreds of missed defects. Attributing the
+whole result to label noise would exceed the evidence. Static metrics also
+omit who changed a module, how often it changed, and its test coverage.</p>
+<h2 id="calibration-changed-how-to-read-the-probability">Calibration changed how to read the probability</h2>
+<p>An RF trained with balanced weights does not automatically produce
+probabilities aligned with natural defect frequency. After the historical
+evaluation, I compared sigmoid and isotonic calibration using training
+data only, with groups and nested selection. Maps learned from scores
+outside RF fitting, without using labels from their evaluation partitions.</p>
+<p>For the fixed RF configuration, sigmoid reduced Brier from <strong>0.18692 to
+0.13863</strong>, while AP remained approximately stable. Reliability curves and
+support per range complement Brier, which combines calibration,
+discrimination, and outcome uncertainty. Probability interpretation
+improved without discovering new predictive signal.</p>
+<p>A calibrated probability remains a population-based estimate. It does not
+establish individual certainty, causality, or reliability outside the
+distribution. A positive-slope sigmoid map preserves a fitted model’s
+ranking; the 0.50 threshold can nevertheless represent a different workload
+after calibration.</p>
+<h2 id="chasing-90-can-quietly-change-the-question">Chasing 90% can quietly change the question</h2>
+<p>In the uncertainty study, a tail chosen after inspecting outcomes selected
+four defective rows and displayed 100% precision. Four observations chosen
+from the same outcomes used to report them do not support a broad
+automation promise.</p>
+<p>Nested policy selection required at least 50 rows across 20 feature groups
+and chose cutoffs inside outer training. No HIGH tail with the ≥90% target
+precision and sufficient support qualified. Conservative policy classified
+136 LOW and zero HIGH, leaving <strong>98.44% UNCERTAIN</strong>. Seven LOW modules had
+defects. Thresholds 0.90 and 0.95 emitted no HIGH cases: precision was
+undefined, not perfect.</p>
+<p>Seeking a desired number can lead to choosing cutoffs from evaluation
+labels, hiding tiny coverage, or reusing the test for further adjustments.
+That would be metric hacking or evaluation contamination, not improved
+generalization. Precision needs coverage, recall, support, and a defined
+population alongside it.</p>
+<p>Abstention helps expose limits. When almost everything is uncertain, it
+also shows that broad automation has little utility. UNCERTAIN percentage
+is not automatically total review workload: HIGH may also need inspection.
+The product answer remained risk ranking for people.</p>
+<h2 id="the-historical-result-and-the-validation-still-needed">The historical result and the validation still needed</h2>
+<p>The frozen raw RF had one held-out evaluation: <strong>652 of 2,177 modules flagged
+(29.95%), with 300 of 421 defective modules captured (71.26% recall)</strong>.
+Precision was 46.01%; 352 modules recorded as clean entered the queue, and
+121 defective modules stayed outside it. The case includes F1, AP, and the
+full protocol.</p>
+<p>This result belongs to the historical raw model. The test was not reused
+for calibration or policy design and does not validate the later calibrated
+artifact. That system has training/CV evidence and requires <strong>a new
+independent external holdout</strong>, evaluated once after freezing the model,
+calibration, and policy. One JM1 partition does not predict production
+performance.</p>
+<h2 id="the-next-investment-would-be-better-information">The next investment would be better information</h2>
+<p>The next recommendation is new signals available at prediction time: code
+churn, defect history, ownership, test coverage, commit/change history,
+and review history. I did not implement them in DefectRisk. Each signal
+would need a time definition, a matching snapshot, and a label horizon;
+using history recorded after a defect would create another leakage source.</p>
+<p>Stopping tuning is also an engineering decision. Here, it meant delivering
+a frozen calibrated artifact and a ranking CLI, documenting what was
+measured, and directing the next investment toward available information.
+<strong>DefectRisk predicts risk and ranking, not certainty.</strong> Its value lies in
+prioritizing review with explicit limits.</p>
+<p>See the <a href="/en/projects/defectrisk-ml/">DefectRisk case</a> for the result and
+executable artifact. The <a href="https://github.com/marcelotaparelli/defectrisk-ml" target="_blank" rel="noopener noreferrer">public repository</a>
+contains code and reproduction instructions. This analysis draws on the</p>
+<a href="https://github.com/marcelotaparelli/defectrisk-ml/blob/8ccdfc301a1cb22c89ae2ffbc1a29e2c054325fa/docs/article-data-quality.md" target="_blank" rel="noopener noreferrer"><p>original technical article</p></a>
+<p>, the</p>
+<a href="https://github.com/marcelotaparelli/defectrisk-ml/blob/8ccdfc301a1cb22c89ae2ffbc1a29e2c054325fa/docs/model-card.md" target="_blank" rel="noopener noreferrer"><p>model card</p></a>
+<p>, and the</p>
+<a href="https://github.com/marcelotaparelli/defectrisk-ml/blob/8ccdfc301a1cb22c89ae2ffbc1a29e2c054325fa/docs/calibration-and-uncertainty.md" target="_blank" rel="noopener noreferrer"><p>calibration and uncertainty study</p></a>
+<p>.</p><a class="text-link" href="/en/articles/"><svg class="arrow arrow--left" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12h15m-6-6 6 6-6 6"></path></svg>Back to articles</a></article></div></div></main><footer class="site-footer"><div class="container footer-top"><div><a class="brand" href="/en/"><svg width="30" height="30" viewBox="0 0 40 40" fill="none" aria-hidden="true"><path d="M5 30V10l10 12 10-12v20M25 10h12M31 10v20" stroke="currentColor" stroke-width="2" stroke-linejoin="round"></path></svg><span>Marcelo Taparelli<span class="brand-dot">.</span></span></a><p>Problem first. Technology second.</p></div><nav class="footer-links" aria-label="Social links and résumé"><a href="https://github.com/marcelotaparelli" target="_blank" rel="noopener noreferrer">GitHub</a><a href="https://www.linkedin.com/in/marcelo-taparelli/" target="_blank" rel="noopener noreferrer">LinkedIn</a><a href="mailto:contato@marcelotaparelli.com.br">Email</a><a class="text-link" href="/cv/marcelo-taparelli-cv-en.pdf" download>Download résumé<span class="file-label">PDF</span><svg class="arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 18 18 6M6 6h12v12"></path></svg></a></nav></div><div class="container footer-bottom"><span>© 2026 Marcelo Taparelli</span><span>AI Engineering · Software foundation · Product lens</span></div></footer></body></html>

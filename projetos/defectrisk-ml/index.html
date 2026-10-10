@@ -1,0 +1,165 @@
+<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#061321"><title>DefectRisk — Marcelo Taparelli</title><meta name="description" content="Ranking de risco de defeitos para priorizar revisão de código. Na avaliação histórica do RF bruto, revisar ~30% dos módulos capturou 71,26% dos defeitos conhecidos."><link rel="canonical" href="https://marcelotaparelli.com.br/projetos/defectrisk-ml/"><link rel="alternate" hreflang="pt-BR" href="https://marcelotaparelli.com.br/projetos/defectrisk-ml/"><link rel="alternate" hreflang="en" href="https://marcelotaparelli.com.br/en/projects/defectrisk-ml/"><link rel="alternate" hreflang="x-default" href="https://marcelotaparelli.com.br/projetos/defectrisk-ml/"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="preload" href="/fonts/inter-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin><meta property="og:type" content="website"><meta property="og:site_name" content="Marcelo Taparelli"><meta property="og:title" content="DefectRisk — Marcelo Taparelli"><meta property="og:description" content="Ranking de risco de defeitos para priorizar revisão de código. Na avaliação histórica do RF bruto, revisar ~30% dos módulos capturou 71,26% dos defeitos conhecidos."><meta property="og:url" content="https://marcelotaparelli.com.br/projetos/defectrisk-ml/"><meta property="og:locale" content="pt_BR"><meta property="og:locale:alternate" content="en_US"><meta property="og:image" content="https://marcelotaparelli.com.br/og/pt-br.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="Marcelo Taparelli — Engenheiro de IA | Engenheiro de Software"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="DefectRisk — Marcelo Taparelli"><meta name="twitter:description" content="Ranking de risco de defeitos para priorizar revisão de código. Na avaliação histórica do RF bruto, revisar ~30% dos módulos capturou 71,26% dos defeitos conhecidos."><meta name="twitter:image" content="https://marcelotaparelli.com.br/og/pt-br.png"><meta name="twitter:image:alt" content="Marcelo Taparelli — Engenheiro de IA | Engenheiro de Software"><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Person","@id":"https://marcelotaparelli.com.br/#person","name":"Marcelo Taparelli","url":"https://marcelotaparelli.com.br","jobTitle":"Engenheiro de IA | Engenheiro de Software","description":"Engenheiro de IA com base sólida em Engenharia de Software e visão de Produto. Do problema de negócio à produção, com verificação, segurança e medição.","sameAs":["https://www.linkedin.com/in/marcelo-taparelli/","https://github.com/marcelotaparelli"]},{"@type":"WebSite","@id":"https://marcelotaparelli.com.br/#website","url":"https://marcelotaparelli.com.br","name":"Marcelo Taparelli","inLanguage":["pt-BR","en"],"description":"Engenheiro de IA com base sólida em Engenharia de Software e visão de Produto. Do problema de negócio à produção, com verificação, segurança e medição."},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Projetos","item":"https://marcelotaparelli.com.br/projetos/"},{"@type":"ListItem","position":2,"name":"DefectRisk","item":"https://marcelotaparelli.com.br/projetos/defectrisk-ml/"}]}]}</script><link rel="stylesheet" href="/_astro/BaseLayout.sQTQz3I0.css"></head><body><a class="skip-link" href="#main">Pular para o conteúdo</a><header class="site-header"><div class="container header-inner"><a class="brand" href="/" aria-label="Marcelo Taparelli"><svg width="30" height="30" viewBox="0 0 40 40" fill="none" aria-hidden="true"><path d="M5 30V10l10 12 10-12v20M25 10h12M31 10v20" stroke="currentColor" stroke-width="2" stroke-linejoin="round"></path></svg><span>Marcelo Taparelli<span class="brand-dot">.</span></span></a><nav class="desktop-nav" aria-label="Navegação principal"><a href="/projetos/" aria-current="page">Projetos</a><a href="/sobre/">Sobre</a><a href="/artigos/">Artigos</a><a href="/contato/">Contato</a></nav><div class="header-actions"><nav class="language-switch" aria-label="Selecionar idioma"><a href="/projetos/defectrisk-ml/" lang="pt-BR" hreflang="pt-BR" aria-current="true" aria-label="Português">PT</a><span aria-hidden="true">/</span><a href="/en/projects/defectrisk-ml/" lang="en" hreflang="en" aria-label="English">EN</a></nav><details class="mobile-menu"><summary aria-label="Menu"><span class="menu-lines" aria-hidden="true"></span><span class="sr-only">Menu</span></summary><nav aria-label="Navegação principal"><a href="/projetos/" aria-current="page">Projetos</a><a href="/sobre/">Sobre</a><a href="/artigos/">Artigos</a><a href="/contato/">Contato</a></nav></details></div></div></header><script type="module">var e=document.querySelector(`.mobile-menu`),t=e?.querySelector(`summary`);document.addEventListener(`keydown`,n=>{n.key===`Escape`&&e?.open&&(e.open=!1,t?.focus())}),document.addEventListener(`click`,t=>{e?.open&&t.target instanceof Node&&!e.contains(t.target)&&(e.open=!1)});</script><main id="main" tabindex="-1"><div class="container"><nav class="breadcrumb" aria-label="Navegação estrutural"><a href="/projetos/">Projetos</a><span aria-hidden="true">/</span><span aria-current="page">DefectRisk</span></nav><header class="page-intro case-intro"><p class="eyebrow">Engenharia de IA · Machine Learning</p><h1>DefectRisk</h1><p class="section-description">Ranking de risco de defeitos para priorizar revisão de código. Na avaliação histórica do RF bruto, revisar ~30% dos módulos capturou 71,26% dos defeitos conhecidos.</p><a class="text-link mt-5" href="https://github.com/marcelotaparelli/defectrisk-ml" target="_blank" rel="noopener noreferrer" aria-label="Visitar site: DefectRisk — abre em nova aba">Visitar site<svg class="arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 18 18 6M6 6h12v12"></path></svg></a></header><dl class="case-metadata"><div><dt>Minha contribuição</dt><dd>Avaliação, desenvolvimento do modelo e implementação da CLI</dd></div><div><dt>Contexto</dt><dd>Projeto público autoral — código aberto</dd></div><div><dt>Tecnologias confirmadas</dt><dd>Python · scikit-learn · pandas · Random Forest · XGBoost · pytest · Joblib</dd></div></dl><div class="editorial-grid"><aside class="editorial-sidebar"><p class="eyebrow">Neste artigo</p><nav aria-label="Neste artigo"><a href="#problema">Problema</a><a href="#o-primeiro-problema-foi-a-avaliação">O primeiro problema foi a avaliação</a><a href="#construção-do-modelo">Construção do modelo</a><a href="#resultado-histórico-do-rf-bruto">Resultado histórico do RF bruto</a><a href="#calibração-e-incerteza">Calibração e incerteza</a><a href="#artefato-executável">Artefato executável</a><a href="#limitações-e-próximo-investimento">Limitações e próximo investimento</a><a href="#evidências">Evidências</a></nav></aside><article class="prose"><p><strong>Revisar ~30% dos módulos → capturar 71,26% dos defeitos conhecidos.</strong></p>
+<p>Na avaliação histórica, realizada uma única vez com o Random Forest bruto
+congelado, 652 de 2.177 módulos foram sinalizados e 300 dos 421 módulos com
+defeitos registrados entraram nessa fila. Isso mede priorização; não demonstra
+que revisores encontraram cada bug nem valida o sistema calibrado posterior.</p>
+<p>Construí o processo de avaliação, comparei modelos sob a mesma capacidade de
+revisão e entreguei um artefato congelado com uma CLI de inferência real.
+O DefectRisk estima risco para orientar onde uma equipe começa a revisão.</p>
+<h2 id="problema">Problema</h2>
+<p>Uma equipe não consegue inspecionar todos os módulos com a mesma atenção.
+A pergunta útil é: <strong>se podemos revisar apenas parte do código, o ML consegue
+concentrar mais defeitos nessa fila?</strong></p>
+<p>Módulos defeituosos são a classe minoritária. No JM1, prever tudo como limpo
+renderia cerca de 80,65% de acurácia sem capturar um único defeito. Por isso,
+recall, precisão e esforço de revisão orientam a decisão de produto.</p>
+<h2 id="o-primeiro-problema-foi-a-avaliação">O primeiro problema foi a avaliação</h2>
+<p>O projeto usa <strong>JM1 / OpenML 1053, versão 1</strong>: 10.885 módulos, 21 métricas
+estáticas de código e aproximadamente 19,35% de módulos defeituosos.</p>
+<p>A auditoria inicial encontrou <strong>299 vetores completos de features compartilhados
+entre treino e teste</strong> no split aleatório. Havia dados duplicados e grupos
+com rótulos conflitantes: métricas idênticas, mas registros de defeito diferentes.
+Parte da avaliação poderia medir reconhecimento de exemplos repetidos em vez
+de generalização.</p>
+<p>Passei a agrupar os vetores originais antes de separar os dados. O rótulo não
+entra na identidade do grupo; vetores idênticos permanecem no mesmo lado de
+cada fronteira de treino/teste, validação e cross-validation. Mantive as linhas,
+inclusive as conflitantes, e acrescentei auditorias de sobreposição antes do
+treino. Imputação, transformação e pesos de classe são ajustados apenas nas
+partições de fitting.</p>
+<h2 id="construção-do-modelo">Construção do modelo</h2>
+<p>A progressão foi baseline de <strong>Logistic Regression → pesos de classe → análise
+de limiar e carga de revisão → Random Forest → HGB → XGBoost</strong>, com tuning
+limitado e aninhado, engenharia de features e comparação de ensemble.</p>
+<p>A decisão principal foi comparar modelos na <strong>mesma capacidade de revisão,
+especialmente perto de 30%</strong>, em vez de depender do limiar padrão de 0,50.
+Cinco folds externos com grupos estimaram os resultados; três folds internos
+selecionaram as configurações de árvores sem usar os resultados do fold externo.</p>
+<p>No estudo de seleção, restrito ao treino, o RF capturou 953 de 1.685 módulos
+defeituosos, contra 906 da Logistic Regression balanceada, sob carga semelhante.
+HGB, XGBoost, features derivadas e um pequeno ensemble não trouxeram ganho
+material suficiente para substituir o RF. O escolhido foi uma floresta
+ponderada de 200 árvores, profundidade 8 e mínimo de três exemplos por folha.
+Essas comparações de CV não são o resultado histórico abaixo.</p>
+<h2 id="resultado-histórico-do-rf-bruto">Resultado histórico do RF bruto</h2>
+<p><strong>Ao revisar aproximadamente um terço dos módulos de maior risco, o modelo
+concentrou cerca de sete em cada dez módulos com defeitos registrados na fila.</strong></p>
+<p>O modelo e a política foram congelados antes da única avaliação held-out.
+A política escolheu o corte pelos scores e pela capacidade, sem consultar os
+rótulos do teste, mantendo scores empatados juntos.</p>
+<table>
+<thead>
+<tr>
+<th>Medida</th>
+<th style="text-align:right">Held-out histórico</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Módulos avaliados</td>
+<td style="text-align:right">2.177</td>
+</tr>
+<tr>
+<td>Módulos com defeitos registrados</td>
+<td style="text-align:right">421</td>
+</tr>
+<tr>
+<td>Sinalizados para revisão</td>
+<td style="text-align:right">652 (29,95%)</td>
+</tr>
+<tr>
+<td>Módulos defeituosos capturados</td>
+<td style="text-align:right">300 de 421</td>
+</tr>
+<tr>
+<td>Recall</td>
+<td style="text-align:right">71,26%</td>
+</tr>
+<tr>
+<td>Precisão</td>
+<td style="text-align:right">46,01%</td>
+</tr>
+<tr>
+<td>F1</td>
+<td style="text-align:right">0,5592</td>
+</tr>
+<tr>
+<td>Average Precision (AP)</td>
+<td style="text-align:right">0,6553</td>
+</tr>
+<tr>
+<td>Módulos defeituosos não capturados</td>
+<td style="text-align:right">121</td>
+</tr>
+</tbody>
+</table>
+<p>A fila também continha <strong>352 módulos registrados como limpos</strong>, os falsos
+positivos. É priorização para revisão humana, não detecção automática de bugs.
+71,26% é recall nesse teste, não acurácia, correção de probabilidades ou previsão
+de desempenho em produção.</p>
+<p><strong>O resultado pertence ao RF bruto congelado. Não é a validação final do
+artefato calibrado ou das políticas de abstenção desenvolvidos depois.</strong></p>
+<h2 id="calibração-e-incerteza">Calibração e incerteza</h2>
+<p>Depois, avaliei calibração sigmoide e isotônica com CV aninhada e grupos,
+<strong>usando apenas o treino</strong>. Para a configuração fixa do RF, a sigmoide melhorou
+o Brier score de <strong>0,18692 para 0,13863</strong>, com AP aproximadamente estável
+(0,40703 → 0,40619). O score mede qualidade probabilística; a interpretação
+também considera curvas de confiabilidade e o suporte de cada faixa.</p>
+<p>A calibração melhorou a interpretação das probabilidades sem criar nova
+informação preditiva. A tentativa de classificação automática HIGH com
+precisão ≥90% não encontrou uma faixa com suporte suficiente. A política
+conservadora deixou <strong>98,44% como UNCERTAIN</strong>: 136 LOW, nenhum HIGH e 8.572
+UNCERTAIN. Mesmo entre os LOW, sete módulos tinham defeitos registrados.</p>
+<p>O produto permanece <strong>ranking de risco + priorização de revisão humana</strong>.
+DefectRisk prevê risco e ranking, não certeza. O teste histórico não foi
+reutilizado para calibrar ou definir essas políticas; o sistema posterior
+ainda exige um holdout externo verdadeiramente independente.</p>
+<h2 id="artefato-executável">Artefato executável</h2>
+<p>A entrega inclui o artefato calibrado congelado <code>defectrisk-rf-sigmoid-v1</code>,
+schema ordenado das features, versões de dependências, fingerprints de treino
+e checksums. A CLI valida o CSV e carrega o artefato verificado, sem treinar:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="sh"><code><span class="line"><span style="color:#B392F0">python</span><span style="color:#79B8FF"> -m</span><span style="color:#9ECBFF"> pip</span><span style="color:#9ECBFF"> install</span><span style="color:#79B8FF"> -e</span><span style="color:#9ECBFF"> .</span></span>
+<span class="line"><span style="color:#B392F0">defectrisk</span><span style="color:#9ECBFF"> rank</span><span style="color:#9ECBFF"> examples/modules.csv</span></span></code></pre>
+<p>Execute na raiz do repositório DefectRisk com as dependências registradas.
+O fluxo é <strong>CSV com métricas estáticas → artefato congelado verificado →
+probabilidade calibrada → ranking decrescente de risco</strong>. Identificadores dos
+módulos ficam fora do modelo; tabela e JSON são saídas disponíveis.</p>
+<p>Schema e checksums verificam consistência e integridade, não autenticidade.
+O carregamento Joblib deve usar apenas artefatos locais confiáveis. Reproduzir
+a evidência salva de CV não reabre o teste histórico nem fornece validação
+independente do artefato final.</p>
+<h2 id="limitações-e-próximo-investimento">Limitações e próximo investimento</h2>
+<ul>
+<li>JM1 é histórico; as features são apenas métricas estáticas.</li>
+<li>A proveniência dos rótulos e dos snapshots é imperfeita; existem rótulos
+ambíguos ou conflitantes.</li>
+<li>Não há garantia de generalização entre projetos, linguagens ou versões.</li>
+<li>A calibração e as políticas têm evidência restrita ao treino/CV e precisam
+de um novo holdout externo independente, com configurações congeladas.</li>
+<li>Probabilidades não demonstram certeza individual ou causalidade; um risco
+baixo não dispensa testes ou revisão padrão.</li>
+</ul>
+<p>A evidência disponível sugeriu que as features atuais haviam se tornado o
+principal gargalo, sem provar um teto matemático de informação. O próximo
+investimento recomendado é melhorar os dados disponíveis no momento da
+predição: <strong>churn de código, histórico de defeitos, ownership, cobertura de
+testes, histórico de commits/mudanças e de revisão</strong>. Esses sinais não foram
+implementados; exigiriam snapshots e horizontes de rótulo bem definidos.</p>
+<p>O artigo <a href="/artigos/better-models-are-not-enough/">Quando modelos melhores não bastam</a>
+detalha como tomei a decisão de encerrar a exploração de modelos.</p>
+<h2 id="evidências">Evidências</h2>
+<ul>
+<li>
+<a href="https://github.com/marcelotaparelli/defectrisk-ml" target="_blank" rel="noopener noreferrer"><p>DefectRisk no GitHub: código, artefato e instruções</p></a>
+</li>
+<li>
+<a href="https://github.com/marcelotaparelli/defectrisk-ml/blob/8ccdfc301a1cb22c89ae2ffbc1a29e2c054325fa/docs/model-card.md" target="_blank" rel="noopener noreferrer"><p>Model card e limites de uso</p></a>
+</li>
+<li>
+<a href="https://github.com/marcelotaparelli/defectrisk-ml/blob/8ccdfc301a1cb22c89ae2ffbc1a29e2c054325fa/docs/final-evaluation.md" target="_blank" rel="noopener noreferrer"><p>Avaliação histórica única do RF bruto</p></a>
+</li>
+<li>
+<a href="https://github.com/marcelotaparelli/defectrisk-ml/blob/8ccdfc301a1cb22c89ae2ffbc1a29e2c054325fa/docs/calibration-and-uncertainty.md" target="_blank" rel="noopener noreferrer"><p>Estudo posterior de calibração e incerteza, restrito ao treino</p></a>
+</li>
+</ul><a class="text-link" href="/projetos/"><svg class="arrow arrow--left" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12h15m-6-6 6 6-6 6"></path></svg>Voltar aos projetos</a></article></div></div><section class="contact-section" aria-labelledby="contact-title"><div class="container contact-inner"><p class="eyebrow"><span class="status-dot" aria-hidden="true"></span>VAMOS CONVERSAR</p><h2 id="contact-title" class="contact-title preserve-lines">Bons produtos começam
+com uma boa conversa.</h2><p class="section-description">Oportunidades profissionais, parcerias ou uma conversa sobre Engenharia de IA, software e produto.</p><a class="email-link" href="mailto:contato@marcelotaparelli.com.br">contato@marcelotaparelli.com.br<svg class="arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 18 18 6M6 6h12v12"></path></svg></a><a class="text-link" href="https://www.linkedin.com/in/marcelo-taparelli/" target="_blank" rel="noopener noreferrer">Conectar no LinkedIn<svg class="arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 18 18 6M6 6h12v12"></path></svg></a></div></section></main><footer class="site-footer"><div class="container footer-top"><div><a class="brand" href="/"><svg width="30" height="30" viewBox="0 0 40 40" fill="none" aria-hidden="true"><path d="M5 30V10l10 12 10-12v20M25 10h12M31 10v20" stroke="currentColor" stroke-width="2" stroke-linejoin="round"></path></svg><span>Marcelo Taparelli<span class="brand-dot">.</span></span></a><p>Problema primeiro. Tecnologia depois.</p></div><nav class="footer-links" aria-label="Redes profissionais e currículo"><a href="https://github.com/marcelotaparelli" target="_blank" rel="noopener noreferrer">GitHub</a><a href="https://www.linkedin.com/in/marcelo-taparelli/" target="_blank" rel="noopener noreferrer">LinkedIn</a><a href="mailto:contato@marcelotaparelli.com.br">Email</a><a class="text-link" href="/cv/marcelo-taparelli-cv-pt-br.pdf" download>Baixar currículo<span class="file-label">PDF</span><svg class="arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 18 18 6M6 6h12v12"></path></svg></a></nav></div><div class="container footer-bottom"><span>© 2026 Marcelo Taparelli</span><span>Engenharia de IA · Base em Software · Visão de Produto</span></div></footer></body></html>
