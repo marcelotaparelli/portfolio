@@ -371,17 +371,19 @@ test('AI and software positioning, metadata and project priority agree in both l
         );
         await expect(page.locator('.hero-positioning')).toHaveCount(0);
         await expect(page.locator('.hero-eyebrow')).toContainText(
-          headline!.replace(' | ', ' & ').toUpperCase(),
+          path === '/'
+            ? 'ENGENHARIA DE IA · ENGENHARIA DE SOFTWARE · PRODUTO'
+            : 'AI ENGINEERING · SOFTWARE ENGINEERING · PRODUCT',
         );
         await expect(page.locator('.hero-intro p')).toHaveText(
           path === '/'
             ? [
-                'Atuo com pesquisa de IA, automação de processos e desenvolvimento agêntico na Agência Catus e na EVAG, combinando Engenharia de Software e visão de produto.',
-                'Construo RAG, agentes e Machine Learning com avaliação, guardrails e revisão humana, apoiado por experiência em backend, APIs e produção.',
+                'Construo sistemas de IA do problema de negócio à produção — com RAG, agentes, avaliação e automação — apoiados por arquitetura, performance, segurança, observabilidade, resiliência e confiabilidade.',
+                'Engenharia de Software dá a base. Produto define o que importa. IA entra onde realmente cria valor.',
               ]
             : [
-                'I work on AI research, process automation, and agentic development at Agência Catus and EVAG, combining Software Engineering with a product perspective.',
-                'I build RAG, agents, and Machine Learning with evaluation, guardrails, and human review, supported by experience in backend, APIs, and production.',
+                'I build AI systems from business problems to production — with RAG, agents, evaluation, and automation — grounded in architecture, performance, security, observability, resilience, and reliability.',
+                'Software Engineering provides the foundation. Product defines what matters. AI enters where it creates real value.',
               ],
         );
         await expect(page.locator('.hero-bottom')).toContainText(

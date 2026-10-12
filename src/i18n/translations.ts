@@ -36,14 +36,14 @@ const pt = {
   updated: 'Atualizado em',
   footerNote: 'Problema primeiro. Tecnologia depois.',
   hero: {
-    eyebrow: 'ENGENHEIRO DE IA & ENGENHEIRO DE SOFTWARE',
+    eyebrow: 'ENGENHARIA DE IA · ENGENHARIA DE SOFTWARE · PRODUTO',
     title: {
       first: 'DE PROBLEMAS REAIS',
       second: 'A PRODUTOS DE IA.',
     },
     intro:
-      'Atuo com pesquisa de IA, automação de processos e desenvolvimento agêntico na Agência Catus e na EVAG, combinando Engenharia de Software e visão de produto.',
-    body: 'Construo RAG, agentes e Machine Learning com avaliação, guardrails e revisão humana, apoiado por experiência em backend, APIs e produção.',
+      'Construo sistemas de IA do problema de negócio à produção — com RAG, agentes, avaliação e automação — apoiados por arquitetura, performance, segurança, observabilidade, resiliência e confiabilidade.',
+    body: 'Engenharia de Software dá a base. Produto define o que importa. IA entra onde realmente cria valor.',
     work: 'Ver projetos',
     contact: 'Vamos conversar',
     caption: 'Engenharia com perspectiva de produto.',
@@ -175,14 +175,14 @@ const en: Translations = {
   updated: 'Updated',
   footerNote: 'Problem first. Technology second.',
   hero: {
-    eyebrow: 'AI ENGINEER & SOFTWARE ENGINEER',
+    eyebrow: 'AI ENGINEERING · SOFTWARE ENGINEERING · PRODUCT',
     title: {
       first: 'FROM REAL PROBLEMS',
       second: 'TO AI PRODUCTS.',
     },
     intro:
-      'I work on AI research, process automation, and agentic development at Agência Catus and EVAG, combining Software Engineering with a product perspective.',
-    body: 'I build RAG, agents, and Machine Learning with evaluation, guardrails, and human review, supported by experience in backend, APIs, and production.',
+      'I build AI systems from business problems to production — with RAG, agents, evaluation, and automation — grounded in architecture, performance, security, observability, resilience, and reliability.',
+    body: 'Software Engineering provides the foundation. Product defines what matters. AI enters where it creates real value.',
     work: 'View projects',
     contact: 'Let’s talk',
     caption: 'Engineering with a product perspective.',
