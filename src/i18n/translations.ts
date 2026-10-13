@@ -42,8 +42,8 @@ const pt = {
       second: 'A PRODUTOS DE IA.',
     },
     intro:
-      'Construo sistemas de IA do problema de negócio à produção — com RAG, agentes, avaliação e automação — apoiados por arquitetura, performance, segurança, observabilidade, resiliência e confiabilidade.',
-    body: 'Engenharia de Software dá a base. Produto define o que importa. IA entra onde realmente cria valor.',
+      'Transformo problemas reais em sistemas de IA que chegam à produção, usando Engenharia de Software como base, Produto para definir o que importa e IA onde ela realmente gera valor.',
+    body: 'Python, RAG, agentes, LangGraph, OpenAI, PyTorch, Evals, FastAPI, PostgreSQL, pgvector, OpenTelemetry, TypeScript, Bun, Node.js, Docker, Terraform e AWS.',
     work: 'Ver projetos',
     contact: 'Vamos conversar',
     caption: 'Engenharia com perspectiva de produto.',
@@ -181,8 +181,8 @@ const en: Translations = {
       second: 'TO AI PRODUCTS.',
     },
     intro:
-      'I build AI systems from business problems to production — with RAG, agents, evaluation, and automation — grounded in architecture, performance, security, observability, resilience, and reliability.',
-    body: 'Software Engineering provides the foundation. Product defines what matters. AI enters where it creates real value.',
+      'I turn real problems into AI systems that reach production, using Software Engineering as the foundation, Product to define what matters, and AI where it truly delivers value.',
+    body: 'Python, RAG, agents, LangGraph, OpenAI, PyTorch, Evals, FastAPI, PostgreSQL, pgvector, OpenTelemetry, TypeScript, Bun, Node.js, Docker, Terraform, and AWS.',
     work: 'View projects',
     contact: 'Let’s talk',
     caption: 'Engineering with a product perspective.',
